@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}OurBlogWebsite{% endblock %}</title>
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/static/javascript/base.js"></script>
+</head>
+<body>
+
+  <!-- Header with Nav -->
+  <header class="header">
+    <div class="logo">Blogging <span>Web</span></div>
+    
+    <nav class="nav">
+      <a href="#">Home</a>
+      <a href="#">Tech</a>
+      <a href="#">Politics</a>
+      <a href="#">Entertainment</a>
+      <a href="#">Finance</a>
+      <a href="#">Music</a>
+      <a href="#">Life</a>
+    </nav>
+    
+    <div class="search-container">
+      <input type="text" class="search-input" placeholder="Search...">
+      <i class="fas fa-search search-icon"></i>
+    </div>
+    
+    <div class="menu-toggle">
+      <i class="fas fa-bars"></i>
+    </div>
+  </header>
+
+  {% block content %}
+  <!-- Main content goes here -->
+  {% endblock %}
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>About Us</h3>
+        <p>Black Blog is a premier destination for thought-provoking content across various categories including technology, politics, entertainment, and more.</p>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-facebook"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-linkedin"></i></a>
+        </div>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <a href="#">Home</a>
+        <a href="#">About</a>
+        <a href="#">Categories</a>
+        <a href="#">Authors</a>
+        <a href="#">Contact</a>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Newsletter</h3>
+        <p>Subscribe to our newsletter for the latest updates and articles.</p>
+        <form class="newsletter-form">
+          <input type="email" placeholder="Your Email" required>
+          <button type="submit">Subscribe</button>
+        </form>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2025 OurBlogWebsite. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>
