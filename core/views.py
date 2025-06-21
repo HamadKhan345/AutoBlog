@@ -10,3 +10,7 @@ def contact(request):
 
 def about(request):
     return render(request, 'core/about.html')
+
+# Temp Blog Url
+def blog(request):
+    return render(request, 'core/blog.html')

@@ -6,4 +6,7 @@ urlpatterns = [
     path('home/', views.home, name='home'),
     path('contact-us/', views.contact, name='contact'),
     path('about-us/', views.about, name='about'),
+
+  #  Blog Temp url
+    path('blog/', views.blog, name='blog'),
 ]

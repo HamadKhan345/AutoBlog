@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Post
+{% endblock %}
+
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'core/styles/blog.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="blog-container">
+
+    <div class="blog-header">
+        <h1>{{ post.title }}</h1>
+        <p>By {{ post.author }} | {{ post.created_at|date:"F j, Y" }}</p>
+    </div>
+
+    <div class="blog-content">
+        <img src="{{ post.image.url }}" alt="{{ post.title }}" class="blog-image">
+        <p>{{ post.content|safe }}</p>
+    </div>
+
+    <div class="blog-footer">
+        <p>Tags: 
+            {% for tag in post.tags.all %}
+                <span class="tag">{{ tag.name }}</span>
+            {% endfor %}
+        </p>
+    </div>
+
+{% endblock %}
