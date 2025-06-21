@@ -1,5 +1,6 @@
 /* Contact Section */
 .contact-section {
+
   padding: 4rem 2rem;
   background-color: #f8f9fa;
   min-height: calc(100vh - 200px);
@@ -21,7 +22,7 @@
 }
 
 .contact-section h2::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -10px;
   left: 50%;
@@ -45,13 +46,13 @@
   padding: 2.5rem;
   border: 1px solid #e9ecef;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   position: relative;
   overflow: hidden;
 }
 
 .contact-form::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -86,7 +87,7 @@
   border: 2px solid #e9ecef;
   border-radius: 8px;
   font-size: 0.95rem;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   outline: none;
   transition: all 0.3s ease;
   background-color: #fefefe;
@@ -143,7 +144,7 @@
   padding: 2rem;
   border-radius: 12px;
   border: 1px solid #e9ecef;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   height: fit-content;
   position: sticky;
   top: 2rem;
@@ -169,7 +170,7 @@
 
 .contact-item:hover {
   background: #e9ecef;
-  transform: translateX(5px);
+  /* transform: translateX(5px); */
 }
 
 .contact-item i {
@@ -185,15 +186,16 @@
   color: #212529;
   font-size: 0.9rem;
   font-weight: 600;
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
   letter-spacing: 0.5px;
 }
 
-.contact-item-content p {
+.contact-item-content a {
   margin: 0;
   color: #495057;
   font-size: 0.95rem;
   line-height: 1.4;
+  text-decoration: none;
 }
 
 /* Form Validation Styles */
@@ -214,8 +216,8 @@
 }
 
 .error-message::before {
-  content: '\f071';
-  font-family: 'Font Awesome 6 Free';
+  content: "\f071";
+  font-family: "Font Awesome 6 Free";
   font-weight: 900;
   margin-right: 0.4rem;
   font-size: 0.8rem;
@@ -245,6 +247,7 @@
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -263,8 +266,13 @@
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsive Design */
@@ -272,25 +280,25 @@
   .contact-section {
     padding: 2rem 1rem;
   }
-  
+
   .contact-section h2 {
     font-size: 2rem;
     margin-bottom: 2rem;
   }
-  
+
   .content-wrapper {
     grid-template-columns: 1fr;
     gap: 2rem;
   }
-  
+
   .contact-form {
     padding: 2rem 1.5rem;
   }
-  
+
   .contact-info {
     position: static;
   }
-  
+
   .contact-item {
     padding: 0.8rem;
   }
@@ -300,15 +308,15 @@
   .contact-section {
     padding: 1.5rem 1rem;
   }
-  
+
   .contact-form {
     padding: 1.5rem 1rem;
   }
-  
+
   .contact-info {
     padding: 1.5rem;
   }
-  
+
   .btn-submit {
     width: 100%;
     padding: 1rem;
