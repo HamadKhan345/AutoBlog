@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Contact Us - Black Blog{% endblock %}
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'core/styles/contact_us.css' %}">
+<script src="{% static 'core/scripts/contact_us.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="contact-container">
+  <div class="contact-header">
+    <h1>Get in Touch</h1>
+    <p>Have questions or feedback? We'd love to hear from you.</p>
+  </div>
+  
+  <form class="contact-form">
+    <div class="form-group">
+      <label for="name">Full Name*</label>
+      <input type="text" id="name" class="form-control" required>
+    </div>
+    
+    <div class="form-group">
+      <label for="email">Email Address*</label>
+      <input type="email" id="email" class="form-control" required>
+    </div>
+    
+    <div class="form-group">
+      <label for="blog">Your Blog (Optional)</label>
+      <input type="url" id="blog" class="form-control" placeholder="https://">
+    </div>
+    
+    <div class="form-group full-width">
+      <label for="message">Your Message*</label>
+      <textarea id="message" class="form-control" required></textarea>
+    </div>
+    
+    <div class="contact-submit">
+      <button type="submit" class="submit-btn">Send Message</button>
+    </div>
+  </form>
+  
+  <div class="contact-info">
+    <div class="contact-card">
+      <i class="fas fa-envelope"></i>
+      <h3>Email Us</h3>
+      <p>contact@blackblog.com</p>
+    </div>
+    
+    <div class="contact-card">
+      <i class="fas fa-map-marker-alt"></i>
+      <h3>Visit Us</h3>
+      <p>123 Blog Street, Digital City</p>
+    </div>
+    
+    <div class="contact-card">
+      <i class="fas fa-phone-alt"></i>
+      <h3>Call Us</h3>
+      <p>+1 (555) 123-4567</p>
+    </div>
+  </div>
+</div>
+{% endblock %}
