@@ -8,56 +8,74 @@
 {% endblock %}
 
 {% block content %}
-<div class="contact-container">
-  <div class="contact-header">
-    <h1>Get in Touch</h1>
-    <p>Have questions or feedback? We'd love to hear from you.</p>
-  </div>
-  
-  <form class="contact-form">
-    <div class="form-group">
-      <label for="name">Full Name*</label>
-      <input type="text" id="name" class="form-control" required>
+  <section class="contact-section">
+    <div class="container">
+      <h2>Get In Touch</h2>
+      <div class="content-wrapper">
+        <!-- Contact Form -->
+        <form id="contactForm" class="contact-form" novalidate>
+          <div class="form-group">
+            <label for="name">Full Name<span class="required">*</span></label>
+            <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address<span class="required">*</span></label>
+            <input type="email" id="email" name="email" placeholder="your.email@example.com" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number <small>(Optional)</small></label>
+            <input type="tel" id="phone" name="phone" placeholder="+1 (555) 123-4567">
+          </div>
+          <div class="form-group">
+            <label for="blog">Blog URL <small>(Optional)</small></label>
+            <input type="url" id="blog" name="blog" placeholder="https://">
+          </div>
+          <div class="form-group">
+            <label for="message">Your Message<span class="required">*</span></label>
+            <textarea id="message" name="message" rows="6" placeholder="Tell us how we can help you..." required></textarea>
+          </div>
+          <button type="submit" class="btn-submit">
+            <i class="fas fa-paper-plane"></i> Send Message
+          </button>
+        </form>
+
+        <!-- Contact Information Sidebar -->
+        <div class="contact-info">
+          <h3>Contact Information</h3>
+          
+          <div class="contact-item">
+            <i class="fas fa-envelope"></i>
+            <div class="contact-item-content">
+              <h4>Email Us</h4>
+              <p>hello@bloggingweb.com<br>support@bloggingweb.com</p>
+            </div>
+          </div>
+          
+          {% comment %} <div class="contact-item">
+            <i class="fas fa-phone-alt"></i>
+            <div class="contact-item-content">
+              <h4>Call Us</h4>
+              <p>+1 (555) 123-4567<br>Mon - Fri, 9AM - 6PM</p>
+            </div>
+          </div>
+          
+          <div class="contact-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <div class="contact-item-content">
+              <h4>Visit Us</h4>
+              <p>123 Blog Street<br>Digital City, DC 12345</p>
+            </div>
+          </div>
+          
+          <div class="contact-item">
+            <i class="fas fa-clock"></i>
+            <div class="contact-item-content">
+              <h4>Business Hours</h4>
+              <p>Monday - Friday: 9AM - 6PM<br>Weekend: 10AM - 4PM</p>
+            </div>
+          </div> {% endcomment %}
+        </div>
+      </div>
     </div>
-    
-    <div class="form-group">
-      <label for="email">Email Address*</label>
-      <input type="email" id="email" class="form-control" required>
-    </div>
-    
-    <div class="form-group">
-      <label for="blog">Your Blog (Optional)</label>
-      <input type="url" id="blog" class="form-control" placeholder="https://">
-    </div>
-    
-    <div class="form-group full-width">
-      <label for="message">Your Message*</label>
-      <textarea id="message" class="form-control" required></textarea>
-    </div>
-    
-    <div class="contact-submit">
-      <button type="submit" class="submit-btn">Send Message</button>
-    </div>
-  </form>
-  
-  <div class="contact-info">
-    <div class="contact-card">
-      <i class="fas fa-envelope"></i>
-      <h3>Email Us</h3>
-      <p>contact@blackblog.com</p>
-    </div>
-    
-    <div class="contact-card">
-      <i class="fas fa-map-marker-alt"></i>
-      <h3>Visit Us</h3>
-      <p>123 Blog Street, Digital City</p>
-    </div>
-    
-    <div class="contact-card">
-      <i class="fas fa-phone-alt"></i>
-      <h3>Call Us</h3>
-      <p>+1 (555) 123-4567</p>
-    </div>
-  </div>
-</div>
+  </section>
 {% endblock %}
