@@ -15,25 +15,30 @@
 
   <!-- Header with Nav -->
   <header class="header">
-    <div class="logo">Blogging <span>Web</span></div>
-    
-    <nav class="nav">
-      <a href="{% url 'home' %}">Home</a>
-      <a href="{% url 'tech' %}">Tech</a>
-      <a href="{% url 'politics' %}">Politics</a>
-      <a href="{% url 'entertainment' %}">Entertainment</a>
-      <a href="{% url 'finance' %}">Finance</a>
-      <a href="{% url 'music' %}">Music</a>
-      <a href="{% url 'life' %}">Life</a>
-    </nav>
-    
-    <div class="search-container">
-      <input type="text" class="search-input" placeholder="Search...">
-      <i class="fas fa-search search-icon"></i>
+    <div class="header-left">
+      <div class="logo">
+        <img class="site-logo" src="{% static 'images/auto-blog-logo.svg' %}" alt="Site Logo">
+        Blogging <span>Web</span>
+      </div>
+      <nav class="nav">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'tech' %}">Tech</a>
+        <a href="{% url 'politics' %}">Politics</a>
+        <a href="{% url 'entertainment' %}">Entertainment</a>
+        <a href="{% url 'finance' %}">Finance</a>
+        <a href="{% url 'music' %}">Music</a>
+        <a href="{% url 'life' %}">Life</a>
+      </nav>
     </div>
-    
-    <div class="menu-toggle">
-      <i class="fas fa-bars"></i>
+
+    <div class="header-right">
+      <div class="search-container">
+        <input type="text" class="search-input" placeholder="Search...">
+        <i class="fas fa-search search-icon"></i>
+      </div>
+      <div class="menu-toggle">
+        <i class="fas fa-bars"></i>
+      </div>
     </div>
   </header>
 
