@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ category_name }} - AutoBlog{% endblock %}
+
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'core/styles/category.css' %}">
+<script src="{% static 'core/scripts/category.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+
+<!-- Category Header -->
+<section class="category-header">  <div class="container">
+    <h1 class="category-title">{{ category_name|default:"Category" }}</h1>
+    <p class="category-description">Discover the latest articles and insights in {{ category_name|lower }}.</p>
+  </div>
+</section>
+
+<!-- Posts Grid Section -->
+<section class="posts-section">
+  <div class="container">    
+    <!-- View Toggle -->
+    <div class="view-toggle">
+      <button class="view-btn active" data-view="grid">
+        <i class="fas fa-th"></i>
+      </button>
+      <button class="view-btn" data-view="list">
+        <i class="fas fa-list"></i>
+      </button>
+    </div>
+
+    <!-- Posts Grid -->
+    <div class="posts-grid" id="postsGrid">
+      
+      <!-- Sample Posts - Replace with dynamic content -->
+      <article class="post-card">
+        <div class="post-image">
+          <img src="https://picsum.photos/400/250?random=1" alt="Post Title">
+          <div class="post-category">{{ category_name|default:"Tech" }}</div>
+        </div>
+        <div class="post-content">
+          <h3 class="post-title">Revolutionary AI Technology Changes Everything</h3>
+          <p class="post-excerpt">Discover how the latest advancements in artificial intelligence are reshaping industries and our daily lives...</p>
+          <div class="post-meta">
+            <span class="post-author">Sarah Johnson</span>
+            <span class="post-date">2 hours ago</span>
+            <span class="post-read-time">5 min read</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="post-card">
+        <div class="post-image">
+          <img src="https://picsum.photos/400/250?random=2" alt="Post Title">
+          <div class="post-category">{{ category_name|default:"Tech" }}</div>
+        </div>
+        <div class="post-content">
+          <h3 class="post-title">The Future of Quantum Computing</h3>
+          <p class="post-excerpt">Exploring the breakthrough developments in quantum computing and their potential impact on various industries...</p>
+          <div class="post-meta">
+            <span class="post-author">Michael Chen</span>
+            <span class="post-date">4 hours ago</span>
+            <span class="post-read-time">7 min read</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="post-card">
+        <div class="post-image">
+          <img src="https://picsum.photos/400/250?random=3" alt="Post Title">
+          <div class="post-category">{{ category_name|default:"Tech" }}</div>
+        </div>
+        <div class="post-content">
+          <h3 class="post-title">Cybersecurity Trends for 2025</h3>
+          <p class="post-excerpt">Stay ahead of cyber threats with our comprehensive guide to the latest cybersecurity trends and best practices...</p>
+          <div class="post-meta">
+            <span class="post-author">Emma Rodriguez</span>
+            <span class="post-date">6 hours ago</span>
+            <span class="post-read-time">6 min read</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="post-card">
+        <div class="post-image">
+          <img src="https://picsum.photos/400/250?random=4" alt="Post Title">
+          <div class="post-category">{{ category_name|default:"Tech" }}</div>
+        </div>
+        <div class="post-content">
+          <h3 class="post-title">Cloud Computing Revolution</h3>
+          <p class="post-excerpt">How cloud computing is transforming businesses and enabling digital transformation across industries...</p>
+          <div class="post-meta">
+            <span class="post-author">David Park</span>
+            <span class="post-date">8 hours ago</span>
+            <span class="post-read-time">4 min read</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="post-card">
+        <div class="post-image">
+          <img src="https://picsum.photos/400/250?random=5" alt="Post Title">
+          <div class="post-category">{{ category_name|default:"Tech" }}</div>
+        </div>
+        <div class="post-content">
+          <h3 class="post-title">Machine Learning in Healthcare</h3>
+          <p class="post-excerpt">Discover how machine learning is revolutionizing healthcare with improved diagnostics and personalized treatment...</p>
+          <div class="post-meta">
+            <span class="post-author">Lisa Thompson</span>
+            <span class="post-date">12 hours ago</span>
+            <span class="post-read-time">8 min read</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="post-card">
+        <div class="post-image">
+          <img src="https://picsum.photos/400/250?random=6" alt="Post Title">
+          <div class="post-category">{{ category_name|default:"Tech" }}</div>
+        </div>
+        <div class="post-content">
+          <h3 class="post-title">Blockchain Beyond Cryptocurrency</h3>
+          <p class="post-excerpt">Exploring innovative applications of blockchain technology beyond digital currencies and financial services...</p>
+          <div class="post-meta">
+            <span class="post-author">James Wilson</span>
+            <span class="post-date">1 day ago</span>
+            <span class="post-read-time">6 min read</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- Load More Button -->
+    <div class="load-more-container">
+      <button class="load-more-btn" id="loadMoreBtn">
+        <i class="fas fa-plus"></i>
+        Load More Articles
+      </button>
+      <div class="loading-spinner" id="loadingSpinner" style="display: none;">
+        <i class="fas fa-spinner fa-spin"></i>
+        Loading...
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}
