@@ -6,12 +6,13 @@ urlpatterns = [
     path('home/', views.home, name='home'),
     path('contact-us/', views.contact, name='contact'),
     path('about-us/', views.about, name='about'),
-    path('Tech/', views.tech, name='tech'),  # Category URL
-    path('Politics/', views.politics, name='politics'),  # Category URL
-    path('Entertainment/', views.entertainment, name='entertainment'),  # Category URL
-    path('Finance/', views.finance, name='finance'),  # Category URL
-    path('Music/', views.music, name='music'),  # Category URL
-    path('Life/', views.life, name='life'),  # Category URL
+    path('categories/', views.categories, name='categories'),
+    path('Tech/', views.tech, name='tech'),
+    path('Politics/', views.politics, name='politics'),
+    path('Entertainment/', views.entertainment, name='entertainment'),
+    path('Finance/', views.finance, name='finance'),
+    path('Music/', views.music, name='music'),
+    path('Life/', views.life, name='life'),
 
   #  Temp url
     path('blog/', views.blog, name='blog'),

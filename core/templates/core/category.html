@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ category_name }} - AutoBlog{% endblock %}
+{% block title %}{{ category_name }}{% endblock %}
 
 {% block extrahead %}
 <link rel="stylesheet" href="{% static 'core/styles/category.css' %}">
@@ -11,7 +11,8 @@
 {% block content %}
 
 <!-- Category Header -->
-<section class="category-header">  <div class="container">
+<section class="category-header">
+  <div class="container">
     <h1 class="category-title">{{ category_name|default:"Category" }}</h1>
     <p class="category-description">Discover the latest articles and insights in {{ category_name|lower }}.</p>
   </div>
@@ -19,7 +20,7 @@
 
 <!-- Posts Grid Section -->
 <section class="posts-section">
-  <div class="container">    
+  <div class="container">
     <!-- View Toggle -->
     <div class="view-toggle">
       <button class="view-btn active" data-view="grid">
@@ -32,7 +33,7 @@
 
     <!-- Posts Grid -->
     <div class="posts-grid" id="postsGrid">
-      
+
       <!-- Sample Posts - Replace with dynamic content -->
       <article class="post-card">
         <div class="post-image">
@@ -41,7 +42,8 @@
         </div>
         <div class="post-content">
           <h3 class="post-title">Revolutionary AI Technology Changes Everything</h3>
-          <p class="post-excerpt">Discover how the latest advancements in artificial intelligence are reshaping industries and our daily lives...</p>
+          <p class="post-excerpt">Discover how the latest advancements in artificial intelligence are reshaping
+            industries and our daily lives...</p>
           <div class="post-meta">
             <span class="post-author">Sarah Johnson</span>
             <span class="post-date">2 hours ago</span>
@@ -57,7 +59,8 @@
         </div>
         <div class="post-content">
           <h3 class="post-title">The Future of Quantum Computing</h3>
-          <p class="post-excerpt">Exploring the breakthrough developments in quantum computing and their potential impact on various industries...</p>
+          <p class="post-excerpt">Exploring the breakthrough developments in quantum computing and their potential
+            impact on various industries...</p>
           <div class="post-meta">
             <span class="post-author">Michael Chen</span>
             <span class="post-date">4 hours ago</span>
@@ -73,7 +76,8 @@
         </div>
         <div class="post-content">
           <h3 class="post-title">Cybersecurity Trends for 2025</h3>
-          <p class="post-excerpt">Stay ahead of cyber threats with our comprehensive guide to the latest cybersecurity trends and best practices...</p>
+          <p class="post-excerpt">Stay ahead of cyber threats with our comprehensive guide to the latest cybersecurity
+            trends and best practices...</p>
           <div class="post-meta">
             <span class="post-author">Emma Rodriguez</span>
             <span class="post-date">6 hours ago</span>
@@ -89,7 +93,8 @@
         </div>
         <div class="post-content">
           <h3 class="post-title">Cloud Computing Revolution</h3>
-          <p class="post-excerpt">How cloud computing is transforming businesses and enabling digital transformation across industries...</p>
+          <p class="post-excerpt">How cloud computing is transforming businesses and enabling digital transformation
+            across industries...</p>
           <div class="post-meta">
             <span class="post-author">David Park</span>
             <span class="post-date">8 hours ago</span>
@@ -105,7 +110,8 @@
         </div>
         <div class="post-content">
           <h3 class="post-title">Machine Learning in Healthcare</h3>
-          <p class="post-excerpt">Discover how machine learning is revolutionizing healthcare with improved diagnostics and personalized treatment...</p>
+          <p class="post-excerpt">Discover how machine learning is revolutionizing healthcare with improved diagnostics
+            and personalized treatment...</p>
           <div class="post-meta">
             <span class="post-author">Lisa Thompson</span>
             <span class="post-date">12 hours ago</span>
@@ -121,7 +127,8 @@
         </div>
         <div class="post-content">
           <h3 class="post-title">Blockchain Beyond Cryptocurrency</h3>
-          <p class="post-excerpt">Exploring innovative applications of blockchain technology beyond digital currencies and financial services...</p>
+          <p class="post-excerpt">Exploring innovative applications of blockchain technology beyond digital currencies
+            and financial services...</p>
           <div class="post-meta">
             <span class="post-author">James Wilson</span>
             <span class="post-date">1 day ago</span>
