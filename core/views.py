@@ -45,3 +45,6 @@ def blog(request):
 
 def category(request):
     return render(request, 'core/category.html')
+
+def blog(request):
+    return render(request, 'core/blog.html')
