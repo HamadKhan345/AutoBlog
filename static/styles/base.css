@@ -24,14 +24,14 @@ body {
   z-index: 1000;
 }
 
-.logo {
+/* .logo {
   font-size: 1.5rem;
   font-weight: 700;
   color: #212529;
   letter-spacing: -0.5px;
-}
+} */
 
-.logo span {
+/* .logo span {
   font-size: 0.8rem;
   color: #6c757d;
   background: #f1f3f5;
@@ -39,6 +39,13 @@ body {
   border-radius: 20px;
   margin-left: 0.5rem;
   letter-spacing: 0;
+} */
+
+.logo img{
+  width: 50px;
+  height: 50px;
+  padding: none;
+  margin: none;
 }
 
 .nav {
