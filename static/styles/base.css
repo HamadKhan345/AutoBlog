@@ -24,6 +24,18 @@ body {
   z-index: 1000;
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 9rem;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .site-logo {
   height: 60px;
   width: auto;
