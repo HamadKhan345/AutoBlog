@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import Category
 
 # Create your views here.
@@ -14,32 +14,12 @@ def about(request):
 
 # Categories Page
 def categories(request):
-    categories = Category.objects.all()
-    return render(request, 'core/categories.html', context={'categories': categories})
 
-def tech(request):
-    name = {'category_name': 'Tech'}
-    return render(request, 'core/category_posts.html', context=name)
+    return render(request, 'core/categories.html')
 
-def politics(request):
-    name = {'category_name': 'Politics'}
-    return render(request, 'core/category_posts.html', context=name)
-
-def entertainment(request):
-    name = {'category_name': 'Entertainment'}
-    return render(request, 'core/category_posts.html', context=name)
-
-def finance(request):
-    name = {'category_name': 'Finance'}
-    return render(request, 'core/category_posts.html', context=name)
-
-def music(request):
-    name = {'category_name': 'Music'}
-    return render(request, 'core/category_posts.html', context=name)
-
-def life(request):
-    name = {'category_name': 'Life'}
-    return render(request, 'core/category_posts.html', context=name)
+def category_posts(request, slug):
+    category = get_object_or_404(Category, slug=slug)
+    return render(request, 'core/category_posts.html', context={'category': category})
 
 # Temp Urls
 def blog(request):

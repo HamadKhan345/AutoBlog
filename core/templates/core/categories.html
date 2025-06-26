@@ -24,7 +24,7 @@
     <!-- Categories Grid -->
     <div class="categories-grid" id="categoriesGrid"> 
       {% for category in categories %}
-      <a href="#" class="category-card" data-category="technology">
+      <a href="{% url 'category_posts' slug=category.slug %}" class="category-card" data-category="technology">
         <div class="category-image">
           {% if category.thumbnail %}
           <img src="{{ category.thumbnail.url }}" alt="{{ category.name}}">

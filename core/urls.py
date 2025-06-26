@@ -7,12 +7,7 @@ urlpatterns = [
     path('contact-us/', views.contact, name='contact'),
     path('about-us/', views.about, name='about'),
     path('categories/', views.categories, name='categories'),
-    path('Tech/', views.tech, name='tech'),
-    path('Politics/', views.politics, name='politics'),
-    path('Entertainment/', views.entertainment, name='entertainment'),
-    path('Finance/', views.finance, name='finance'),
-    path('Music/', views.music, name='music'),
-    path('Life/', views.life, name='life'),
+    path('category/<slug:slug>/', views.category_posts, name='category_posts'),
 
   #  Temp url
     path('blog/', views.blog, name='blog'),
