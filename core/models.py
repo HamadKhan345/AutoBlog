@@ -6,7 +6,7 @@ from django.utils.text import slugify
 class Author(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE)
   bio = models.TextField(blank=True, null=True)
-  profile_picture = models.ImageField(upload_to='authors/', blank=True, null=True)
+  profile_picture = models.ImageField(upload_to='authors/', blank=False, null=False)
 
   def __str__(self):
     return self.user.username
@@ -16,7 +16,7 @@ class Category(models.Model):
   name = models.CharField(max_length=100)
   slug = models.SlugField(unique=True, blank=True)
   description = models.TextField(blank=True, null=True)
-  thumbnail = models.ImageField(upload_to='categories/', blank=True, null=True)
+  thumbnail = models.ImageField(upload_to='categories/', blank=False, null=False)
 
   def __str__(self):
     return self.name

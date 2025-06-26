@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+from .models import Category
 
 # Create your views here.
 def home(request):
@@ -11,10 +11,12 @@ def contact(request):
 def about(request):
     return render(request, 'core/about.html')
 
-def categories(request):
-    return render(request, 'core/categories.html')
 
-# Category Views
+# Categories Page
+def categories(request):
+    categories = Category.objects.all()
+    return render(request, 'core/categories.html', context={'categories': categories})
+
 def tech(request):
     name = {'category_name': 'Tech'}
     return render(request, 'core/category_posts.html', context=name)
@@ -42,6 +44,3 @@ def life(request):
 # Temp Urls
 def blog(request):
     return render(request, 'core/blog.html')
-
-def category(request):
-    return render(request, 'core/category.html')

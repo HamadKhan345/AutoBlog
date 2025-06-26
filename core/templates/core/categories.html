@@ -21,84 +21,24 @@
 <!-- Categories Grid Section -->
 <section class="categories-section">
   <div class="container">
-
     <!-- Categories Grid -->
-    <div class="categories-grid" id="categoriesGrid">
-
-      <!-- Technology Category -->
-      <a href="{% url 'tech' %}" class="category-card" data-category="technology">
+    <div class="categories-grid" id="categoriesGrid"> 
+      {% for category in categories %}
+      <a href="#" class="category-card" data-category="technology">
         <div class="category-image">
-          <img src="https://picsum.photos/400/250?random=tech" alt="Technology">
+          {% if category.thumbnail %}
+          <img src="{{ category.thumbnail.url }}" alt="{{ category.name}}">
+          {% else %}
+          <img src="#" alt="{{ category.name }}">
+          {% endif %}
           <div class="category-overlay"></div>
         </div>
         <div class="category-content">
-          <h3 class="category-name">Technology</h3>
-          <p class="category-desc">Latest trends in AI, software development, and digital innovation</p>
+          <h3 class="category-name">{{ category.name }}</h3>
+          <p class="category-desc">{{ category.description }}</p>
         </div>
       </a>
-
-      <!-- Politics Category -->
-      <a href="{% url 'politics' %}" class="category-card" data-category="politics">
-        <div class="category-image">
-          <img src="https://picsum.photos/400/250?random=politics" alt="Politics">
-          <div class="category-overlay"></div>
-        </div>
-        <div class="category-content">
-          <h3 class="category-name">Politics</h3>
-          <p class="category-desc">Current affairs, government policies, and political analysis</p>
-        </div>
-      </a>
-
-      <!-- Entertainment Category -->
-      <a href="{% url 'entertainment' %}" class="category-card" data-category="entertainment">
-        <div class="category-image">
-          <img src="https://picsum.photos/400/250?random=entertainment" alt="Entertainment">
-          <div class="category-overlay"></div>
-        </div>
-        <div class="category-content">
-          <h3 class="category-name">Entertainment</h3>
-          <p class="category-desc">Movies, TV shows, celebrities, and pop culture news</p>
-        </div>
-      </a>
-
-      <!-- Finance Category -->
-      <a href="{% url 'finance' %}" class="category-card" data-category="finance">
-        <div class="category-image">
-          <img src="https://picsum.photos/400/250?random=finance" alt="Finance">
-          <div class="category-overlay"></div>
-        </div>
-        <div class="category-content">
-          <h3 class="category-name">Finance</h3>
-          <p class="category-desc">Investment tips, market analysis, and financial planning</p>
-        </div>
-      </a>
-
-      <!-- Music Category -->
-      <a href="{% url 'music' %}" class="category-card" data-category="music">
-        <div class="category-image">
-          <img src="https://picsum.photos/400/250?random=music" alt="Music">
-          <div class="category-overlay"></div>
-        </div>
-        <div class="category-content">
-          <h3 class="category-name">Music</h3>
-          <p class="category-desc">Album reviews, artist interviews, and music industry news</p>
-        </div>
-      </a>
-
-      <!-- Life Category -->
-      <a href="{% url 'life' %}" class="category-card" data-category="life">
-        <div class="category-image">
-          <img src="https://picsum.photos/400/250?random=lifestyle" alt="Life">
-          <div class="category-overlay"></div>
-        </div>
-        <div class="category-content">
-          <h3 class="category-name">Life</h3>
-          <p class="category-desc">Health, wellness, relationships, and personal development</p>
-        </div>
-      </a>
-
-
-
+      {% endfor %}
     </div>
 
   </div>
