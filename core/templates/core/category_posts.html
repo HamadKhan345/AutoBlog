@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ category_name }}{% endblock %}
+{% block title %}{{ category.name }}{% endblock %}
 
 {% block extrahead %}
 <link rel="stylesheet" href="{% static 'core/styles/category.css' %}">
@@ -13,8 +13,8 @@
 <!-- Category Header -->
 <section class="category-header">
   <div class="container">
-    <h1 class="category-title">{{ category }}</h1>
-    <p class="category-description">Discover the latest articles and insights in {{ category_name|lower }}.</p>
+    <h1 class="category-title">{{ category.name }}</h1>
+    <p class="category-description">Discover the latest articles and insights in {{ category.name|lower }}.</p>
   </div>
 </section>
 
