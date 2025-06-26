@@ -11,4 +11,5 @@ urlpatterns = [
 
   #  Temp url
     path('blog/', views.blog, name='blog'),
+    path('authors/', views.authors, name='authors'),  
 ]

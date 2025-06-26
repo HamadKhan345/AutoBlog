@@ -24,3 +24,6 @@ def category_posts(request, slug):
 # Temp Urls
 def blog(request):
     return render(request, 'core/blog.html')
+
+def authors(request):
+    return render(request, 'core/authors.html')
