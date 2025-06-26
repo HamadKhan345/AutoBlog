@@ -14,7 +14,7 @@ class Author(models.Model):
 # For Our Categories/
 class Category(models.Model):  
   name = models.CharField(max_length=100)
-  slug = models.SlugField(unique=True)
+  slug = models.SlugField(unique=True, blank=True)
   description = models.TextField(blank=True, null=True)
   thumbnail = models.ImageField(upload_to='categories/', blank=True, null=True)
 
@@ -62,7 +62,7 @@ class Blog(models.Model):
   
 class Tag(models.Model):
   name = models.CharField(max_length=50, unique=True)
-  slug = models.SlugField(unique=True)
+  slug = models.SlugField(unique=True, blank=True)
   
   def save(self, *args, **kwargs):
     if not self.slug:
