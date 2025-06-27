@@ -23,7 +23,7 @@ AutoBlog - News, Articles, and More
           </div>
           <div class="article-content">
             <h2>{{ blogs.Trending.0.title }}</h2>
-            <p>{{ blogs.Trending.0.content | truncatechars:100 }}</p>
+            <p>{{ blogs.Trending.0.content | truncatechars:150 }}</p>
             <div class="article-meta">
               <span class="author">{{ blogs.Trending.0.author }}</span>
               <span class="date">{{ blogs.Trending.0.updated_at | timesince }}</span>
@@ -66,7 +66,7 @@ AutoBlog - News, Articles, and More
         <div class="article-content">
           <div class="article-category">Tech</div>
           <h3>{{ blogs.Tech.0.title }}</h3>
-          <p>{{ blogs.Tech.0.content | truncatechars:100 }}</p>
+          <p>{{ blogs.Tech.0.content | truncatechars:150 }}</p>
           <div class="article-meta">
             <span class="author">{{ blogs.Tech.0.author }}</span>
             <span class="date">{{ blogs.Tech.0.updated_at | timesince }} ago</span>
@@ -103,7 +103,7 @@ AutoBlog - News, Articles, and More
         <div class="article-content">
           <div class="article-category">Politics</div>
           <h3>{{ blogs.Politics.0.title }}</h3>
-          <p>{{ blogs.Politics.0.content | truncatechars:100 }}</p>
+          <p>{{ blogs.Politics.0.content | truncatechars:150 }}</p>
           <div class="article-meta">
             <span class="author">{{ blogs.Politics.0.author }}</span>
             <span class="date">{{ blogs.Politics.0.updated_at | timesince }} ago</span>
@@ -141,7 +141,7 @@ AutoBlog - News, Articles, and More
         <div class="article-content">
           <div class="article-category">Entertainment</div>
           <h3>{{ blogs.Entertainment.0.title }}</h3>
-          <p>{{ blogs.Entertainment.0.content | truncatechars:100 }}</p>
+          <p>{{ blogs.Entertainment.0.content | truncatechars:150 }}</p>
           <div class="article-meta">
             <span class="author">{{ blogs.Entertainment.0.author }}</span>
             <span class="date">{{ blogs.Entertainment.0.updated_at | timesince }} ago</span>
@@ -179,7 +179,7 @@ AutoBlog - News, Articles, and More
         <div class="article-content">
           <div class="article-category">Finance</div>
           <h3>{{ blogs.Finance.0.title }}</h3>
-          <p>{{ blogs.Finance.0.content | truncatechars:100 }}</p>
+          <p>{{ blogs.Finance.0.content | truncatechars:150 }}</p>
           <div class="article-meta">
             <span class="author">{{ blogs.Finance.0.author }}</span>
             <span class="date">{{ blogs.Finance.0.updated_at | timesince }}</span>
@@ -187,7 +187,7 @@ AutoBlog - News, Articles, and More
         </div>
       </article>
 
-      {% for blog in blogs.Finance|slice:"0:5" %}
+      {% for blog in blogs.Finance|slice:"1:5" %}
       <div class="articles-list">
         <article class="article-item">
           <img src="{{ blog.thumbnail.url }}" alt="Finance">
