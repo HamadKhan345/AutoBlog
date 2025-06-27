@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Category
+from .models import Category , Blog
 
 # Create your views here.
 def home(request):
@@ -18,8 +18,9 @@ def categories(request):
     return render(request, 'core/categories.html')
 
 def category_posts(request, slug):
-    category = get_object_or_404(Category, slug=slug) 
-    return render(request, 'core/category_posts.html', context={'category': category})
+    category = get_object_or_404(Category, slug=slug)
+    blogs = Blog.objects.filter(category=category, status=Blog.PUBLISHED).order_by('-created_at')
+    return render(request, 'core/category_posts.html', context={'category': category, 'blogs': blogs})
 
 # Temp Urls
 def blog(request):

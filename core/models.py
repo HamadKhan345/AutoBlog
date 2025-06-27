@@ -12,10 +12,19 @@ def validate_image_size(image):
     
 def validate_image_type(image):
     valid_types = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+    valid_extensions = ['.jpg', '.jpeg', '.png', '.webp']
+    
+        # Debug: Print the actual content type
+    
     content_type = getattr(image, 'content_type', None) or getattr(image.file, 'content_type', None)
-    if content_type not in valid_types:
-      raise ValidationError("Invalid image type. Only JPEG, PNG, and WebP are allowed.")
-
+    print(f"File name: {image.name}")
+    print(f"Detected content type: {content_type}")
+    if content_type is None:
+        file_extension = os.path.splitext(image.name)[1].lower()
+        if file_extension not in valid_extensions:
+            raise ValidationError(f"Invalid image type. File extension '{file_extension}' not allowed. Only JPEG, PNG, and WebP are allowed.")
+    elif content_type not in valid_types:
+        raise ValidationError(f"Invalid image type '{content_type}'. Only JPEG, PNG, and WebP are allowed.")
 
 
 # Create your models here.
@@ -65,7 +74,7 @@ class Category(models.Model):
 # Blog Model
 class Blog(models.Model):
   title = models.CharField(max_length=200)
-  slug = models.SlugField(unique=True)
+  slug = models.SlugField(unique=True, blank=True)
   content = models.TextField()
   thumbnail = models.ImageField(upload_to='blogs/', blank=False, null=False, default='blogs/default.jpg', validators=[validate_image_size, validate_image_type])
   author = models.ForeignKey(Author, on_delete=models.SET_NULL, null=True, blank=True, related_name='blogs')
@@ -95,7 +104,7 @@ class Blog(models.Model):
 
   def get_absolute_url(self):
     from django.urls import reverse
-    return reverse('blog_detail', args=[self.slug])
+    return reverse('blog', args=[self.slug])
   
   def delete(self, *args, **kwargs):
     # Delete the thumbnail file when the blog is deleted
