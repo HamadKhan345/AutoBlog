@@ -30,14 +30,26 @@ def categories(request):
 
   return render(request, 'core/categories.html')
 
-def category_posts(request, slug):
-  category = get_object_or_404(Category, slug=slug)
+def category_posts(request, category_slug):
+  category = get_object_or_404(Category, slug=category_slug)
   blogs = Blog.objects.filter(category=category, status=Blog.PUBLISHED).order_by('-created_at')
   return render(request, 'core/category_posts.html', context={'category': category, 'blogs': blogs})
 
+
+# Blog Page
+
+def blog(request, blog_slug):
+  blog = get_object_or_404(Blog, slug=blog_slug, status=Blog.PUBLISHED)
+  blog.view_count += 1
+  blog.save()
+
+  now = datetime.now()
+  one_week_ago = now - timedelta(days=30)
+  popular = Blog.objects.filter(created_at__gte=one_week_ago, status=Blog.PUBLISHED).order_by('-view_count')[:3]
+  
+  return render(request, 'core/blog.html', context={'blog': blog, 'popular': popular}) 
+
 # Temp Urls
-def blog(request):
-  return render(request, 'core/blog.html')
 
 def authors(request):
   return render(request, 'core/authors.html')

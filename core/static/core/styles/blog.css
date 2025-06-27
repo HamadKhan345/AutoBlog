@@ -125,13 +125,6 @@
   position: relative;
 }
 
-.post-stats span:not(:last-child)::after {
-  content: '•';
-  position: absolute;
-  right: -0.6rem;
-  color: #adb5bd;
-}
-
 /* Featured Image */
 .post-featured-image {
   margin: 2rem 0;
@@ -346,6 +339,7 @@
   padding: 0.5rem;
   border-radius: 6px;
   cursor: pointer;
+  align-items: center;
 }
 
 .popular-item:hover {

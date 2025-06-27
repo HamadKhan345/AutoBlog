@@ -75,6 +75,7 @@ class Blog(models.Model):
   slug = models.SlugField(unique=True, blank=True)
   content = models.TextField()
   thumbnail = models.ImageField(upload_to='blogs/', blank=False, null=False, default='blogs/default.jpg', validators=[validate_image_size, validate_image_type])
+  thumbnail_caption = models.CharField(max_length=255, blank=True, null=True)
   author = models.ForeignKey(Author, on_delete=models.SET_NULL, null=True, blank=True, related_name='blogs')
   category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='blogs')
   created_at = models.DateTimeField(auto_now_add=True)

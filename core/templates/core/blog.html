@@ -18,11 +18,11 @@
     <div class="breadcrumb">
       <a href="{% url 'home' %}">Home</a>
       <span>/</span>
-      <a href="{% url 'categories' %}">Categories</a>
+      <a href="#">Category</a>
       <span>/</span>
-      <a href="{% url 'tech' %}">{{ blog.category|default:"Technology" }}</a>
+      <a href="#">{{ blog.category }}</a>
       <span>/</span>
-      <span>{{ blog.title|default:"Blog Post" }}</span>
+      <span>{{ blog.title }}</span>
     </div>
   </div>
 </section>
@@ -36,30 +36,32 @@
       <article class="blog-post">        <!-- Post Header -->
         <header class="post-header">
           <h1 class="post-title">
-            {{ blog.title|default:"Revolutionary AI Technology Changes Everything We Know About Modern Computing" }}
+            {{ blog.title }}
           </h1>
 
           <div class="post-meta">
             <div class="author-info">
-              <img src="https://picsum.photos/50/50?random=author" alt="Author" class="author-avatar">
+              <img src="{{ blog.author.profile_picture.url }}" alt="Author" class="author-avatar">
               <div class="author-details">
-                <span class="author-name">{{ blog.author|default:"Sarah Johnson" }}</span>
-                <span class="author-title">Tech Writer</span>
+                <span class="author-name">{{ blog.author }}</span>
+                <span class="author-title"></span>
               </div>
             </div>
             <div class="post-stats">
-              <span class="post-date">{{ blog.created_at|default:"January 15, 2025" }}</span>
-              <span class="post-read-time">{{ blog.read_time|default:"8 min read" }}</span>
-              <span class="post-views">{{ blog.views|default:"1,245" }} views</span>
+              <span class="post-date">{{ blog.created_at | timesince}} ago</span>
+              <!-- <span class="post-read-time"></span> -->
+              <span class="post-views">{{ blog.view_count }} views</span>
             </div>
           </div>
         </header>
 
         <!-- Featured Image -->
         <div class="post-featured-image">
-          <img src="{{ blog.featured_image|default:'https://picsum.photos/1200/600?random=blog' }}"
-            alt="{{ blog.title|default:'Blog Post Image' }}">
-          <div class="image-caption">{{ blog.image_caption|default:"" }}</div>
+          <img src="{{ blog.thumbnail.url }}"
+            alt="{{ blog.title }}">
+          {% if blog.thumbnail_caption != None %}
+          <div class="image-caption">{{ blog.thumbnail_caption }}</div>
+          {% endif %}
         </div>
 
         <!-- Advertisement Slot 1 (Top) -->
@@ -73,8 +75,7 @@
         <div class="post-content">
           <!-- Quill Editor Content -->
           <div id="blog-content">
-            Blog Content
-            <!-- {{ blog.content|default:"<p>This is where the blog content will be displayed. The content is rich-text formatted using Quill editor and can include various formatting options like <strong>bold text</strong>, <em>italic text</em>, lists, quotes, and more.</p><h2>Section Heading</h2><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p><blockquote>This is a sample blockquote that demonstrates how quotes will appear in the blog post.</blockquote><p>More content continues here with detailed information about the topic.</p>"|safe }} -->
+            {{blog.content}}
           </div>
         </div>
 
@@ -87,15 +88,17 @@
 
         <!-- Tags and Social Share -->
         <div class="post-footer">
+          {% if blog.tags.all %}
           <div class="post-tags">
             <h4>Tags:</h4>
+            
             <div class="tags-list">
-              {% for tag in blog.tags|default:"AI,Technology,Innovation,Future,Computing" %}
-              <span class="tag">{{ tag }}</span>
+              {% for tag in blog.tags.all %}
+              <span class="tag">{{ tag.name }}</span>
               {% endfor %}
             </div>
           </div>
-
+          {% endif %}
           <div class="social-share">
             <h4>Share this post:</h4>
             <div class="share-buttons">
@@ -130,27 +133,15 @@
       <div class="sidebar-widget">
         <h3>Popular Posts</h3>
         <div class="popular-posts">
+          {% for post in popular %}
           <article class="popular-item">
-            <img src="https://picsum.photos/80/60?random=4" alt="Popular Post">
+            <img src="{{ post.thumbnail.url }}" alt="Popular Post">
             <div class="popular-content">
-              <h4>AI Revolution in Healthcare</h4>
-              <span class="popular-views">2.5K views</span>
+              <h4>{{ post.title }}</h4>
+              <span class="popular-views">{{ post.view_count }}</span>
             </div>
           </article>
-          <article class="popular-item">
-            <img src="https://picsum.photos/80/60?random=5" alt="Popular Post">
-            <div class="popular-content">
-              <h4>Blockchain Technology Explained</h4>
-              <span class="popular-views">1.8K views</span>
-            </div>
-          </article>
-          <article class="popular-item">
-            <img src="https://picsum.photos/80/60?random=6" alt="Popular Post">
-            <div class="popular-content">
-              <h4>Cloud Computing Trends</h4>
-              <span class="popular-views">1.2K views</span>
-            </div>
-          </article>
+          {% endfor %}
         </div>
       </div>
 
