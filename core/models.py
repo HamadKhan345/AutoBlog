@@ -8,29 +8,35 @@ import os
 def validate_image_size(image):
   max_size = 5 * 1024 * 1024
   if image.size > max_size:
-      raise ValidationError(f"Image size should not exceed {max_size / (1024 * 1024)} MB")
+    raise ValidationError(f"Image size should not exceed {max_size / (1024 * 1024)} MB")
     
 def validate_image_type(image):
     valid_types = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
-    if image.content_type not in valid_types:
-        raise ValidationError("Invalid image type. Only JPEG, PNG, and WebP are allowed.")
+    content_type = getattr(image, 'content_type', None) or getattr(image.file, 'content_type', None)
+    if content_type not in valid_types:
+      raise ValidationError("Invalid image type. Only JPEG, PNG, and WebP are allowed.")
+
+
 
 # Create your models here.
+
+#Author Model
 class Author(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE)
   bio = models.TextField(blank=True, null=True)
   profile_picture = models.ImageField(upload_to='authors/', blank=False, null=False, default='authors/default.jpg', validators=[validate_image_size, validate_image_type])
 
   def __str__(self):
-    return self.user.first_name + ' ' + self.user.last_name
+    return f"{self.user.first_name} {self.user.last_name}".strip() or self.user.username
   
   def delete(self, *args, **kwargs):
-    if self.profile_picture:
+    if self.profile_picture and self.profile_picture.name != 'authors/default.jpg':
       if os.path.isfile(self.profile_picture.path):
         os.remove(self.profile_picture.path)
     super().delete(*args, **kwargs)
 
-# For Our Categories/
+
+# Category Model
 class Category(models.Model):  
   name = models.CharField(max_length=100)
   slug = models.SlugField(unique=True, blank=True)
@@ -46,7 +52,7 @@ class Category(models.Model):
     super().save(*args, **kwargs)
 
   def delete(self, *args, **kwargs):
-    if self.thumbnail:
+    if self.thumbnail and self.thumbnail.name != 'categories/default.jpg':
       if os.path.isfile(self.thumbnail.path):
         os.remove(self.thumbnail.path)
     super().delete(*args, **kwargs)
@@ -54,7 +60,9 @@ class Category(models.Model):
   def get_absolute_url(self):
     from django.urls import reverse
     return reverse('category_posts', args=[self.slug])
-  
+
+
+# Blog Model
 class Blog(models.Model):
   title = models.CharField(max_length=200)
   slug = models.SlugField(unique=True)
@@ -91,11 +99,13 @@ class Blog(models.Model):
   
   def delete(self, *args, **kwargs):
     # Delete the thumbnail file when the blog is deleted
-    if self.thumbnail:
+    if self.thumbnail and self.thumbnail.name != 'blogs/default.jpg':
       if os.path.isfile(self.thumbnail.path):
         os.remove(self.thumbnail.path)
     super().delete(*args, **kwargs)
   
+
+# Tag Model
 class Tag(models.Model):
   name = models.CharField(max_length=50, unique=True)
   slug = models.SlugField(unique=True, blank=True)
