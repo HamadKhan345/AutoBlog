@@ -13,9 +13,7 @@ def validate_image_size(image):
 def validate_image_type(image):
     valid_types = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
     valid_extensions = ['.jpg', '.jpeg', '.png', '.webp']
-    
-        # Debug: Print the actual content type
-    
+  
     content_type = getattr(image, 'content_type', None) or getattr(image.file, 'content_type', None)
     print(f"File name: {image.name}")
     print(f"Detected content type: {content_type}")
