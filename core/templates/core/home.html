@@ -51,31 +51,34 @@ AutoBlog - News, Articles, and More
   </div>
 </section>
 
-<!-- Tech Section -->
-<section class="news-section tech-section">
+<!-- Categories except Life&Music -->
+{% for category_name, category_blogs in blogs.items %}
+{% if category_name != "Trending" and category_name != "Life" and category_name != "Music" %}
+
+<section class="news-section {{ category_name|slugify}}-section">
   <div class="section-container">
     <div class="section-header">
-      <h2>Technology</h2>
+      <h2>{{ category_name }}</h2>
       <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
     </div>
     <div class="articles-grid">
       <article class="article-card featured">
         <div class="article-image">
-          <img src="{{ blogs.Tech.0.thumbnail.url }}" alt="Tech Article">
+          <img src="{{ category_blogs.0.thumbnail.url }}" alt="{{ category_name}}">
         </div>
         <div class="article-content">
-          <div class="article-category">Tech</div>
-          <h3>{{ blogs.Tech.0.title }}</h3>
-          <p>{{ blogs.Tech.0.content | truncatechars:150 }}</p>
+          <div class="article-category">{{ category_name }}</div>
+          <h3>{{ category_blogs.0.title }}</h3>
+          <p>{{ category_blogs.0.content | truncatechars:150 }}</p>
           <div class="article-meta">
-            <span class="author">{{ blogs.Tech.0.author }}</span>
-            <span class="date">{{ blogs.Tech.0.updated_at | timesince }} ago</span>
+            <span class="author">{{ category_blogs.0.author }}</span>
+            <span class="date">{{ category_blogs.0.updated_at | timesince }} ago</span>
           </div>
         </div>
       </article>
 
       <div class="articles-list">
-        {% for blog in blogs.Tech|slice:"1:5" %}
+        {% for blog in category_blogs|slice:"1:5" %}
         <article class="article-item">
           <img src="{{ blog.thumbnail.url }}" alt="Tech">
           <div class="article-content">
@@ -88,146 +91,37 @@ AutoBlog - News, Articles, and More
     </div>
   </div>
 </section>
-<!-- Politics Section -->
-<section class="news-section politics-section">
-  <div class="section-container">
-    <div class="section-header">
-      <h2>Politics</h2>
-      <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
-    </div>
-    <div class="articles-grid">
-      <article class="article-card featured">
-        <div class="article-image">
-          <img src="{{ blogs.Politics.0.thumbnail.url }}" alt="Politics Article">
-        </div>
-        <div class="article-content">
-          <div class="article-category">Politics</div>
-          <h3>{{ blogs.Politics.0.title }}</h3>
-          <p>{{ blogs.Politics.0.content | truncatechars:150 }}</p>
-          <div class="article-meta">
-            <span class="author">{{ blogs.Politics.0.author }}</span>
-            <span class="date">{{ blogs.Politics.0.updated_at | timesince }} ago</span>
-          </div>
-        </div>
-      </article>
-
-      <div class="articles-list">
-        {% for blog in blogs.Politics|slice:"1:5" %}
-        <article class="article-item">
-          <img src="{{ blog.thumbnail.url }}" alt="Politics">
-          <div class="article-content">
-            <h4>{{ blog.title }}</h4>
-            <span class="article-time">{{ blog.updated_at | timesince }} ago</span>
-          </div>
-        </article>
-        {% endfor %}
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Entertainment Section -->
-<section class="news-section entertainment-section">
-  <div class="section-container">
-    <div class="section-header">
-      <h2>Entertainment</h2>
-      <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
-    </div>
-    <div class="articles-grid">
-      <article class="article-card featured">
-        <div class="article-image">
-          <img src="{{ blogs.Entertainment.0.thumbnail.url }}" alt="Entertainment Article">
-        </div>
-        <div class="article-content">
-          <div class="article-category">Entertainment</div>
-          <h3>{{ blogs.Entertainment.0.title }}</h3>
-          <p>{{ blogs.Entertainment.0.content | truncatechars:150 }}</p>
-          <div class="article-meta">
-            <span class="author">{{ blogs.Entertainment.0.author }}</span>
-            <span class="date">{{ blogs.Entertainment.0.updated_at | timesince }} ago</span>
-          </div>
-        </div>
-      </article>
-
-      <div class="articles-list">
-        {% for blog in blogs.Entertainment|slice:"1:5" %}
-        <article class="article-item">
-          <img src="{{ blog.thumbnail.url }}" alt="Entertainment">
-          <div class="article-content">
-            <h4>{{ blog.title }}</h4>
-            <span class="article-time">{{ blog.updated_at | timesince }} ago</span>
-          </div>
-        </article>
-        {% endfor %}
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Finance Section -->
-<section class="news-section finance-section">
-  <div class="section-container">
-    <div class="section-header">
-      <h2>Finance</h2>
-      <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
-    </div>
-    <div class="articles-grid">
-      <article class="article-card featured">
-        <div class="article-image">
-          <img src="{{ blogs.Finance.0.thumbnail.url }}" alt="Finance Article">
-        </div>
-        <div class="article-content">
-          <div class="article-category">Finance</div>
-          <h3>{{ blogs.Finance.0.title }}</h3>
-          <p>{{ blogs.Finance.0.content | truncatechars:150 }}</p>
-          <div class="article-meta">
-            <span class="author">{{ blogs.Finance.0.author }}</span>
-            <span class="date">{{ blogs.Finance.0.updated_at | timesince }}</span>
-          </div>
-        </div>
-      </article>
-
-      {% for blog in blogs.Finance|slice:"1:5" %}
-      <div class="articles-list">
-        <article class="article-item">
-          <img src="{{ blog.thumbnail.url }}" alt="Finance">
-          <div class="article-content">
-            <h4>{{ blog.title }}</h4>
-            <span class="article-time">{{ blog.updated_at | timesince }}</span>
-          </div>
-        </article>
-        {% endfor %}
-      </div>
-    </div>
-  </div>
-</section>
+{% endif %}
+{% endfor %}
 
 <!-- Music & Life Sections (Combined) -->
 
 <section class="news-section lifestyle-section">
   <div class="section-container">
     <div class="dual-sections">
-      <!-- Music Section -->
+      <!-- Music&Life Section -->
+       {% for category_name, category_blogs in blogs.items %}
+       {% if category_name == "Music" or category_name == "Life" %}
       <div class="section-half">
         <div class="section-header">
-          <h2>Music</h2>
+          <h2>{{ category_name }}</h2>
           <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
         </div>
         <div class="articles-vertical">
           <article class="article-card compact">
             <div class="article-image">
-              <img src="{{ blogs.Music.0.thumbnail.url }}" alt="Music Article">           
+              <img src="{{ category_blogs.0.thumbnail.url }}" alt="Music Article">           
             </div>
             <div class="article-content">
-              <div class="article-category">Music</div>
-              <h3>{{ blogs.Music.0.title }}</h3>
+              <div class="article-category">{{ category_name }}</div>
+              <h3>{{ category_blogs.0.title }}</h3>
               <div class="article-meta">
-                <span class="date">{{ blogs.Music.0.updated_at | timesince }}</span>
+                <span class="date">{{ category_blogs.0.updated_at | timesince }}</span>
               </div>
             </div>
           </article>
 
-          {% for blog in blogs.Music|slice:"1:3" %}
+          {% for blog in category_blogs|slice:"1:3" %}
           <article class="article-item">
             <img src="{{ blog.thumbnail.url }}" alt="Music">
             <div class="article-content">
@@ -238,38 +132,8 @@ AutoBlog - News, Articles, and More
           {% endfor %}
         </div>
       </div>
-
-      <!-- Life Section -->
-      <div class="section-half">
-        <div class="section-header">
-          <h2>Life</h2>
-          <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
-        </div>
-        <div class="articles-vertical">
-          <article class="article-card compact">
-            <div class="article-image"> 
-              <img src="{{ blogs.Life.0.thumbnail.url }}" alt="Life Article">
-            </div>
-            <div class="article-content">
-              <div class="article-category">Life</div>
-              <h3>{{ blogs.Life.0.title }}</h3>
-              <div class="article-meta">
-                <span class="date">{{ blogs.Life.0.updated_at | timesince }}</span>
-              </div>
-            </div>
-          </article>
-
-          {% for blog in blogs.Life|slice:"1:3" %}
-          <article class="article-item">
-            <img src="{{ blog.thumbnail.url }}" alt="Life">
-            <div class="article-content">
-              <h4>{{ blog.title }}</h4>
-              <span class="article-time">{{ blog.updated_at | timesince }}</span>
-            </div>
-          </article>
-          {% endfor %}
-        </div>
-      </div>
+      {% endif %}
+      {% endfor %}
     </div>
   </div>
 </section>

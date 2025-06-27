@@ -4,19 +4,18 @@ from datetime import datetime, timedelta
 
 # Create your views here.
 def home(request):
-  tech = Blog.objects.filter(category__name='Tech', status=Blog.PUBLISHED).order_by('-created_at')[:5]
-  politics = Blog.objects.filter(category__name='Politics', status=Blog.PUBLISHED).order_by('-created_at')[:5]
-  entertainment = Blog.objects.filter(category__name='Entertainment', status=Blog.PUBLISHED).order_by('-created_at')[:5]
-  finance = Blog.objects.filter(category__name='Finance', status=Blog.PUBLISHED).order_by('-created_at')[:5]
-  music = Blog.objects.filter(category__name='Music', status=Blog.PUBLISHED).order_by('-created_at')[:5]
-  life = Blog.objects.filter(category__name='Life', status=Blog.PUBLISHED).order_by('-created_at')[:5]
+  blogs = {}
+  categories = Category.objects.all()
+  for category in categories:
+    blogs[category.name] = Blog.objects.filter(category=category, status=Blog.PUBLISHED).order_by('-created_at')[:5]
 
   # Trending
   now = datetime.now()
   one_week_ago = now - timedelta(days=2)
   trending_blogs = Blog.objects.filter(created_at__gte=one_week_ago, status=Blog.PUBLISHED).order_by('-view_count')[:5]
 
-  blogs = {'Trending': trending_blogs, 'Tech': tech, 'Politics': politics, 'Entertainment': entertainment, 'Finance': finance, 'Music': music, 'Life': life} 
+  blogs['Trending'] = trending_blogs
+
   return render(request, 'core/home.html', context={ 'blogs' : blogs })
 
 def contact(request):
