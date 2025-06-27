@@ -43,7 +43,7 @@
         </div>
         <div class="post-content">
           <h3 class="post-title">{{ blog.title }}</h3>
-          <p class="post-excerpt">{{ blog.content }}</p>
+          <p class="post-excerpt">{{ blog.content | truncatechars:70 }}</p>
           <div class="post-meta">
             <span class="post-author">{{ blog.author }}</span>
             <span class="post-date">{{ blog.updated_at }}</span>

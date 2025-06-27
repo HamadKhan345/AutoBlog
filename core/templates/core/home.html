@@ -18,53 +18,33 @@ AutoBlog - News, Articles, and More
       <div class="hero-main">
         <article class="featured-article">
           <div class="article-image">
-            <img src="https://picsum.photos/800/500?random=1" alt="Featured Article">
+            <img src="{{ blogs.Trending.0.thumbnail.url }}" alt="Featured Article">
             <div class="article-category">Breaking</div>
           </div>
           <div class="article-content">
-            <h2>Major Technology Breakthrough Changes Everything We Know</h2>
-            <p>Scientists have made a groundbreaking discovery that could revolutionize the way we understand artificial
-              intelligence and its applications in everyday life.</p>
+            <h2>{{ blogs.Trending.0.title }}</h2>
+            <p>{{ blogs.Trending.0.content | truncatechars:100 }}</p>
             <div class="article-meta">
-              <span class="author">By Tech Team</span>
-              <span class="date">2 hours ago</span>
+              <span class="author">{{ blogs.Trending.0.author }}</span>
+              <span class="date">{{ blogs.Trending.0.updated_at | timesince }}</span>
             </div>
           </div>
         </article>
       </div>
 
-<!-- Side Bar -->
+      <!-- Side Bar -->
       <div class="hero-sidebar">
         <h3>Trending Now</h3>
         <div class="trending-articles">
+          {% for blog in blogs.Trending|slice:"1:5" %}
           <article class="trending-item">
-            <img src="https://picsum.photos/100/80?random=2" alt="Trending">
+            <img src="{{ blog.thumbnail.url }}" alt="Trending">
             <div class="trending-content">
-              <h4>Global Markets Show Strong Recovery</h4>
-              <span class="trending-time">30 min ago</span>
+              <h4>{{ blog.title }}</h4>
+              <span class="trending-time">{{ blog.updated_at | timesince }}</span>
             </div>
           </article>
-          <article class="trending-item">
-            <img src="https://picsum.photos/100/80?random=3" alt="Trending">
-            <div class="trending-content">
-              <h4>New Entertainment Series Breaks Records</h4>
-              <span class="trending-time">1 hour ago</span>
-            </div>
-          </article>
-          <article class="trending-item">
-            <img src="https://picsum.photos/100/80?random=4" alt="Trending">
-            <div class="trending-content">
-              <h4>Political Summit Reaches Agreement</h4>
-              <span class="trending-time">2 hours ago</span>
-            </div>
-          </article>
-          <article class="trending-item">
-            <img src="https://picsum.photos/100/80?random=4" alt="Trending">
-            <div class="trending-content">
-              <h4>Political Summit Reaches Agreement</h4>
-              <span class="trending-time">2 hours ago</span>
-            </div>
-          </article>
+          {% endfor %}
         </div>
       </div>
     </div>
@@ -81,54 +61,33 @@ AutoBlog - News, Articles, and More
     <div class="articles-grid">
       <article class="article-card featured">
         <div class="article-image">
-          <img src="https://picsum.photos/600/400?random=5" alt="Tech Article">
+          <img src="{{ blogs.Tech.0.thumbnail.url }}" alt="Tech Article">
         </div>
         <div class="article-content">
           <div class="article-category">Tech</div>
-          <h3>AI Revolution: The Future of Machine Learning</h3>
-          <p>Exploring the latest developments in artificial intelligence and how they're shaping our digital future.
-          </p>
+          <h3>{{ blogs.Tech.0.title }}</h3>
+          <p>{{ blogs.Tech.0.content | truncatechars:100 }}</p>
           <div class="article-meta">
-            <span class="author">Sarah Johnson</span>
-            <span class="date">4 hours ago</span>
+            <span class="author">{{ blogs.Tech.0.author }}</span>
+            <span class="date">{{ blogs.Tech.0.updated_at | timesince }} ago</span>
           </div>
         </div>
       </article>
 
       <div class="articles-list">
+        {% for blog in blogs.Tech|slice:"1:5" %}
         <article class="article-item">
-          <img src="https://picsum.photos/120/100?random=6" alt="Tech">
+          <img src="{{ blog.thumbnail.url }}" alt="Tech">
           <div class="article-content">
-            <h4>Quantum Computing Breakthrough</h4>
-            <span class="article-time">6 hours ago</span>
+            <h4>{{ blog.title }}</h4>
+            <span class="article-time">{{ blog.updated_at | timesince }} ago</span>
           </div>
         </article>
-        <article class="article-item">
-          <img src="https://picsum.photos/120/100?random=7" alt="Tech">
-          <div class="article-content">
-            <h4>Cybersecurity Trends for 2025</h4>
-            <span class="article-time">8 hours ago</span>
-          </div>
-        </article>
-        <article class="article-item">
-          <img src="https://picsum.photos/120/100?random=8" alt="Tech">
-          <div class="article-content">
-            <h4>The Rise of Edge Computing</h4>
-            <span class="article-time">12 hours ago</span>
-          </div>
-        </article>
-        <article class="article-item">
-          <img src="https://picsum.photos/120/100?random=88" alt="Tech">
-          <div class="article-content">
-            <h4>The Rise of Edge Computing</h4>
-            <span class="article-time">12 hours ago</span>
-          </div>
-        </article>
+        {% endfor %}
       </div>
     </div>
   </div>
 </section>
-
 <!-- Politics Section -->
 <section class="news-section politics-section">
   <div class="section-container">
@@ -139,49 +98,29 @@ AutoBlog - News, Articles, and More
     <div class="articles-grid">
       <article class="article-card featured">
         <div class="article-image">
-          <img src="https://picsum.photos/600/400?random=9" alt="Politics Article">
+          <img src="{{ blogs.Politics.0.thumbnail.url }}" alt="Politics Article">
         </div>
         <div class="article-content">
           <div class="article-category">Politics</div>
-          <h3>International Summit Addresses Climate Policy</h3>
-          <p>World leaders gather to discuss comprehensive climate action plans and international cooperation
-            strategies.</p>
+          <h3>{{ blogs.Politics.0.title }}</h3>
+          <p>{{ blogs.Politics.0.content | truncatechars:100 }}</p>
           <div class="article-meta">
-            <span class="author">Michael Chen</span>
-            <span class="date">3 hours ago</span>
+            <span class="author">{{ blogs.Politics.0.author }}</span>
+            <span class="date">{{ blogs.Politics.0.updated_at | timesince }} ago</span>
           </div>
         </div>
       </article>
 
       <div class="articles-list">
+        {% for blog in blogs.Politics|slice:"1:5" %}
         <article class="article-item">
-          <img src="https://picsum.photos/120/100?random=10" alt="Politics">
+          <img src="{{ blog.thumbnail.url }}" alt="Politics">
           <div class="article-content">
-            <h4>New Economic Policies Announced</h4>
-            <span class="article-time">5 hours ago</span>
+            <h4>{{ blog.title }}</h4>
+            <span class="article-time">{{ blog.updated_at | timesince }} ago</span>
           </div>
         </article>
-        <article class="article-item">
-          <img src="https://picsum.photos/120/100?random=11" alt="Politics">
-          <div class="article-content">
-            <h4>Healthcare Reform Updates</h4>
-            <span class="article-time">7 hours ago</span>
-          </div>
-        </article>
-        <article class="article-item">
-          <img src="https://picsum.photos/120/100?random=12" alt="Politics">
-          <div class="article-content">
-            <h4>Education Budget Discussions</h4>
-            <span class="article-time">10 hours ago</span>
-          </div>
-        </article>
-        <article class="article-item">
-          <img src="https://picsum.photos/120/100?random=112" alt="Politics">
-          <div class="article-content">
-            <h4>Education Budget Discussions</h4>
-            <span class="article-time">10 hours ago</span>
-          </div>
-        </article>
+        {% endfor %}
       </div>
     </div>
   </div>
@@ -197,49 +136,29 @@ AutoBlog - News, Articles, and More
     <div class="articles-grid">
       <article class="article-card featured">
         <div class="article-image">
-          <img src="https://picsum.photos/600/400?random=13" alt="Entertainment Article">
+          <img src="{{ blogs.Entertainment.0.thumbnail.url }}" alt="Entertainment Article">
         </div>
         <div class="article-content">
           <div class="article-category">Entertainment</div>
-          <h3>Streaming Wars: New Platforms Enter the Market</h3>
-          <p>The competition heats up as new streaming services launch with exclusive content and innovative features.
-          </p>
+          <h3>{{ blogs.Entertainment.0.title }}</h3>
+          <p>{{ blogs.Entertainment.0.content | truncatechars:100 }}</p>
           <div class="article-meta">
-            <span class="author">Emma Rodriguez</span>
-            <span class="date">5 hours ago</span>
+            <span class="author">{{ blogs.Entertainment.0.author }}</span>
+            <span class="date">{{ blogs.Entertainment.0.updated_at | timesince }} ago</span>
           </div>
         </div>
       </article>
 
       <div class="articles-list">
+        {% for blog in blogs.Entertainment|slice:"1:5" %}
         <article class="article-item">
-          <img src="https://picsum.photos/120/100?random=14" alt="Entertainment">
+          <img src="{{ blog.thumbnail.url }}" alt="Entertainment">
           <div class="article-content">
-            <h4>Hollywood Awards Season Begins</h4>
-            <span class="article-time">4 hours ago</span>
+            <h4>{{ blog.title }}</h4>
+            <span class="article-time">{{ blog.updated_at | timesince }} ago</span>
           </div>
         </article>
-        <article class="article-item">
-          <img src="https://picsum.photos/120/100?random=15" alt="Entertainment">
-          <div class="article-content">
-            <h4>Gaming Industry Milestone</h4>
-            <span class="article-time">9 hours ago</span>
-          </div>
-        </article>
-        <article class="article-item">
-          <img src="https://picsum.photos/120/100?random=16" alt="Entertainment">
-          <div class="article-content">
-            <h4>Celebrity Fashion Trends</h4>
-            <span class="article-time">1 day ago</span>
-          </div>
-        </article>
-                <article class="article-item">
-          <img src="https://picsum.photos/120/100?random=166" alt="Entertainment">
-          <div class="article-content">
-            <h4>Celebrity Fashion Trends</h4>
-            <span class="article-time">1 day ago</span>
-          </div>
-        </article>
+        {% endfor %}
       </div>
     </div>
   </div>
@@ -255,55 +174,36 @@ AutoBlog - News, Articles, and More
     <div class="articles-grid">
       <article class="article-card featured">
         <div class="article-image">
-          <img src="https://picsum.photos/600/400?random=17" alt="Finance Article">
+          <img src="{{ blogs.Finance.0.thumbnail.url }}" alt="Finance Article">
         </div>
         <div class="article-content">
           <div class="article-category">Finance</div>
-          <h3>Cryptocurrency Market Shows Strong Growth</h3>
-          <p>Digital currencies continue their upward trend as institutional investors show increased interest and
-            adoption.</p>
+          <h3>{{ blogs.Finance.0.title }}</h3>
+          <p>{{ blogs.Finance.0.content | truncatechars:100 }}</p>
           <div class="article-meta">
-            <span class="author">David Park</span>
-            <span class="date">2 hours ago</span>
+            <span class="author">{{ blogs.Finance.0.author }}</span>
+            <span class="date">{{ blogs.Finance.0.updated_at | timesince }}</span>
           </div>
         </div>
       </article>
 
+      {% for blog in blogs.Finance|slice:"0:5" %}
       <div class="articles-list">
         <article class="article-item">
-          <img src="https://picsum.photos/120/100?random=18" alt="Finance">
+          <img src="{{ blog.thumbnail.url }}" alt="Finance">
           <div class="article-content">
-            <h4>Stock Market Analysis</h4>
-            <span class="article-time">3 hours ago</span>
+            <h4>{{ blog.title }}</h4>
+            <span class="article-time">{{ blog.updated_at | timesince }}</span>
           </div>
         </article>
-        <article class="article-item">
-          <img src="https://picsum.photos/120/100?random=19" alt="Finance">
-          <div class="article-content">
-            <h4>Real Estate Market Update</h4>
-            <span class="article-time">6 hours ago</span>
-          </div>
-        </article>
-        <article class="article-item">
-          <img src="https://picsum.photos/120/100?random=20" alt="Finance">
-          <div class="article-content">
-            <h4>Investment Tips for Beginners</h4>
-            <span class="article-time">1 day ago</span>
-          </div>
-        </article>
-                <article class="article-item">
-          <img src="https://picsum.photos/120/100?random=90" alt="Finance">
-          <div class="article-content">
-            <h4>Investment Tips for Beginners</h4>
-            <span class="article-time">1 day ago</span>
-          </div>
-        </article>
+        {% endfor %}
       </div>
     </div>
   </div>
 </section>
 
 <!-- Music & Life Sections (Combined) -->
+
 <section class="news-section lifestyle-section">
   <div class="section-container">
     <div class="dual-sections">
@@ -316,31 +216,26 @@ AutoBlog - News, Articles, and More
         <div class="articles-vertical">
           <article class="article-card compact">
             <div class="article-image">
-              <img src="https://picsum.photos/400/250?random=21" alt="Music Article">
+              <img src="{{ blogs.Music.0.thumbnail.url }}" alt="Music Article">           
             </div>
             <div class="article-content">
               <div class="article-category">Music</div>
-              <h3>New Album Releases Dominate Charts</h3>
+              <h3>{{ blogs.Music.0.title }}</h3>
               <div class="article-meta">
-                <span class="date">6 hours ago</span>
+                <span class="date">{{ blogs.Music.0.updated_at | timesince }}</span>
               </div>
             </div>
           </article>
-          <article class="article-item">
-            <img src="https://picsum.photos/80/60?random=22" alt="Music">
-            <div class="article-content">
-              <h4>Music Festival Season Announced</h4>
-              <span class="article-time">8 hours ago</span>
-            </div>
-          </article>
 
+          {% for blog in blogs.Music|slice:"1:3" %}
           <article class="article-item">
-            <img src="https://picsum.photos/80/60?random=23" alt="Music">
+            <img src="{{ blog.thumbnail.url }}" alt="Music">
             <div class="article-content">
-              <h4>Vinyl Records Make Comeback</h4>
-              <span class="article-time">1 day ago</span>
+              <h4>{{ blog.title }}</h4>
+              <span class="article-time"> {{ blog.updated_at | timesince }} </span>
             </div>
           </article>
+          {% endfor %}
         </div>
       </div>
 
@@ -352,33 +247,27 @@ AutoBlog - News, Articles, and More
         </div>
         <div class="articles-vertical">
           <article class="article-card compact">
-            <div class="article-image">
-              <img src="https://picsum.photos/400/250?random=24" alt="Life Article">
+            <div class="article-image"> 
+              <img src="{{ blogs.Life.0.thumbnail.url }}" alt="Life Article">
             </div>
             <div class="article-content">
               <div class="article-category">Life</div>
-              <h3>Wellness Trends for Modern Living</h3>
+              <h3>{{ blogs.Life.0.title }}</h3>
               <div class="article-meta">
-                <span class="date">4 hours ago</span>
+                <span class="date">{{ blogs.Life.0.updated_at | timesince }}</span>
               </div>
             </div>
           </article>
 
+          {% for blog in blogs.Life|slice:"1:3" %}
           <article class="article-item">
-            <img src="https://picsum.photos/80/60?random=25" alt="Life">
+            <img src="{{ blog.thumbnail.url }}" alt="Life">
             <div class="article-content">
-              <h4>Sustainable Living Tips</h4>
-              <span class="article-time">7 hours ago</span>
+              <h4>{{ blog.title }}</h4>
+              <span class="article-time">{{ blog.updated_at | timesince }}</span>
             </div>
           </article>
-
-          <article class="article-item">
-            <img src="https://picsum.photos/80/60?random=26" alt="Life">
-            <div class="article-content">
-              <h4>Work-Life Balance Strategies</h4>
-              <span class="article-time">12 hours ago</span>
-            </div>
-          </article>
+          {% endfor %}
         </div>
       </div>
     </div>
