@@ -38,6 +38,7 @@
       {% for blog in blogs %}
       <article class="post-card">
         <div class="post-image">
+          <a href="{{ blog.get_absolute_url }}">
           <img src="{{ blog.thumbnail.url }}" alt="{{ blog.title }}">
           <div class="post-category">{{ category.name }}</div>
         </div>
@@ -45,8 +46,9 @@
           <h3 class="post-title">{{ blog.title }}</h3>
           <p class="post-excerpt">{{ blog.content | truncatechars:70 }}</p>
           <div class="post-meta">
+          </a>
             <span class="post-author">{{ blog.author }}</span>
-            <span class="post-date">{{ blog.updated_at }}</span>
+            <span class="post-date">{{ blog.created_at | timesince }}</span>
             <span class="post-read-time">5 min read</span>
           </div>
         </div>

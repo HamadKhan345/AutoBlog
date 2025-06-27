@@ -41,10 +41,14 @@
 
           <div class="post-meta">
             <div class="author-info">
+              {% if blog.author != None %}
               <img src="{{ blog.author.profile_picture.url }}" alt="Author" class="author-avatar">
+              {% endif %}
               <div class="author-details">
+                {% if blog.author != None %}
                 <span class="author-name">{{ blog.author }}</span>
                 <span class="author-title"></span>
+                {% endif %}
               </div>
             </div>
             <div class="post-stats">

@@ -121,6 +121,12 @@
   color: #6c757d;
 }
 
+.post-date::after, .post-read-time::after {
+    content: '•';
+    margin-right: 0.5rem;
+    color: #adb5bd;
+}
+
 .post-stats span {
   position: relative;
 }
@@ -257,7 +263,7 @@
   font-size: 0.8rem;
   font-weight: 500;
   transition: all 0.3s ease;
-  cursor: pointer;
+  /* cursor: pointer; */
 }
 
 .tag:hover {
@@ -338,7 +344,7 @@
   transition: background-color 0.3s ease;
   padding: 0.5rem;
   border-radius: 6px;
-  cursor: pointer;
+  /* cursor: pointer; */
   align-items: center;
 }
 
@@ -412,7 +418,7 @@
   padding: 0.8rem;
   border-radius: 6px;
   font-weight: 600;
-  cursor: pointer;
+  /* cursor: pointer; */
   transition: all 0.3s ease;
 }
 

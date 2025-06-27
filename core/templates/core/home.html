@@ -18,15 +18,17 @@ AutoBlog - News, Articles, and More
       <div class="hero-main">
         <article class="featured-article">
           <div class="article-image">
-            <img src="{{ blogs.Trending.0.thumbnail.url }}" alt="Featured Article">
-            <div class="article-category">Breaking</div>
+            <a href="{{ blogs.Trending.0.get_absolute_url }}">
+              <img src="{{ blogs.Trending.0.thumbnail.url }}" alt="Featured Article">
+              <div class="article-category">Breaking</div>
           </div>
           <div class="article-content">
             <h2>{{ blogs.Trending.0.title }}</h2>
             <p>{{ blogs.Trending.0.content | truncatechars:150 }}</p>
+            </a>
             <div class="article-meta">
               <span class="author">{{ blogs.Trending.0.author }}</span>
-              <span class="date">{{ blogs.Trending.0.updated_at | timesince }}</span>
+              <span class="date">{{ blogs.Trending.0.created_at | timesince }}</span>
             </div>
           </div>
         </article>
@@ -38,16 +40,19 @@ AutoBlog - News, Articles, and More
         <div class="trending-articles">
           {% for blog in blogs.Trending|slice:"1:5" %}
           <article class="trending-item">
-            <img src="{{ blog.thumbnail.url }}" alt="Trending">
-            <div class="trending-content">
-              <h4>{{ blog.title }}</h4>
-              <span class="trending-time">{{ blog.updated_at | timesince }}</span>
-            </div>
-          </article>
-          {% endfor %}
+            <a href="{{ blog.get_absolute_url }}">
+              <img src="{{ blog.thumbnail.url }}" alt="Trending">
+              <div class="trending-content">
+                <h4>{{ blog.title }}</h4>
+                <span class="trending-time">{{ blog.created_at | timesince }}</span>
+            </a>
         </div>
+
+        </article>
+        {% endfor %}
       </div>
     </div>
+  </div>
   </div>
 </section>
 
@@ -59,20 +64,23 @@ AutoBlog - News, Articles, and More
   <div class="section-container">
     <div class="section-header">
       <h2>{{ category_name }}</h2>
-      <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+      <a href="{% url 'category_posts' category_blogs.0.category.slug %}" class="view-all">View All <i
+          class="fas fa-arrow-right"></i></a>
     </div>
     <div class="articles-grid">
       <article class="article-card featured">
         <div class="article-image">
-          <img src="{{ category_blogs.0.thumbnail.url }}" alt="{{ category_name}}">
+          <a href="{{ category_blogs.0.get_absolute_url }}">
+            <img src="{{ category_blogs.0.thumbnail.url }}" alt="{{ category_name }}">
         </div>
         <div class="article-content">
           <div class="article-category">{{ category_name }}</div>
           <h3>{{ category_blogs.0.title }}</h3>
           <p>{{ category_blogs.0.content | truncatechars:150 }}</p>
+          </a>
           <div class="article-meta">
             <span class="author">{{ category_blogs.0.author }}</span>
-            <span class="date">{{ category_blogs.0.updated_at | timesince }} ago</span>
+            <span class="date">{{ category_blogs.0.created_at | timesince }} ago</span>
           </div>
         </div>
       </article>
@@ -80,15 +88,18 @@ AutoBlog - News, Articles, and More
       <div class="articles-list">
         {% for blog in category_blogs|slice:"1:5" %}
         <article class="article-item">
-          <img src="{{ blog.thumbnail.url }}" alt="Tech">
-          <div class="article-content">
-            <h4>{{ blog.title }}</h4>
-            <span class="article-time">{{ blog.updated_at | timesince }} ago</span>
-          </div>
-        </article>
-        {% endfor %}
+          <a href="{{ blog.get_absolute_url }}">
+            <img src="{{ blog.thumbnail.url }}" alt="{{ category_name }} ">
+            <div class="article-content">
+              <h4>{{ blog.title }}</h4>
+              <span class="article-time">{{ blog.created_at | timesince }} ago</span>
+          </a>
       </div>
+
+      </article>
+      {% endfor %}
     </div>
+  </div>
   </div>
 </section>
 {% endif %}
@@ -100,41 +111,46 @@ AutoBlog - News, Articles, and More
   <div class="section-container">
     <div class="dual-sections">
       <!-- Music&Life Section -->
-       {% for category_name, category_blogs in blogs.items %}
-       {% if category_name == "Music" or category_name == "Life" %}
+      {% for category_name, category_blogs in blogs.items %}
+      {% if category_name == "Music" or category_name == "Life" %}
       <div class="section-half">
         <div class="section-header">
           <h2>{{ category_name }}</h2>
-          <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+          <a href="{% url 'category_posts' category_blogs.0.category.slug %}" class="view-all">View All <i
+              class="fas fa-arrow-right"></i></a>
         </div>
         <div class="articles-vertical">
           <article class="article-card compact">
             <div class="article-image">
-              <img src="{{ category_blogs.0.thumbnail.url }}" alt="Music Article">           
+              <a href="{{ category_blogs.0.get_absolute_url }}">
+                <img src="{{ category_blogs.0.thumbnail.url }}" alt="{{ category_name }}">
             </div>
             <div class="article-content">
               <div class="article-category">{{ category_name }}</div>
               <h3>{{ category_blogs.0.title }}</h3>
+              </a>
               <div class="article-meta">
-                <span class="date">{{ category_blogs.0.updated_at | timesince }}</span>
+                <span class="date">{{ category_blogs.0.created_at | timesince }}</span>
               </div>
             </div>
           </article>
 
           {% for blog in category_blogs|slice:"1:3" %}
           <article class="article-item">
-            <img src="{{ blog.thumbnail.url }}" alt="Music">
-            <div class="article-content">
-              <h4>{{ blog.title }}</h4>
-              <span class="article-time"> {{ blog.updated_at | timesince }} </span>
-            </div>
-          </article>
-          {% endfor %}
+            <a href="{{ blog.get_absolute_url }}">
+              <img src="{{ blog.thumbnail.url }}" alt="{{ category_name }}">
+              <div class="article-content">
+                <h4>{{ blog.title }}</h4>
+                <span class="article-time"> {{ blog.created_at | timesince }} </span>
+            </a>
         </div>
+        </article>
+        {% endfor %}
       </div>
-      {% endif %}
-      {% endfor %}
     </div>
+    {% endif %}
+    {% endfor %}
+  </div>
   </div>
 </section>
 

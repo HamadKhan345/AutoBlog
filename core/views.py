@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Category , Blog
-from datetime import datetime, timedelta
+from datetime import timedelta
+from django.utils import timezone
 
 # Create your views here.
 def home(request):
@@ -10,7 +11,7 @@ def home(request):
     blogs[category.name] = Blog.objects.filter(category=category, status=Blog.PUBLISHED).order_by('-created_at')[:5]
 
   # Trending
-  now = datetime.now()
+  now = timezone.now() 
   one_week_ago = now - timedelta(days=2)
   trending_blogs = Blog.objects.filter(created_at__gte=one_week_ago, status=Blog.PUBLISHED).order_by('-view_count')[:5]
 
@@ -43,7 +44,7 @@ def blog(request, blog_slug):
   blog.view_count += 1
   blog.save()
 
-  now = datetime.now()
+  now = timezone.now() 
   one_week_ago = now - timedelta(days=30)
   popular = Blog.objects.filter(created_at__gte=one_week_ago, status=Blog.PUBLISHED).order_by('-view_count')[:3]
   
