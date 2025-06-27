@@ -1,13 +1,25 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
+from django.core.exceptions import ValidationError
 import os
+
+# Image Validation
+def validate_image_size(image):
+  max_size = 5 * 1024 * 1024
+  if image.size > max_size:
+      raise ValidationError(f"Image size should not exceed {max_size / (1024 * 1024)} MB")
+    
+def validate_image_type(image):
+    valid_types = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+    if image.content_type not in valid_types:
+        raise ValidationError("Invalid image type. Only JPEG, PNG, and WebP are allowed.")
 
 # Create your models here.
 class Author(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE)
   bio = models.TextField(blank=True, null=True)
-  profile_picture = models.ImageField(upload_to='authors/', blank=False, null=False, default='authors/default.jpg')
+  profile_picture = models.ImageField(upload_to='authors/', blank=False, null=False, default='authors/default.jpg', validators=[validate_image_size, validate_image_type])
 
   def __str__(self):
     return self.user.first_name + ' ' + self.user.last_name
@@ -23,7 +35,7 @@ class Category(models.Model):
   name = models.CharField(max_length=100)
   slug = models.SlugField(unique=True, blank=True)
   description = models.TextField(blank=True, null=True)
-  thumbnail = models.ImageField(upload_to='categories/', blank=False, null=False, default='categories/default.jpg')
+  thumbnail = models.ImageField(upload_to='categories/', blank=False, null=False, default='categories/default.jpg', validators=[validate_image_size, validate_image_type])
 
   def __str__(self):
     return self.name
@@ -47,7 +59,7 @@ class Blog(models.Model):
   title = models.CharField(max_length=200)
   slug = models.SlugField(unique=True)
   content = models.TextField()
-  thumbnail = models.ImageField(upload_to='blogs/', blank=False, null=False, default='blogs/default.jpg')
+  thumbnail = models.ImageField(upload_to='blogs/', blank=False, null=False, default='blogs/default.jpg', validators=[validate_image_size, validate_image_type])
   author = models.ForeignKey(Author, on_delete=models.SET_NULL, null=True, blank=True, related_name='blogs')
   category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='blogs')
   created_at = models.DateTimeField(auto_now_add=True)
