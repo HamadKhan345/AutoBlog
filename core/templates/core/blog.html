@@ -139,11 +139,15 @@
         <div class="popular-posts">
           {% for post in popular %}
           <article class="popular-item">
+            <a href="{{ post.get_absolute_url }}">
             <img src="{{ post.thumbnail.url }}" alt="Popular Post">
             <div class="popular-content">
               <h4>{{ post.title }}</h4>
-              <span class="popular-views">{{ post.view_count }}</span>
+              <span class="popular-views">{{ post.view_count }} views</span>
+              <!-- <span class="popular-date">{{ post.created_at | timesince }} ago</span> -->
+              </a>
             </div>
+            
           </article>
           {% endfor %}
         </div>
