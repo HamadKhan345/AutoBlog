@@ -21,7 +21,7 @@
     <nav class="nav">
       <a href="{% url 'home' %}">Home</a>
       {% for category in categories %}
-      <a href="{% url 'category_posts' slug=category.slug %}">{{ category.name }}</a>
+      <a href="{{ category.get_absolute_url }}">{{ category.name }}</a>
       {% endfor %}
     </nav>
 
