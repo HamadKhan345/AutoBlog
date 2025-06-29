@@ -31,29 +31,10 @@
       </button>
     </div>
 
-    <!-- Posts Grid -->
-    <div class="posts-grid" id="postsGrid">
-
-      <!-- Sample Posts - Replace with dynamic content -->
-      {% for blog in blogs %}
-      <article class="post-card">
-        <div class="post-image">
-          <a href="{{ blog.get_absolute_url }}">
-          <img src="{{ blog.thumbnail.url }}" alt="{{ blog.title }}">
-          <div class="post-category">{{ category.name }}</div>
-        </div>
-        <div class="post-content">
-          <h3 class="post-title">{{ blog.title }}</h3>
-          <p class="post-excerpt">{{ blog.content | truncatechars:70 }}</p>
-          <div class="post-meta">
-          </a>
-            <span class="post-author">{{ blog.author }}</span>
-            <span class="post-date">{{ blog.created_at | timesince }}</span>
-            <span class="post-read-time">5 min read</span>
-          </div>
-        </div>
-      </article>
-      {% endfor %}
+    <!-- Posts Grid (empty, but with data-category-slug) -->
+    <div class="posts-grid" id="postsGrid" data-category-slug="{{ category.slug }}">
+      <!-- Posts will be loaded here by JS -->
+    </div>
 
     <!-- Load More Button -->
     <div class="load-more-container">

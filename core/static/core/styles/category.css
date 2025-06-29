@@ -158,8 +158,14 @@
   transition: color 0.3s ease;
 }
 
+.post-title a {
+    color: #1d1d1d; /* or your desired color */
+    text-decoration: none;
+    transition: color 0.2s;
+
+}
 .post-card:hover .post-title {
-  color: #495057;
+  color: #2d2d2d;
 }
 
 .post-excerpt {
@@ -280,8 +286,8 @@
 .politics-section .post-category { background: #dc3545; }
 .entertainment-section .post-category { background: #ff6b6b; }
 .finance-section .post-category { background: #28a745; }
-.music-section .post-category { background: #6f42c1; }
-.life-section .post-category { background: #fd7e14; }
+.music-section .post-category { background: #fd7e14; }
+.life-section .post-category { background: #6f42c1; }
 
 /* Responsive Design */
 @media (max-width: 992px) {

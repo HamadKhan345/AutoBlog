@@ -2,6 +2,8 @@ from django.shortcuts import render, get_object_or_404
 from .models import Category , Blog
 from datetime import timedelta
 from django.utils import timezone
+from django.http import JsonResponse
+from django.core.paginator import Paginator
 
 # Create your views here.
 def home(request):
@@ -31,11 +33,37 @@ def categories(request):
 
   return render(request, 'core/categories.html')
 
+# Category Posts Page
 def category_posts(request, category_slug):
   category = get_object_or_404(Category, slug=category_slug)
-  blogs = Blog.objects.filter(category=category, status=Blog.PUBLISHED).order_by('-created_at')
-  return render(request, 'core/category_posts.html', context={'category': category, 'blogs': blogs})
+  return render(request, 'core/category_posts.html', context={'category': category})
 
+# Load More Blogs via AJAX
+def category_posts_api(request, category_slug):
+    page = int(request.GET.get('page', 1))
+    per_page = 6  # Number of posts per page
+
+    category = get_object_or_404(Category, slug=category_slug)
+    blogs = Blog.objects.filter(category=category, status=Blog.PUBLISHED).order_by('-created_at')
+    paginator = Paginator(blogs, per_page)
+    page_obj = paginator.get_page(page)
+
+    posts_data = []
+    for blog in page_obj:
+        posts_data.append({
+            'title': blog.title,
+            'excerpt': blog.content[:70] + ('...' if len(blog.content) > 70 else ''),
+            'thumbnail': blog.thumbnail.url,
+            'url': blog.get_absolute_url(),
+            'author': str(blog.author),
+            'time_since': blog.created_at.strftime('%b %d, %Y'),
+            'category_name': category.name
+        })
+
+    return JsonResponse({
+        'posts': posts_data,
+        'has_more': page_obj.has_next()
+    })
 
 # Blog Page
 
