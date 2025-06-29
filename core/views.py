@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Category , Blog
+from .models import Category , Blog, Author
 from datetime import timedelta
 from django.utils import timezone
 from django.http import JsonResponse
@@ -78,7 +78,9 @@ def blog(request, blog_slug):
   
   return render(request, 'core/blog.html', context={'blog': blog, 'popular': popular}) 
 
-# Temp Urls
+
+# Authors Page
 
 def authors(request):
-  return render(request, 'core/authors.html')
+  authors = Author.objects.all()
+  return render(request, 'core/authors.html', context={'authors': authors})

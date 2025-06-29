@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Authors{% endblock %}
+
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'core/styles/authors.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- Authors Header -->
+<section class="authors-header">
+  <div class="container">
+    <h1 class="authors-title">Meet Our Authors</h1>
+    <p class="authors-description">Get to know the talented writers behind our content.</p>
+  </div>
+</section>
+
+<!-- Authors Section -->
+<section class="authors-section">
+  <div class="container">
+    <div class="authors-grid">
+      {% for author in authors %}
+      <div class="author-card">
+        <div class="author-image">
+          {% if author.profile_picture %}
+          <img src="{{ author.profile_picture.url }}" alt="{{ author.user.get_full_name|default:author.user.username }}" class="author-avatar">
+          {% else %}
+          <div class="author-avatar-placeholder">
+            <i class="fas fa-user"></i>
+          </div>
+          {% endif %}
+        </div>
+        <div class="author-info">
+          <h3 class="author-name">{{ author.user.get_full_name|default:author.user.username }}</h3>
+          {% if author.bio %}
+          <p class="author-bio">{{ author.bio }}</p>
+          {% endif %}
+          <div class="author-stats">
+            <div class="stat-item">
+              <span class="stat-number">{{ author.blogs.count }}</span>
+              <span class="stat-label">Published Blogs</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="no-authors">
+        <i class="fas fa-users"></i>
+        <h3>No Authors Found</h3>
+        <p>We're working on building our team of writers.</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% endblock %}
