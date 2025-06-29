@@ -18,9 +18,9 @@
     <div class="breadcrumb">
       <a href="{% url 'home' %}">Home</a>
       <span>/</span>
-      <a href="#">Category</a>
+      <a href="{% url 'categories' %}">Category</a>
       <span>/</span>
-      <a href="#">{{ blog.category }}</a>
+      <a href="{{ blog.category.get_absolute_url }}">{{ blog.category }}</a>
       <span>/</span>
       <span>{{ blog.title }}</span>
     </div>
