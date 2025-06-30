@@ -728,6 +728,14 @@ body {
     .admin-sidebar .logo {
         justify-content: center;
     }
+
+    .user-dropdown {
+        right: -1rem;
+        left: 1rem;
+        min-width: auto;
+        width: auto;
+        max-width: calc(100vw - 2rem);
+    }
 }
 
 @media (max-width: 480px) {
@@ -748,9 +756,10 @@ body {
     }
 
     .user-dropdown {
-        right: -1rem;
-        left: 1rem;
-        min-width: auto;
+        right: 0;
+        left: auto;
+        /* transform: translateX(calc(-100% + 3rem)); */
+        min-width: 180px;
     }
 
     .btn-view-site {

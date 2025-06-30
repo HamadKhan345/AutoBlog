@@ -8,3 +8,6 @@ def dashboard(request):
 
 def base(request):
   return render(request, 'admin_dashboard/admin_base.html')
+
+def login_view(request):
+  return render(request, 'admin_dashboard/login.html')

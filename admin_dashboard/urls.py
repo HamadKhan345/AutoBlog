@@ -8,4 +8,5 @@ urlpatterns = [
 
     #Temp Links
     path('base/', views.base, name='base'),
+    path('login/', views.login_view, name='login'),
 ]
