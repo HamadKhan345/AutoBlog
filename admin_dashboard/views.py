@@ -6,3 +6,5 @@ from django.shortcuts import render, HttpResponse
 def dashboard(request):
   return HttpResponse("Welcome to the Admin Dashboard")
 
+def base(request):
+  return render(request, 'admin_dashboard/admin_base.html')

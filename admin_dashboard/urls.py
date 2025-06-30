@@ -3,4 +3,9 @@ from admin_dashboard import views
 
 urlpatterns = [
     path('', views.dashboard, name='dashboard'),
+
+
+
+    #Temp Links
+    path('base/', views.base, name='base'),
 ]
