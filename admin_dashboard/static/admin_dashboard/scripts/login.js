@@ -13,12 +13,13 @@ document.addEventListener('DOMContentLoaded', function() {
             passwordInput.setAttribute('type', type);
             
             const icon = this.querySelector('i');
-            if (type === 'text') {
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
+            if (type === 'password') {
+              icon.classList.remove('fa-eye');
+              icon.classList.add('fa-eye-slash');
+              
             } else {
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
+              icon.classList.remove('fa-eye-slash');
+              icon.classList.add('fa-eye');
             }
         });
     }
