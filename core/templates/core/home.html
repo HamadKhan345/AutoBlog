@@ -27,8 +27,10 @@ AutoBlog - News, Articles, and More
             <p>{{ blogs.Trending.0.content | truncatechars:150 }}</p>
             </a>
             <div class="article-meta">
+              {% if blogs.Trending.0.author %}
               <span class="author">{{ blogs.Trending.0.author }}</span>
-              <span class="date">{{ blogs.Trending.0.created_at | timesince }}</span>
+              {% endif %}
+              <span class="date">{{ blogs.Trending.0.created_at | timesince }} ago</span>
             </div>
           </div>
         </article>
@@ -44,7 +46,7 @@ AutoBlog - News, Articles, and More
               <img src="{{ blog.thumbnail.url }}" alt="Trending">
               <div class="trending-content">
                 <h4>{{ blog.title }}</h4>
-                <span class="trending-time">{{ blog.created_at | timesince }}</span>
+                <span class="trending-time">{{ blog.created_at | timesince }} ago</span>
             </a>
         </div>
 
@@ -79,7 +81,9 @@ AutoBlog - News, Articles, and More
           <p>{{ category_blogs.0.content | truncatechars:150 }}</p>
           </a>
           <div class="article-meta">
+            {% if category_blogs.0.author %}
             <span class="author">{{ category_blogs.0.author }}</span>
+            {% endif %}
             <span class="date">{{ category_blogs.0.created_at | timesince }} ago</span>
           </div>
         </div>
@@ -130,7 +134,7 @@ AutoBlog - News, Articles, and More
               <h3>{{ category_blogs.0.title }}</h3>
               </a>
               <div class="article-meta">
-                <span class="date">{{ category_blogs.0.created_at | timesince }}</span>
+                <span class="date">{{ category_blogs.0.created_at | timesince }} ago</span>
               </div>
             </div>
           </article>
@@ -141,7 +145,7 @@ AutoBlog - News, Articles, and More
               <img src="{{ blog.thumbnail.url }}" alt="{{ category_name }}">
               <div class="article-content">
                 <h4>{{ blog.title }}</h4>
-                <span class="article-time"> {{ blog.created_at | timesince }} </span>
+                <span class="article-time"> {{ blog.created_at | timesince }} ago</span>
             </a>
         </div>
         </article>
