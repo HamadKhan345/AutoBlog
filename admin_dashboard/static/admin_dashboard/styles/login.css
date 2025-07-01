@@ -262,7 +262,7 @@ body {
     border: none;
     color: var(--secondary-color);
     cursor: pointer;
-    padding: 0.5rem;
+    padding: 0rem;
     border-radius: 4px;
     transition: var(--transition);
     z-index: 3;
@@ -282,7 +282,6 @@ body {
     outline: 2px solid var(--primary-color);
     outline-offset: 2px;
 }
-
 /* Form Options */
 .form-options {
     display: flex;
