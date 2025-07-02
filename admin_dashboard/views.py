@@ -56,3 +56,9 @@ def all_posts(request):
   
 
   return render(request, 'admin_dashboard/all_posts.html', context=context)
+
+
+# New Post
+
+def add_new_post(request):
+  return render(request, 'admin_dashboard/add_new_post.html')
