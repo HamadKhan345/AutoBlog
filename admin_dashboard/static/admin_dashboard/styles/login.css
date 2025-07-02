@@ -242,11 +242,9 @@ body {
 }
 
 .input-group input:focus {
-    outline: none;
+
     border-color: var(--primary-color);
     background-color: var(--white);
-    box-shadow: 0 0 0 3px rgba(33, 37, 41, 0.1);
-    transform: translateY(-1px);
 }
 
 .input-group input::placeholder {
@@ -472,13 +470,13 @@ body {
 }
 
 /* Focus Styles for Accessibility */
-.login-btn:focus,
+/* .login-btn:focus,
 .input-group input:focus,
 .checkbox-container:focus-within,
 .forgot-password:focus {
     outline: 2px solid var(--primary-color);
     outline-offset: 2px;
-}
+} */
 
 /* Responsive Design */
 @media (max-width: 768px) {

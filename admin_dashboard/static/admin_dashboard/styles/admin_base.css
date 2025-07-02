@@ -29,6 +29,7 @@ body {
     overflow-x: hidden;
 }
 
+
 .admin-wrapper {
     display: flex;
     min-height: 100vh;
@@ -775,14 +776,14 @@ body {
 }
 
 /* Focus styles for accessibility */
-.nav-link:focus,
+/* .nav-link:focus,
 .sidebar-toggle:focus,
 .mobile-menu-toggle:focus,
 .notification-btn:focus,
 .user-menu-btn:focus {
     outline: 2px solid var(--primary-color);
     outline-offset: 2px;
-}
+} */
 
 .admin-sidebar .nav-link:focus,
 .admin-sidebar .sidebar-toggle:focus {

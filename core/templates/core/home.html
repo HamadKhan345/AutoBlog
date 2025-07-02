@@ -12,6 +12,7 @@ AutoBlog - News, Articles, and More
 {% block content %}
 
 <!-- Hero Section -->
+{% if blogs.Trending %}
 <section class="hero-section">
   <div class="hero-container">
     <div class="hero-content">
@@ -57,7 +58,7 @@ AutoBlog - News, Articles, and More
   </div>
   </div>
 </section>
-
+{% endif %}
 <!-- Categories except Life&Music -->
 {% for category_name, category_blogs in blogs.items %}
 {% if category_name != "Trending" and category_name != "Life" and category_name != "Music" %}

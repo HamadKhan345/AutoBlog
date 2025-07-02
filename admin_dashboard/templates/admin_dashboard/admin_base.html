@@ -26,14 +26,14 @@
             <nav class="sidebar-nav">
                 <ul class="nav-list">
                     <li class="nav-item">
-                        <a href="#" class="nav-link active">
+                        <a href="#" {% block Dashboardactive %}class="nav-link" {% endblock %}>
                             <i class="fas fa-tachometer-alt"></i>
                             <span class="nav-text">Dashboard</span>
                         </a>
                     </li>
                     
                     <li class="nav-item has-submenu">
-                        <a href="#" class="nav-link">
+                        <a href="#" {% block Postsactive %}class="nav-link" {% endblock %}>
                             <i class="fas fa-file-alt"></i>
                             <span class="nav-text">Posts</span>
                             <i class="fas fa-chevron-down submenu-arrow"></i>
@@ -47,7 +47,7 @@
                     </li>
                     
                     <li class="nav-item has-submenu">
-                        <a href="#" class="nav-link">
+                        <a href="#" {% block Useractive %}class="nav-link" {% endblock %}>
                             <i class="fas fa-users"></i>
                             <span class="nav-text">Users</span>
                             <i class="fas fa-chevron-down submenu-arrow"></i>
@@ -83,7 +83,7 @@
                     </li> -->
                     
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="#" {% block Mediaactive %}class="nav-link" {% endblock %}>
                             <i class="fas fa-photo-video"></i>
                             <span class="nav-text">Media Library</span>
                         </a>
@@ -104,7 +104,7 @@
                     </li>
                     
                     <li class="nav-item has-submenu">
-                        <a href="#" class="nav-link">
+                        <a href="#" {% block SettingsActive %}class="nav-link" {% endblock %}>
                             <i class="fas fa-cog"></i>
                             <span class="nav-text">Settings</span>
                             <i class="fas fa-chevron-down submenu-arrow"></i>
@@ -129,23 +129,26 @@
                     <button class="mobile-menu-toggle" id="mobileMenuToggle">
                         <i class="fas fa-bars"></i>
                     </button>
+                <!-- Title of header -->
                     <h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
                 </div>
                 
+                <!-- Visit Site -->
                 <div class="header-right">
                     <div class="header-actions">
                         <a href="{% url 'home' %}" class="btn-view-site" target="_blank">
                             <i class="fas fa-external-link-alt"></i>
                             <span>View Site</span>
                         </a>
-                        
+                  
+                <!-- Notifications -->
                         <div class="notifications">
                             <button class="notification-btn">
                                 <i class="fas fa-bell"></i>
                                 <span class="notification-count">3</span>
                             </button>
                         </div>
-                        
+                 <!-- User Menu -->
                         <div class="user-menu">
                             <button class="user-menu-btn">
                                 <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23212529'/%3E%3Ctext x='20' y='26' fill='white' text-anchor='middle' font-family='Arial' font-size='16' font-weight='bold'%3EA%3C/text%3E%3C/svg%3E" alt="User Avatar" class="user-avatar">
