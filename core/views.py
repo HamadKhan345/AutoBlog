@@ -52,7 +52,7 @@ def category_posts_api(request, category_slug):
     for blog in page_obj:
         posts_data.append({
             'title': blog.title,
-            'excerpt': blog.content[:70] + ('...' if len(blog.content) > 70 else ''),
+            'excerpt': (blog.excerpt or '')[:150] + '...',
             'thumbnail': blog.thumbnail.url,
             'url': blog.get_absolute_url(),
             'author': str(blog.author),

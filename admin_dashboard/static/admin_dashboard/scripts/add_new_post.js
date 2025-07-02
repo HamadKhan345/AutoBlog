@@ -31,6 +31,23 @@ document.addEventListener('DOMContentLoaded', function() {
     let isFormDirty = false;
     let isFullscreen = false;
 
+    // Character counting for excerpt
+    const excerptInput = document.getElementById('postExcerpt');
+    const excerptCharCount = excerptInput.parentElement.querySelector('.char-count');
+
+    excerptInput.addEventListener('input', function() {
+    const length = this.value.length;
+    const maxLength = this.getAttribute('maxlength') || 150;
+    excerptCharCount.textContent = `${length}/${maxLength} characters`;
+    
+    // Add warning color when approaching limit
+    if (length > maxLength * 0.9) {
+        excerptCharCount.style.color = '#dc3545';
+    } else {
+        excerptCharCount.style.color = '';
+    }
+});
+
     // Character counting for title
     postTitle.addEventListener('input', function() {
         updateCharCount(this, 200);

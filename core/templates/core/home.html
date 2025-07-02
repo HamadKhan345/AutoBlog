@@ -25,7 +25,7 @@ AutoBlog - News, Articles, and More
           </div>
           <div class="article-content">
             <h2>{{ blogs.Trending.0.title }}</h2>
-            <p>{{ blogs.Trending.0.content | truncatechars:150 }}</p>
+            <p>{{ blogs.Trending.0.excerpt | truncatechars:150 }}</p>
             </a>
             <div class="article-meta">
               {% if blogs.Trending.0.author %}
@@ -79,7 +79,7 @@ AutoBlog - News, Articles, and More
         <div class="article-content">
           <div class="article-category">{{ category_name }}</div>
           <h3>{{ category_blogs.0.title }}</h3>
-          <p>{{ category_blogs.0.content | truncatechars:150 }}</p>
+          <p>{{ category_blogs.0.excerpt | truncatechars:150 }}</p>
           </a>
           <div class="article-meta">
             {% if category_blogs.0.author %}
