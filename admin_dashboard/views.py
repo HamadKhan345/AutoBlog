@@ -1,21 +1,41 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render
 from core.models import Blog
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-# from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login as auth_login
 
 # Create your views here.
-# @login_required
-def dashboard(request):
-  return HttpResponse("Welcome to the Admin Dashboard")
 
-def base(request):
+# Login
+def login(request):
+  if request.user.is_authenticated:
+    return render(request, 'admin_dashboard/admin_base.html') # Already Logged In
+  
+    
+  
+  error = None
+  if request.method == "POST":
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+    
+    user = authenticate(request, username=username, password=password)
+    if user is not None:
+      auth_login(request, user)
+      return render(request, 'admin_dashboard/admin_base.html') # Redirect to Dashboard
+    else:
+      error = "Invalid username or password."
+      
+  return render(request, 'admin_dashboard/login.html', {'error': error})
+  
+
+# Dashboard
+
+@ login_required
+def dashboard(request):
   return render(request, 'admin_dashboard/admin_base.html')
 
-def login(request):
-  return render(request, 'admin_dashboard/login.html')
-
-# Posts
-
+# All Posts
+@ login_required
 def all_posts(request):
   blogs = Blog.objects.all().order_by('-created_at')
   
@@ -58,7 +78,7 @@ def all_posts(request):
   return render(request, 'admin_dashboard/all_posts.html', context=context)
 
 
-# New Post
-
+# Add New Post
+@ login_required
 def add_new_post(request):
   return render(request, 'admin_dashboard/add_new_post.html')

@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (closeBtn) {
                 closeBtn.click();
             }
-        }, 5000);
+        }, 15000);
     });
     
     // Focus username field on load

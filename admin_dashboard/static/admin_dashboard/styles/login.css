@@ -123,7 +123,7 @@ body {
 }
 
 /* Messages/Alerts */
-.messages {
+.error-messages {
     margin-bottom: 1.5rem;
 }
 
@@ -170,8 +170,9 @@ body {
 
 .close-alert {
     position: absolute;
-    top: 0.5rem;
+    top: 50%;
     right: 0.5rem;
+    transform: translateY(-50%);
     background: none;
     border: none;
     font-size: 1rem;
