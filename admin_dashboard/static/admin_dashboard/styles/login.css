@@ -242,9 +242,10 @@ body {
 }
 
 .input-group input:focus {
-
+    outline: none;
     border-color: var(--primary-color);
     background-color: var(--white);
+    /* box-shadow: 0 0 0 2px rgba(33, 37, 41, 0.2);  */
 }
 
 .input-group input::placeholder {
@@ -277,8 +278,8 @@ body {
 }
 
 .password-toggle:focus {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
+    outline: none;
+    box-shadow: 0 0 0 2px var(--primary-color);
 }
 /* Form Options */
 .form-options {
@@ -396,24 +397,6 @@ body {
     transform: none;
 }
 
-.login-btn .loading-spinner {
-    display: none;
-    animation: spin 1s linear infinite;
-}
-
-.login-btn.loading .loading-spinner {
-    display: inline-block;
-}
-
-.login-btn.loading span {
-    display: none;
-}
-
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
 /* Login Footer */
 .login-footer {
     text-align: center;
@@ -441,42 +424,16 @@ body {
     color: var(--primary-color);
 }
 
-/* Error States */
-.input-group.error input {
-    border-color: var(--danger-color);
-    background-color: #fee2e2;
-}
 
-.input-group.error i {
-    color: var(--danger-color);
-}
-
-/* Loading States */
-.login-card.loading {
-    pointer-events: none;
-    opacity: 0.8;
-}
-
-/* Success Animation */
-@keyframes successPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-.login-btn.success {
-    background: linear-gradient(135deg, var(--success-color), #20c997);
-    animation: successPulse 0.6s ease;
-}
 
 /* Focus Styles for Accessibility */
-/* .login-btn:focus,
+.login-btn:focus,
 .input-group input:focus,
 .checkbox-container:focus-within,
 .forgot-password:focus {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
-} */
+    outline: none;
+    /* box-shadow: 0 0 0 2px var(--primary-color); */
+}
 
 /* Responsive Design */
 @media (max-width: 768px) {
