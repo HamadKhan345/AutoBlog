@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Search: “{{ query }}”{% endblock %}
+
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'core/styles/category.css' %}">
+<script src="{% static 'core/scripts/category.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<section class="category-header">
+    <div class="container">
+        <h1 class="category-title">Search results{% if query %} for “{{ query }}”{% endif %}</h1>
+        {% if not page_obj.object_list %}
+        <p class="category-description">No posts match your query.</p>
+        {% endif %}
+    </div>
+</section>
+
+<section class="posts-section">
+    <div class="container">
+        <div class="view-toggle">
+            <button class="view-btn active" data-view="grid"><i class="fas fa-th"></i></button>
+            <button class="view-btn" data-view="list"><i class="fas fa-list"></i></button>
+        </div>
+
+        <div id="postsGrid" class="posts-grid grid-view" data-search-query="{{ query }}">
+            {% for post in page_obj %}
+            <article class="post-card">
+                <div class="post-image">
+                    <a href="{{ post.get_absolute_url }}">
+                        <img src="{{ post.thumbnail.url }}" alt="{{ post.title }}">
+                        <div class="post-category {{post.category.name|lower}}-section">{{ post.category.name }}</div>
+                    </a>
+                </div>
+                <div class="post-content">
+                    <h3 class="post-title">
+                        <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+                    </h3>
+                    <p class="post-excerpt">{{ post.excerpt }}</p>
+                    <div class="post-meta">
+                        <span class="post-author">{{ post.author.user.get_full_name }}</span>
+                        <span class="post-date">{{ post.created_at|date:"M d, Y" }}</span>
+                        <span class="post-read-time">5 min read</span>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+        {% if page_obj.has_other_pages %}
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+            <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}">« Previous</a>
+            {% endif %}
+            <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+            <a href="?q={{ query }}&page={{ page_obj.next_page_number }}">Next »</a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+{% endblock %}

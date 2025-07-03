@@ -282,12 +282,12 @@
 }
 
 /* Category-specific colors */
-.tech-section .post-category { background: #007bff; }
-.politics-section .post-category { background: #dc3545; }
-.entertainment-section .post-category { background: #ff6b6b; }
-.finance-section .post-category { background: #28a745; }
-.music-section .post-category { background: #fd7e14; }
-.life-section .post-category { background: #6f42c1; }
+.post-category.tech-section { background: #007bff; }
+.post-category.politics-section { background: #dc3545; }
+.post-category.entertainment-section { background: #ff6b6b; }
+.post-category.finance-section { background: #28a745; }
+.post-category.music-section { background: #fd7e14; }
+.post-category.life-section { background: #6f42c1; }
 
 /* Responsive Design */
 @media (max-width: 992px) {

@@ -4,6 +4,7 @@ from datetime import timedelta
 from django.utils import timezone
 from django.http import JsonResponse
 from django.core.paginator import Paginator
+from django.db.models import Q
 
 # Create your views here.
 def home(request):
@@ -78,9 +79,30 @@ def blog(request, blog_slug):
   
   return render(request, 'core/blog.html', context={'blog': blog, 'popular': popular}) 
 
+# Search Page
+
+def search(request):
+  query = request.GET.get('q', '').strip()
+  results = Blog.objects.none()
+  if query:
+    results = Blog.objects.filter(
+        Q(title__icontains=query) |
+        Q(content__icontains=query) |
+        Q(excerpt__icontains=query),
+        status=Blog.PUBLISHED
+    ).distinct().order_by('-created_at')
+
+  paginator = Paginator(results, 10)
+  page_obj = paginator.get_page(request.GET.get('page'))
+
+  return render(request, 'core/search.html', {
+      'query': query,
+      'page_obj': page_obj,
+  })
 
 # Authors Page
 
 def authors(request):
   authors = Author.objects.all()
   return render(request, 'core/authors.html', context={'authors': authors})
+

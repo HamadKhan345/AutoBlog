@@ -11,7 +11,7 @@ urlpatterns = [
     path('api/category/<slug:category_slug>/posts/', views.category_posts_api, name='category_posts_api'), 
     path('blog/<slug:blog_slug>/', views.blog, name='blog'),
     path('authors/', views.authors, name='authors'),
-
+    path('search/', views.search, name='search'),
     
   #  Temp url
     path('blog/', views.blog, name='blog'),

@@ -26,8 +26,10 @@
     </nav>
 
     <div class="search-container">
-      <input type="text" class="search-input" placeholder="Search...">
+      <form method="get" action="{% url 'search' %}">
+      <input type="text" name='q' class="search-input" placeholder="Search..." value="{{ request.GET.q|default:'' }}">
       <i class="fas fa-search search-icon"></i>
+      </form>
     </div>
     <div class="menu-toggle">
       <i class="fas fa-bars"></i>
