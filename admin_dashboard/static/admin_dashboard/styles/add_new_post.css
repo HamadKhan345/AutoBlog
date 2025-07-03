@@ -376,6 +376,9 @@
     overflow: hidden;
     transition: border-color 0.3s ease;
     position: relative;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .editor-container:focus-within {
@@ -393,6 +396,9 @@
     height: 600px;
     background: white;
     overflow: hidden;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .ql-editor {
@@ -400,8 +406,14 @@
     line-height: 1.6;
     padding: 2rem;
     overflow-y: auto;
+    overflow-x: hidden;
     max-height: 600px;
     height: 600px;
+    word-wrap: break-word;
+    word-break: break-word;
+    white-space: pre-wrap;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .ql-editor.ql-blank::before {
@@ -425,6 +437,40 @@
     color: var(--secondary-color);
     font-size: 0.75rem;
     margin-top: 20px;
+}
+
+/* Additional Quill editor content styling */
+.ql-editor p,
+.ql-editor div,
+.ql-editor span {
+    word-wrap: break-word;
+    word-break: break-word;
+    max-width: 100%;
+    overflow-wrap: break-word;
+}
+
+.ql-editor table {
+    table-layout: fixed;
+    width: 100%;
+    max-width: 100%;
+}
+
+.ql-editor pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+.ql-editor blockquote {
+    word-wrap: break-word;
+    max-width: 100%;
+}
+
+/* Ensure no content can break out of the editor */
+.ql-editor * {
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 /* ===========================
@@ -486,10 +532,16 @@
 
 .fullscreen-editor-container .ql-editor {
     overflow-y: auto;
+    overflow-x: hidden;
     max-height: none;
     height: 100%;
     min-height: 100%;
     padding: 2rem;
+    word-wrap: break-word;
+    word-break: break-word;
+    white-space: pre-wrap;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .fullscreen-editor-container .btn-fullscreen {

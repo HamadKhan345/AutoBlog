@@ -7,7 +7,6 @@ urlpatterns = [
     path('add_new_post/', views.add_new_post, name='add_new_post'),
 
 
-
     #Temp Links
     path('base/', views.base, name='base'),
     path('login/', views.login, name='login'),
