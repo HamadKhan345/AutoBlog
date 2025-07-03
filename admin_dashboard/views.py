@@ -1,19 +1,21 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from core.models import Blog
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import logout as auth_logout
 
 # Create your views here.
 
 # Login
 def login(request):
   if request.user.is_authenticated:
+    user = request.user
     return render(request, 'admin_dashboard/admin_base.html') # Already Logged In
   
     
   
-  error = None
+  message = None
   if request.method == "POST":
     username = request.POST.get('username')
     password = request.POST.get('password')
@@ -23,10 +25,15 @@ def login(request):
       auth_login(request, user)
       return render(request, 'admin_dashboard/admin_base.html') # Redirect to Dashboard
     else:
-      error = "Invalid username or password."
+      message = "Invalid username or password."
       
-  return render(request, 'admin_dashboard/login.html', {'error': error})
+  return render(request, 'admin_dashboard/login.html', {'message': message})
   
+# Logout
+def logout(request):
+  if request.user.is_authenticated:
+    auth_logout(request)  # Log out the user
+  return redirect('login')
 
 # Dashboard
 

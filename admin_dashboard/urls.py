@@ -2,8 +2,9 @@ from django.urls import path
 from admin_dashboard import views
 
 urlpatterns = [
-    # Login
+    # Login / Logout
     path('', views.login, name='login'),
+    path('logout/', views.logout, name='logout'),
 
     # Dashboard
     path('dashboard/', views.dashboard, name='dashboard'),
