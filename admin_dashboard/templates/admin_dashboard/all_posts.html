@@ -200,6 +200,11 @@ All Posts
   <input type="hidden" name="delete_post" id="deletePostId">
 </form>
 
+<form id="bulkDeleteForm" method="post" action="{% url 'delete_post' %}" style="display:none;">
+  {% csrf_token %}
+  <input type="hidden" name="bulk_delete_ids" id="bulkDeleteIds">
+</form>
+
 {% endblock %}
 
 {% block extra_scripts %}

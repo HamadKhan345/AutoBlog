@@ -90,16 +90,21 @@ def all_posts(request):
 @login_required
 @require_POST
 def delete_post(request):
-  print("DEBUG: delete_post view called") 
-  if request.method == 'POST':
+    # Bulk delete
+    bulk_ids = request.POST.get('bulk_delete_ids')
+    if bulk_ids:
+        ids = [int(i) for i in bulk_ids.split(',') if i.isdigit()]
+        Blog.objects.filter(id__in=ids).delete()
+        return redirect('all_posts')
+    # Single delete
     post_id = request.POST.get('delete_post')
     if post_id:
-      try:
-        blog = Blog.objects.get(id=post_id)
-        blog.delete()
-      except Blog.DoesNotExist:
-        pass
-  return redirect('all_posts')
+        try:
+            blog = Blog.objects.get(id=post_id)
+            blog.delete()
+        except Blog.DoesNotExist:
+            pass
+    return redirect('all_posts')
 
 # Add New Post
 @login_required

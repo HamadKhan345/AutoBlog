@@ -74,7 +74,7 @@ class Blog(models.Model):
   title = models.CharField(max_length=200)
   slug = models.SlugField(unique=True, blank=True)
   content = models.TextField()
-  excerpt = models.CharField(max_length=255, blank=True, null=True)
+  excerpt = models.CharField(max_length=160, blank=False, null=False)
   thumbnail = models.ImageField(upload_to='blogs/', blank=False, null=False, default='blogs/default.jpg', validators=[validate_image_size, validate_image_type])
   thumbnail_caption = models.CharField(max_length=255, blank=True, null=True)
   author = models.ForeignKey(Author, on_delete=models.SET_NULL, null=True, blank=True, related_name='blogs')
