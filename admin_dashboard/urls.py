@@ -14,6 +14,9 @@ urlpatterns = [
     # Delete post
     path('posts/delete/', views.delete_post, name='delete_post'),
 
+    # Add new post
+    path('posts/add/', views.save_post, name='save_post'),
+
     
     
 ]

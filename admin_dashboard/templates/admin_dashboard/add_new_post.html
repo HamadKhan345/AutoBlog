@@ -20,227 +20,209 @@ Add New Post
 
 {% block content %}
 <div class="post-form-container">
-    <form class="add-post-form" id="addPostForm" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        
-        <!-- Form Header -->
-        <div class="form-header">
-            <div class="form-actions">
-                <a href="{% url 'all_posts' %}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i>
-                    Back to Posts
-                </a>
-                <div class="save-actions">
-                    <button type="submit" class="btn btn-primary" id="savePostBtn">
-                        <i class="fas fa-save"></i>
-                        Save Post
-                    </button>
-                </div>
-            </div>
+  <form class="add-post-form" id="addPostForm" method="POST" action="{% url 'save_post' %}"
+    enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <!-- Form Header -->
+    <div class="form-header">
+      <div class="form-actions">
+        <a href="{% url 'all_posts' %}" class="btn btn-secondary">
+          <i class="fas fa-arrow-left"></i>
+          Back to Posts
+        </a>
+        <div class="save-actions">
+          <button type="submit" class="btn btn-primary" id="savePostBtn">
+            <i class="fas fa-save"></i>
+            Save Post
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="form-content">
+      <!-- Left Column - Main Content -->
+      <div class="main-content">
+        <!-- Post Title -->
+        <div class="form-group">
+          <label for="postTitle" class="form-label">Post Title *</label>
+          <input type="text" id="postTitle" name="title" class="form-input title-input"
+            placeholder="Enter an engaging post title..." maxlength="200" required>
+          <div class="input-feedback">
+            <span class="char-count">0/200 characters</span>
+          </div>
         </div>
 
-        <!-- Main Content Area -->
-        <div class="form-content">
-            <!-- Left Column - Main Content -->
-            <div class="main-content">
-                <!-- Post Title -->
-                <div class="form-group">
-                    <label for="postTitle" class="form-label">Post Title *</label>
-                    <input type="text" 
-                           id="postTitle" 
-                           name="title" 
-                           class="form-input title-input" 
-                           placeholder="Enter an engaging post title..."
-                           required>
-                    <div class="input-feedback">
-                        <span class="char-count">0/200 characters</span>
-                    </div>
-                </div>
-
-                <!-- Post Excerpt -->
-                <div class="form-group">
-                    <label for="postExcerpt" class="form-label">Post Excerpt</label>
-                    <textarea id="postExcerpt" 
-                              name="excerpt" 
-                              class="form-textarea excerpt-input" 
-                              placeholder="Write a brief summary of your post ..."
-                              rows="3"
-                              maxlength="150"></textarea>
-                    <div class="input-feedback">
-                        <span class="char-count">0/150 characters</span>
-                        <small class="form-help">A short description that will be shown in post previews and search results</small>
-                    </div>
-                </div>
-
-
-                <!-- Post Content -->
-                <div class="form-group">
-                    <label for="postContent" class="form-label">Post Content *</label>
-                    <div class="editor-container">
-                        <!-- Fullscreen Toggle -->
-                        <button type="button" class="btn-fullscreen" id="toggleFullscreen" title="Toggle Fullscreen">
-                            <i class="fas fa-expand"></i>
-                        </button>
-                        
-                        <!-- Quill Toolbar -->
-                        <div id="toolbar">
-                            <span class="ql-formats">
-                                <select class="ql-header">
-                                    <option value="1">Heading 1</option>
-                                    <option value="2">Heading 2</option>
-                                    <option value="3">Heading 3</option>
-                                    <option selected>Normal</option>
-                                </select>
-                            </span>
-                            <span class="ql-formats">
-                                <button class="ql-bold"></button>
-                                <button class="ql-italic"></button>
-                                <button class="ql-underline"></button>
-                                <button class="ql-strike"></button>
-                            </span>
-                            <span class="ql-formats">
-                                <select class="ql-color"></select>
-                                <select class="ql-background"></select>
-                            </span>
-                            <span class="ql-formats">
-                                <button class="ql-list" value="ordered"></button>
-                                <button class="ql-list" value="bullet"></button>
-                                <button class="ql-indent" value="-1"></button>
-                                <button class="ql-indent" value="+1"></button>
-                            </span>
-                            <span class="ql-formats">
-                                <button class="ql-link"></button>
-                                <button class="ql-image"></button>
-                                <button class="ql-video"></button>
-                            </span>
-                            <span class="ql-formats">
-                                <button class="ql-blockquote"></button>
-                                <button class="ql-code-block"></button>
-                            </span>
-                            <span class="ql-formats">
-                                <button class="ql-clean"></button>
-                            </span>
-                        </div>
-                        
-                        <!-- Quill Editor -->
-                        <div id="editor" class="quill-editor"></div>
-                        
-                        <!-- Hidden textarea for form submission -->
-                        <textarea name="content" id="postContent" style="display: none;"></textarea>
-                    </div>
-                    <div class="editor-stats">
-                        <span class="word-count">0 words</span>
-                        <span class="read-time">0 min read</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Sidebar -->
-            <div class="sidebar-content">
-                <!-- Publish Settings -->
-                <div class="sidebar-card">
-                    <h3 class="card-title">
-                        <i class="fas fa-cog"></i>
-                        Publish Settings
-                    </h3>
-                    <div class="card-content">
-                        <!-- Status -->
-                        <div class="form-group">
-                            <label for="postStatus" class="form-label">Status</label>
-                            <select id="postStatus" name="status" class="form-select">
-                                <option value="draft">Draft</option>
-                                <option value="published">Published</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Categories & Tags -->
-                <div class="sidebar-card">
-                    <h3 class="card-title">
-                        <i class="fas fa-tags"></i>
-                        Categories & Tags
-                    </h3>
-                    <div class="card-content">
-                        <!-- Category -->
-                        <div class="form-group">
-                            <label for="postCategory" class="form-label">Category</label>
-                            <select id="postCategory" name="category" class="form-select">
-                                <option value="">Select Category</option>
-                                <!-- Categories will be populated from database -->
-                            </select>
-                            <button type="button" class="btn-link" id="addCategoryBtn">
-                                <i class="fas fa-plus"></i>
-                                Add New Category
-                            </button>
-                        </div>
-
-                        <!-- Tags -->
-                        <div class="form-group">
-                            <label for="postTags" class="form-label">Tags</label>
-                            <div class="tags-input-container">
-                                <input type="text" 
-                                       id="postTags" 
-                                       class="form-input tags-input" 
-                                       placeholder="Type tags and press Enter...">
-                                <div class="tags-display" id="tagsDisplay"></div>
-                            </div>
-                            <input type="hidden" name="tags" id="hiddenTags">
-                            <small class="form-help">Press Enter to add tags</small>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Featured Image -->
-                <div class="sidebar-card">
-                    <h3 class="card-title">
-                        <i class="fas fa-image"></i>
-                        Featured Image
-                    </h3>
-                    <div class="card-content">
-                        <div class="image-upload-area" id="imageUploadArea">
-                            <div class="upload-placeholder" id="uploadPlaceholder">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                                <p>Click to upload or drag and drop</p>
-                                <small>JPG, PNG, WebP up to 5MB</small>
-                            </div>
-                            <div class="image-preview" id="imagePreview" style="display: none;">
-                                <img id="previewImage" src="" alt="Preview">
-                                <div class="image-actions">
-                                    <button type="button" class="btn-remove" id="removeImage">
-                                        <i class="fas fa-trash"></i>
-                                        Remove
-                                    </button>
-                                </div>
-                            </div>
-                            <input type="file" 
-                                   id="featuredImage" 
-                                   name="thumbnail" 
-                                   accept="image/*" 
-                                   style="display: none;">
-                        </div>
-
-                        <!-- Image Caption -->
-                        <div class="form-group" id="captionGroup" style="display: none;">
-                            <label for="imageCaption" class="form-label">Image Caption</label>
-                            <input type="text" 
-                                   id="imageCaption" 
-                                   name="thumbnail_caption" 
-                                   class="form-input" 
-                                   placeholder="Enter image caption (optional)...">
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- Post Excerpt -->
+        <div class="form-group">
+          <label for="postExcerpt" class="form-label">Post Excerpt *</label>
+          <textarea id="postExcerpt" name="excerpt" class="form-textarea excerpt-input"
+            placeholder="Write a brief summary of your post ..." rows="3" maxlength="150" required></textarea>
+          <div class="input-feedback">
+            <span class="char-count">0/150 characters</span>
+            <small class="form-help">A short description that will be shown in post previews and search results</small>
+          </div>
         </div>
-    </form>
+
+
+        <!-- Post Content -->
+        <div class="form-group">
+          <label for="postContent" class="form-label">Post Content *</label>
+          <div class="editor-container">
+            <!-- Fullscreen Toggle -->
+            <button type="button" class="btn-fullscreen" id="toggleFullscreen" title="Toggle Fullscreen">
+              <i class="fas fa-expand"></i>
+            </button>
+
+            <!-- Quill Toolbar -->
+            <div id="toolbar">
+              <span class="ql-formats">
+                <select class="ql-header">
+                  <option value="1">Heading 1</option>
+                  <option value="2">Heading 2</option>
+                  <option value="3">Heading 3</option>
+                  <option selected>Normal</option>
+                </select>
+              </span>
+              <span class="ql-formats">
+                <button class="ql-bold"></button>
+                <button class="ql-italic"></button>
+                <button class="ql-underline"></button>
+                <button class="ql-strike"></button>
+              </span>
+              <span class="ql-formats">
+                <select class="ql-color"></select>
+                <select class="ql-background"></select>
+              </span>
+              <span class="ql-formats">
+                <button class="ql-list" value="ordered"></button>
+                <button class="ql-list" value="bullet"></button>
+                <button class="ql-indent" value="-1"></button>
+                <button class="ql-indent" value="+1"></button>
+              </span>
+              <span class="ql-formats">
+                <button class="ql-link"></button>
+                <button class="ql-image"></button>
+                <button class="ql-video"></button>
+              </span>
+              <span class="ql-formats">
+                <button class="ql-blockquote"></button>
+                <button class="ql-code-block"></button>
+              </span>
+              <span class="ql-formats">
+                <button class="ql-clean"></button>
+              </span>
+            </div>
+
+            <!-- Quill Editor -->
+            <div id="editor" class="quill-editor"></div>
+
+            <!-- Hidden textarea for form submission -->
+            <textarea name="content" id="postContent" style="display: none;"></textarea>
+          </div>
+          <div class="editor-stats">
+            <span class="word-count">0 words</span>
+            <span class="read-time">0 min read</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Sidebar -->
+      <div class="sidebar-content">
+        <!-- Publish Settings -->
+        <div class="sidebar-card">
+          <h3 class="card-title">
+            <i class="fas fa-cog"></i>
+            Publish Settings
+          </h3>
+          <div class="card-content">
+            <!-- Status -->
+            <div class="form-group">
+              <label for="postStatus" class="form-label">Status</label>
+              <select id="postStatus" name="status" class="form-select">
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Categories & Tags -->
+        <div class="sidebar-card">
+          <h3 class="card-title">
+            <i class="fas fa-tags"></i>
+            Categories & Tags
+          </h3>
+          <div class="card-content">
+            <!-- Category -->
+            <div class="form-group">
+              <label for="postCategory" class="form-label">Category *</label>
+              <select id="postCategory" name="category" class="form-select" required>
+                <option value="">Select Category</option>
+                {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- Tags -->
+            <div class="form-group">
+              <label for="postTags" class="form-label">Tags</label>
+              <div class="tags-input-container">
+                <input type="text" id="postTags" class="form-input tags-input"
+                  placeholder="Type tags and press Enter...">
+                <div class="tags-display" id="tagsDisplay"></div>
+              </div>
+              <input type="hidden" name="tags" id="hiddenTags">
+              <small class="form-help">Press Enter to add tags</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Featured Image -->
+        <div class="sidebar-card">
+          <h3 class="card-title">
+            <i class="fas fa-image"></i>
+            Featured Image
+          </h3>
+          <div class="card-content">
+            <div class="image-upload-area" id="imageUploadArea">
+              <div class="upload-placeholder" id="uploadPlaceholder">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Click to upload or drag and drop</p>
+                <small>JPG, PNG, WebP up to 5MB</small>
+              </div>
+              <div class="image-preview" id="imagePreview" style="display: none;">
+                <img id="previewImage" src="" alt="Preview">
+                <div class="image-actions">
+                  <button type="button" class="btn-remove" id="removeImage">
+                    <i class="fas fa-trash"></i>
+                    Remove
+                  </button>
+                </div>
+              </div>
+              <input type="file" id="featuredImage" name="thumbnail" accept="image/*" style="display: none;">
+            </div>
+
+            <!-- Image Caption -->
+            <div class="form-group" id="captionGroup" style="display: none;">
+              <label for="imageCaption" class="form-label">Image Caption</label>
+              <input type="text" id="imageCaption" name="thumbnail_caption" class="form-input"
+                placeholder="Enter image caption (optional)...">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
 </div>
 
 <!-- Success/Error Messages -->
 <div id="messageContainer"></div>
 
 <!-- Add Category Modal -->
-<div class="modal-overlay" id="categoryModal" style="display: none;">
+<!-- <div class="modal-overlay" id="categoryModal" style="display: none;">
     <div class="modal">
         <div class="modal-header">
             <h3>Add New Category</h3>
@@ -292,20 +274,20 @@ Add New Post
             <button class="btn btn-primary" id="saveCategory">Add Category</button>
         </div>
     </div>
-</div>
+</div> -->
 
 <!-- Fullscreen Overlay for Editor -->
 <div class="fullscreen-overlay" id="fullscreenOverlay" style="display: none;">
-    <div class="fullscreen-header">
-        <h3>Post Content Editor</h3>
-        <button type="button" class="btn-close-fullscreen" id="closeFullscreen">
-            <i class="fas fa-compress"></i>
-            Exit Fullscreen
-        </button>
-    </div>
-    <div class="fullscreen-editor-container">
-        <!-- Editor will be moved here in fullscreen mode -->
-    </div>
+  <div class="fullscreen-header">
+    <h3>Post Content Editor</h3>
+    <button type="button" class="btn-close-fullscreen" id="closeFullscreen">
+      <i class="fas fa-compress"></i>
+      Exit Fullscreen
+    </button>
+  </div>
+  <div class="fullscreen-editor-container">
+    <!-- Editor will be moved here in fullscreen mode -->
+  </div>
 </div>
 {% endblock %}
 

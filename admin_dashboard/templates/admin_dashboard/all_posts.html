@@ -82,13 +82,15 @@ All Posts
         </td>
         <td>
           <div class="post-image">
+            {% if blog.thumbnail %}
             <img src="{{ blog.thumbnail.url }}" alt="Post Image">
+            {% endif %}
           </div>
         </td>
         <td>
           <div class="post-title">
-            <h4>{{ blog.title }}</h4>
-            <p class="post-excerpt">{{ blog.excerpt  }}</p>
+            <h4>{{ blog.title|truncatechars:80 }}</h4>
+            <p class="post-excerpt">{{ blog.excerpt|truncatechars:50 }}</p>
           </div>
         </td>
         <td>

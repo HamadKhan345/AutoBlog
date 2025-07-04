@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.views.decorators.http import require_POST
+from core.models import Blog, Category, Tag, Author
+import json
 
 
 # Create your views here.
@@ -110,3 +112,60 @@ def delete_post(request):
 @login_required
 def add_new_post(request):
   return render(request, 'admin_dashboard/add_new_post.html')
+
+
+# Save Post
+@login_required
+def save_post(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        excerpt = request.POST.get('excerpt')
+        content = request.POST.get('content')
+        status = request.POST.get('status')
+        category_id = request.POST.get('category')
+        thumbnail = request.FILES.get('thumbnail')
+        thumbnail_caption = request.POST.get('thumbnail_caption')
+        tags_json = request.POST.get('tags', '[]')
+
+        category = None
+        if category_id:
+            try:
+                category = Category.objects.get(id=category_id)
+            except Category.DoesNotExist:
+                category = None
+
+        try:
+            author = Author.objects.get(user=request.user)
+        except Author.DoesNotExist:
+            author = None
+
+        
+
+        blog_kwargs = dict(
+            title=title,
+            excerpt=excerpt,
+            content=content,
+            status=status,
+            category=category,
+            thumbnail_caption=thumbnail_caption,
+            author=author
+        )
+        if thumbnail:
+            blog_kwargs['thumbnail'] = thumbnail  # Only set if uploaded
+
+        blog = Blog.objects.create(**blog_kwargs)
+
+        try:
+           tags_list = json.loads(tags_json)
+           if not isinstance(tags_list, list):
+             tags_list = []
+           for tag_name in tags_list:
+              tag_name = str(tag_name).strip()
+              if not tag_name or len(tag_name) > 50:
+                 continue  # Skip empty or too-long tags
+              tag, created = Tag.objects.get_or_create(name=tag_name)
+              blog.tags.add(tag)
+        except Exception:
+            pass
+
+        return redirect('all_posts')

@@ -505,7 +505,6 @@
 
 .fullscreen-editor-container {
     flex: 1;
-    padding: 2rem;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -517,6 +516,10 @@
     flex-direction: column;
     flex: 1;
     min-height: 0;
+}
+.fullscreen-editor-container .ql-editor.ql-blank::before {
+    left: 2rem;
+    right: 2rem;
 }
 
 .fullscreen-editor-container #toolbar {

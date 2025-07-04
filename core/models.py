@@ -45,9 +45,9 @@ class Author(models.Model):
 
 # Category Model
 class Category(models.Model):  
-  name = models.CharField(max_length=100)
+  name = models.CharField(max_length=100, blank=False, null=False)
   slug = models.SlugField(unique=True, blank=True)
-  description = models.TextField(blank=True, null=True)
+  description = models.TextField(blank=False, null=False)
   thumbnail = models.ImageField(upload_to='categories/', blank=False, null=False, default='categories/default.jpg', validators=[validate_image_size, validate_image_type])
 
   def __str__(self):
@@ -71,9 +71,9 @@ class Category(models.Model):
 
 # Blog Model
 class Blog(models.Model):
-  title = models.CharField(max_length=200)
-  slug = models.SlugField(unique=True, blank=True)
-  content = models.TextField()
+  title = models.CharField(max_length=200, blank=False, null=False)
+  slug = models.SlugField(unique=True, blank=True, max_length=200)
+  content = models.TextField(blank=False, null=False)
   excerpt = models.CharField(max_length=160, blank=False, null=False)
   thumbnail = models.ImageField(upload_to='blogs/', blank=False, null=False, default='blogs/default.jpg', validators=[validate_image_size, validate_image_type])
   thumbnail_caption = models.CharField(max_length=255, blank=True, null=True)
@@ -126,3 +126,4 @@ class Tag(models.Model):
 
   def __str__(self):
     return self.name
+  
