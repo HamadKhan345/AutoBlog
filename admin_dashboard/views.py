@@ -4,6 +4,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth import logout as auth_logout
+from django.views.decorators.http import require_POST
+
 
 # Create your views here.
 
@@ -37,12 +39,12 @@ def logout(request):
 
 # Dashboard
 
-@ login_required
+@login_required
 def dashboard(request):
   return render(request, 'admin_dashboard/admin_base.html')
 
 # All Posts
-@ login_required
+@login_required
 def all_posts(request):
   blogs = Blog.objects.all().order_by('-created_at')
   
@@ -84,8 +86,22 @@ def all_posts(request):
 
   return render(request, 'admin_dashboard/all_posts.html', context=context)
 
+# Delete Post
+@login_required
+@require_POST
+def delete_post(request):
+  print("DEBUG: delete_post view called") 
+  if request.method == 'POST':
+    post_id = request.POST.get('delete_post')
+    if post_id:
+      try:
+        blog = Blog.objects.get(id=post_id)
+        blog.delete()
+      except Blog.DoesNotExist:
+        pass
+  return redirect('all_posts')
 
 # Add New Post
-@ login_required
+@login_required
 def add_new_post(request):
   return render(request, 'admin_dashboard/add_new_post.html')

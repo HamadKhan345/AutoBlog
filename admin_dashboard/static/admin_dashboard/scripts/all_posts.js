@@ -9,8 +9,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Delete functionality
     const deleteButtons = document.querySelectorAll('.btn-delete');
     deleteButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            currentDeleteTarget = this.dataset.postId;
+        button.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevent default button action
+            currentDeleteTarget = this.getAttribute('data-post-id');
             showDeleteModal();
         });
     });
@@ -18,9 +19,6 @@ document.addEventListener('DOMContentLoaded', function() {
     function showDeleteModal() {
         deleteModal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
-        // Update modal text for single delete
-        const modalBody = deleteModal.querySelector('.modal-body p');
-        modalBody.textContent = 'Are you sure you want to delete this post? This action cannot be undone.';
     }
 
     function hideDeleteModal() {
@@ -39,19 +37,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    confirmDelete.addEventListener('click', function() {
-        // No simulation or reset, just close the modal for now
-        hideDeleteModal();
-    });
-
-    // Submit form on Enter in search input
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-        searchInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                this.form.submit();
+    if (confirmDelete) {
+        confirmDelete.addEventListener('click', function() {
+            if (currentDeleteTarget) {
+                document.getElementById('deletePostId').value = currentDeleteTarget;
+                document.getElementById('deleteForm').submit();
             }
+            hideDeleteModal();
         });
     }
 });
