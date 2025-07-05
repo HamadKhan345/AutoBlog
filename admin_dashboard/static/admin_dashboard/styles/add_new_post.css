@@ -617,12 +617,14 @@
    IMAGE UPLOAD
    =========================== */
 .image-upload-area {
-    position: relative;
-    min-height: 200px;
-    border: 2px dashed var(--border-color);
-    border-radius: 8px;
-    transition: all 0.3s ease;
-    cursor: pointer;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border: 2px dashed #dee2e6;
+  border-radius: 0.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s;
 }
 
 .image-upload-area:hover,
@@ -631,51 +633,49 @@
     background: var(--light-bg);
 }
 
+.image-upload-area.dragover {
+  border-color: var(--primary-color, #007bff);
+  background: #e9ecef;
+}
+
 .upload-placeholder {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 200px;
-    text-align: center;
-    color: #6c757d;
-}
-
-.upload-placeholder i {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    color: var(--primary-color);
-}
-
-.upload-placeholder p {
-    margin: 0 0 0.5rem 0;
-    font-weight: 400;
-    font-size: 0.875rem;
-    font-family: inherit;
-    color: #6c757d;
-}
-
-.upload-placeholder small {
-    color: #6c757d;
-    font-size: 0.75rem;
-    font-weight: 400;
-    font-family: inherit;
+  color: #6c757d;
+  font-size: 0.95rem;
 }
 
 .image-preview {
-    position: relative;
-    text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0.5rem;
 }
 
 .image-preview img {
     max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-    margin-bottom: 1rem;
+    max-height: 180px;
+    border-radius: 0.375rem;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
 }
 
 .image-actions {
-    text-align: center;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-remove {
+  background: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.15s;
+}
+
+.btn-remove:hover {
+  background: #b52a37;
 }
 
 /* Category image upload in modal */
@@ -978,4 +978,101 @@
 .ql-toolbar .ql-formats select {
     outline: none !important;
     box-shadow: none !important;
+}
+
+/* ===========================
+   MEDIA LIBRARY FULLSCREEN OVERLAY (for Add New Post)
+   =========================== */
+.media-library-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.media-library-modal-content {
+  background: #fff;
+  border-radius: 0.5rem;
+  max-width: 700px;
+  width: 95vw;
+  max-height: 90vh;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  display: flex;
+  flex-direction: column;
+}
+.media-library-title {
+  margin: 0;
+  padding: 1.25rem 1.5rem 0.5rem 1.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  border-bottom: 1px solid #f0f0f0;
+}
+.media-library-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  min-height: 180px;
+  max-height: 50vh;
+}
+.media-library-item {
+  border: 2px solid transparent;
+  border-radius: 0.375rem;
+  background: #f8f9fa;
+  cursor: pointer;
+  transition: border 0.15s, box-shadow 0.15s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem;
+  position: relative;
+}
+.media-library-item.selected {
+  border: 2px solid var(--primary-color, #007bff);
+  box-shadow: 0 2px 8px rgba(0,123,255,0.08);
+  background: #e9f5ff;
+}
+.media-library-item img {
+  max-width: 100px;
+  max-height: 80px;
+  border-radius: 0.25rem;
+  margin-bottom: 0.5rem;
+  object-fit: cover;
+}
+.media-library-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  background: #fff;
+}
+.close-modal-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1.25rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #888;
+  cursor: pointer;
+  z-index: 2;
+}
+.close-modal-btn:hover {
+  color: #dc3545;
+}
+@media (max-width: 600px) {
+  .media-library-modal-content {
+    max-width: 98vw;
+    padding: 0.5rem;
+  }
+  .media-library-grid {
+    padding: 0.5rem;
+    gap: 0.5rem;
+  }
 }

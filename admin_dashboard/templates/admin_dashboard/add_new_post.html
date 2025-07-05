@@ -187,24 +187,19 @@ Add New Post
             Featured Image
           </h3>
           <div class="card-content">
-            <div class="image-upload-area" id="imageUploadArea">
+            <div class="image-upload-area" id="imageUploadArea" style="cursor:pointer;">
               <div class="upload-placeholder" id="uploadPlaceholder">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <p>Click to upload or drag and drop</p>
-                <small>JPG, PNG, WebP up to 5MB</small>
+                <p><strong>Click or drag to upload a featured image</strong></p>
+                <small>Max size: 5MB. JPG, PNG, GIF, WEBP.</small>
               </div>
               <div class="image-preview" id="imagePreview" style="display: none;">
                 <img id="previewImage" src="" alt="Preview">
                 <div class="image-actions">
-                  <button type="button" class="btn-remove" id="removeImage">
-                    <i class="fas fa-trash"></i>
-                    Remove
-                  </button>
+                  <button type="button" class="btn btn-remove" id="removeImage" title="Remove Image">Remove</button>
                 </div>
               </div>
-              <input type="file" id="featuredImage" name="thumbnail" accept="image/*" style="display: none;">
+              <input type="file" id="featuredImageInput" name="thumbnail" accept="image/*" style="display:none;">
             </div>
-
             <!-- Image Caption -->
             <div class="form-group" id="captionGroup" style="display: none;">
               <label for="imageCaption" class="form-label">Image Caption</label>
@@ -221,61 +216,6 @@ Add New Post
 <!-- Success/Error Messages -->
 <div id="messageContainer"></div>
 
-<!-- Add Category Modal -->
-<!-- <div class="modal-overlay" id="categoryModal" style="display: none;">
-    <div class="modal">
-        <div class="modal-header">
-            <h3>Add New Category</h3>
-            <button class="modal-close" id="closeCategoryModal">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="modal-body">
-            <div class="form-group">
-                <label for="newCategoryName" class="form-label">Category Name</label>
-                <input type="text" 
-                       id="newCategoryName" 
-                       class="form-input" 
-                       placeholder="Enter category name...">
-            </div>
-            <div class="form-group">
-                <label for="newCategoryDescription" class="form-label">Description</label>
-                <textarea id="newCategoryDescription" 
-                          class="form-textarea" 
-                          placeholder="Enter category description..."
-                          rows="3"></textarea>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Category Thumbnail</label>
-                <div class="category-image-upload-area" id="categoryImageUploadArea">
-                    <div class="upload-placeholder" id="categoryUploadPlaceholder">
-                        <i class="fas fa-image"></i>
-                        <p>Click to upload thumbnail</p>
-                        <small>JPG, PNG up to 5MB</small>
-                    </div>
-                    <div class="image-preview" id="categoryImagePreview" style="display: none;">
-                        <img id="categoryPreviewImage" src="" alt="Category Preview">
-                        <div class="image-actions">
-                            <button type="button" class="btn-remove-small" id="removeCategoryImage">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <input type="file" 
-                           id="categoryThumbnail" 
-                           name="category_thumbnail" 
-                           accept="image/*" 
-                           style="display: none;">
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-secondary" id="cancelCategory">Cancel</button>
-            <button class="btn btn-primary" id="saveCategory">Add Category</button>
-        </div>
-    </div>
-</div> -->
-
 <!-- Fullscreen Overlay for Editor -->
 <div class="fullscreen-overlay" id="fullscreenOverlay" style="display: none;">
   <div class="fullscreen-header">
@@ -287,6 +227,18 @@ Add New Post
   </div>
   <div class="fullscreen-editor-container">
     <!-- Editor will be moved here in fullscreen mode -->
+  </div>
+</div>
+
+<!-- Media Library Modal for Quill Editor (multi-select) -->
+<div class="media-library-overlay" id="mediaLibraryOverlay" style="display:none;">
+  <div class="media-library-modal-content">
+    <button type="button" id="closeMediaLibraryModal" class="close-modal-btn">&times;</button>
+    <h3 class="media-library-title">Select Images</h3>
+    <div id="mediaLibraryGrid" class="media-library-grid"></div>
+    <div class="media-library-footer">
+      <button type="button" id="selectMediaBtn" class="btn btn-primary" disabled>Select</button>
+    </div>
   </div>
 </div>
 {% endblock %}

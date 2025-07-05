@@ -7,7 +7,11 @@ from django.contrib.auth import logout as auth_logout
 from django.views.decorators.http import require_POST
 from core.models import Blog, Category, Tag, Author
 import json
-
+from django.http import JsonResponse
+from django.core.files.storage import default_storage
+import os
+from PIL import Image
+from datetime import datetime, timedelta
 
 # Create your views here.
 
@@ -169,3 +173,200 @@ def save_post(request):
             pass
 
         return redirect('all_posts')
+
+
+# Categories
+@login_required
+def dashboard_categories(request):
+   return render(request, 'admin_dashboard/categories.html')
+
+# Media Library
+@login_required
+def media_library(request):
+    
+    search_query = request.GET.get('search', '')
+    type_filter = request.GET.get('type', '')
+    date_filter = request.GET.get('date', '')
+    page = request.GET.get('page', 1)
+
+    media_files = []
+
+    try:
+        # Get list of files in the uploads directory
+        upload_dirs = default_storage.listdir('uploads')[1]
+        now = datetime.now()
+        for file_name in upload_dirs:
+            file_path = f'uploads/{file_name}'
+            file_url = default_storage.url(file_path)
+            file_extension = os.path.splitext(file_name)[1].lower()
+
+            # Determine file type
+            if file_extension in ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp']:
+                file_type = 'image'
+            elif file_extension in ['.pdf', '.doc', '.docx', '.txt', '.rtf']:
+                file_type = 'document'
+            elif file_extension in ['.mp4', '.avi', '.mov', '.wmv', '.flv', '.mkv']:
+                file_type = 'video'
+            elif file_extension in ['.mp3', '.wav', '.ogg', '.m4a', '.aac']:
+                file_type = 'audio'
+            else:
+                file_type = 'other'
+
+            # Get file size
+            try:
+                file_size = default_storage.size(file_path)
+            except Exception:
+                file_size = 0
+            # Get file modification time
+            try:
+                file_modified_time = default_storage.get_modified_time(file_path)
+            except Exception:
+                file_modified_time = None
+            # Format file size for display
+            if file_size > 1024 * 1024:
+                file_size_display = f"{file_size / (1024 * 1024):.2f} MB"
+            elif file_size > 1024:
+                file_size_display = f"{file_size / 1024:.2f} KB"
+            else:
+                file_size_display = f"{file_size} bytes"
+            # Get image resolution if image
+            resolution = ""
+            if file_type == 'image':
+                try:
+                    with default_storage.open(file_path, 'rb') as f:
+                        img = Image.open(f)
+                        resolution = f"{img.width}x{img.height}"
+                except Exception:
+                    resolution = ""
+            # Create file info dictionary
+            file_info = {
+                'name': file_name,
+                'path': file_path,
+                'url': file_url,
+                'size': file_size,
+                'size_display': file_size_display,
+                'type': file_type,
+                'extension': file_extension,
+                'modified_time': file_modified_time,
+                'resolution': resolution,
+            }
+            media_files.append(file_info)
+        # Apply search filter
+        if search_query:
+            media_files = [file_info for file_info in media_files if search_query.lower() in file_info['name'].lower()]
+        # Apply type filter
+        if type_filter:
+            media_files = [file_info for file_info in media_files if file_info['type'] == type_filter]
+        # Apply date filter
+        if date_filter:
+            def in_date_range(file_time, filter_type):
+                if not file_time:
+                    return False
+                if filter_type == 'today':
+                    return file_time.date() == now.date()
+                elif filter_type == 'week':
+                    start_of_week = now - timedelta(days=now.weekday())
+                    return file_time.date() >= start_of_week.date()
+                elif filter_type == 'month':
+                    return file_time.year == now.year and file_time.month == now.month
+                elif filter_type == 'year':
+                    return file_time.year == now.year
+                return True
+            media_files = [file_info for file_info in media_files if in_date_range(file_info['modified_time'], date_filter)]
+        # Sort files by modification time (newest first)
+        media_files.sort(key=lambda x: x['modified_time'] if x['modified_time'] else '', reverse=True)
+        # PAGINATION: 20 files per page
+        paginator = Paginator(media_files, 20)
+        try:
+            media_files_page = paginator.page(page)
+        except PageNotAnInteger:
+            media_files_page = paginator.page(1)
+        except EmptyPage:
+            media_files_page = paginator.page(paginator.num_pages)
+    except Exception as e:
+        print(f"Error loading media files: {e}")
+        media_files_page = []
+        paginator = None
+    context = {
+        'media_files': media_files_page,
+        'search_query': search_query,
+        'type_filter': type_filter,
+        'date_filter': date_filter,
+        'total_files': paginator.count if paginator else 0,
+        'page_obj': media_files_page,
+        'paginator': paginator,
+    }
+    return render(request, 'admin_dashboard/media_library.html', context)
+
+# Upload Media (add login_required and robust error handling)
+@login_required
+def upload_media(request):
+    if request.method == 'POST':
+        media_file = request.FILES.get('media_file')
+        if not media_file:
+            return JsonResponse({'success': 0, 'error': 'No file provided.'})
+        # 5MB limit
+        if media_file.size > 5 * 1024 * 1024:
+            return JsonResponse({'success': 0, 'error': 'File size exceeds 5MB.'})
+        try:
+            path = default_storage.save(f'uploads/{media_file.name}', media_file)
+            file_url = default_storage.url(path)
+            return JsonResponse({'success': 1, 'file': {'url': file_url}})
+        except Exception as e:
+            return JsonResponse({'success': 0, 'error': str(e)})
+    return JsonResponse({'success': 0, 'error': 'Invalid request method.'})
+
+# Delete Media (robust, clear errors)
+@require_POST
+@login_required
+def delete_media(request):
+    """
+    Delete one or more media files from the uploads directory.
+    Accepts a POST parameter 'files' which is a JSON array of file names to delete.
+    """
+    try:
+        files = request.POST.get('files')
+        if not files:
+            return JsonResponse({'success': 0, 'error': 'No files specified.'})
+        file_list = json.loads(files) if isinstance(files, str) else files
+        deleted = []
+        errors = []
+        for file_name in file_list:
+            file_path = f'uploads/{file_name}'
+            try:
+                if default_storage.exists(file_path):
+                    default_storage.delete(file_path)
+                    deleted.append(file_name)
+                else:
+                    errors.append(f"{file_name} not found.")
+            except Exception as e:
+                errors.append(f"{file_name}: {str(e)}")
+        return JsonResponse({
+            'success': 1 if not errors else 0,
+            'deleted': deleted,
+            'errors': errors
+        })
+    except Exception as e:
+        return JsonResponse({'success': 0, 'error': str(e)})
+@login_required
+def media_library_list_json(request):
+    """
+    Returns a JSON list of all image files in media/uploads/ for the media library modal.
+    """
+    try:
+        files = default_storage.listdir('uploads')[1]
+        image_files = []
+        for file_name in files:
+            file_path = f'uploads/{file_name}'
+            file_url = default_storage.url(file_path)
+            file_extension = os.path.splitext(file_name)[1].lower()
+            if file_extension in ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp']:
+                image_files.append({
+                    'name': file_name,
+                    'url': file_url,
+                    'type': 'image',
+                    'extension': file_extension
+                })
+        return JsonResponse({'files': image_files})
+    except Exception as e:
+        return JsonResponse({'files': [], 'error': str(e)}, status=500)

@@ -1,0 +1,311 @@
+{% extends 'admin_dashboard/admin_base.html' %}
+
+{% load static %}
+
+<!-- Hidden form to set CSRF cookie for AJAX -->
+<form style="display:none;" method="post">{% csrf_token %}</form>
+
+{% block title %}
+Media Library
+{% endblock %}
+
+{% block page_title %}
+Media Library
+{% endblock %}
+
+{% block Mediaactive %}class="nav-link active"{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'admin_dashboard/styles/media_library.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="media-library-container">
+  <!-- Header Section -->
+  <div class="media-header">
+    <form method="get" class="filter-form" style="flex: 1 1 auto;">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" name="search" id="searchInput" placeholder="Search media files..." value="{{ search_query }}">
+      </div>
+      <select class="filter-select" name="type" id="typeFilter">
+        <option value="">All Types</option>
+        <option value="image" {% if type_filter == 'image' %}selected{% endif %}>Images</option>
+        <option value="document" {% if type_filter == 'document' %}selected{% endif %}>Documents</option>
+        <option value="video" {% if type_filter == 'video' %}selected{% endif %}>Videos</option>
+        <option value="audio" {% if type_filter == 'audio' %}selected{% endif %}>Audio</option>
+      </select>
+      <select class="filter-select" name="date" id="dateFilter">
+        <option value="">All Dates</option>
+        <option value="today" {% if date_filter == 'today' %}selected{% endif %}>Today</option>
+        <option value="week" {% if date_filter == 'week' %}selected{% endif %}>This Week</option>
+        <option value="month" {% if date_filter == 'month' %}selected{% endif %}>This Month</option>
+        <option value="year" {% if date_filter == 'year' %}selected{% endif %}>This Year</option>
+      </select>
+      <button type="button" class="btn btn-primary upload-btn" id="uploadBtn">
+        <i class="fas fa-cloud-upload-alt"></i>
+        Upload Files
+      </button>
+      <button type="submit" class="btn btn-secondary">
+        <i class="fas fa-filter"></i>
+        Filter
+      </button>
+      <div class="view-toggle">
+        <button class="view-btn active" id="gridView" type="button" title="Grid View">
+          <i class="fas fa-th"></i>
+        </button>
+        <button class="view-btn" id="listView" type="button" title="List View">
+          <i class="fas fa-list"></i>
+        </button>
+      </div>
+      <button type="button" class="btn btn-danger delete-selected-btn" id="deleteSelectedBtn" disabled style="display: none; margin-left: 1rem;">
+        <i class="fas fa-trash"></i>
+        Delete Selected (<span id="selectedCount">0</span>)
+      </button>
+    </form>
+  </div>
+
+  <!-- Upload Area -->
+  <div class="upload-area" id="uploadArea" style="display: none;">
+    <div class="upload-zone" id="uploadZone">
+      <div class="upload-icon">
+        <i class="fas fa-cloud-upload-alt"></i>
+      </div>
+      <h3>Drop files here or click to browse</h3>
+      <p>Maximum file size: 5 MB. Supported formats: JPG, PNG, GIF, PDF, MP4, MP3</p>
+      <input type="file" id="fileInput" multiple accept="image/*,video/*,audio/*,.pdf,.doc,.docx">
+    </div>
+    <div class="upload-progress" id="uploadProgress" style="display: none;">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="upload-status" id="uploadStatus"></div>
+    </div>
+  </div>
+
+  {% if media_files %}
+  <!-- Grid View Controls -->
+  <div class="grid-controls" id="gridControls">
+    <div class="select-all-container">
+      <label>
+        <input type="checkbox" id="selectAllGrid">
+        Select All
+      </label>
+    </div>
+  </div>
+
+  <!-- Media Grid -->
+  <div class="media-grid" id="mediaGrid">
+    {% for file in media_files %}
+    <div class="media-item" data-type="{{ file.type }}" data-date="{{ file.modified_time|date:'Y-m-d' }}" data-filename="{{ file.name }}">
+      <div class="media-checkbox">
+        <input type="checkbox" class="media-select" data-filename="{{ file.name }}">
+      </div>
+      <div class="media-preview">
+        {% if file.type == 'image' %}
+          <img src="{{ file.url }}" alt="{{ file.name }}" loading="lazy">
+        {% elif file.type == 'document' %}
+          <div class="file-icon"><i class="fas fa-file-pdf"></i></div>
+        {% elif file.type == 'video' %}
+          <div class="file-icon"><i class="fas fa-file-video"></i></div>
+        {% elif file.type == 'audio' %}
+          <div class="file-icon"><i class="fas fa-file-audio"></i></div>
+        {% else %}
+          <div class="file-icon"><i class="fas fa-file"></i></div>
+        {% endif %}
+      </div>
+      <div class="media-info">
+        <h4 class="media-title">{{ file.name }}</h4>
+        <p class="media-meta">
+          {{ file.modified_time|date:"M d, Y" }} • {{ file.size_display }}
+          {% if file.resolution %}• {{ file.resolution }}{% endif %}
+        </p>
+      </div>
+      <div class="media-actions">
+        <button class="btn-icon media-details-btn" title="View Details" 
+                data-name="{{ file.name }}" 
+                data-url="{{ file.url }}" 
+                data-type="{{ file.type }}" 
+                data-size="{{ file.size_display }}" 
+                data-date="{{ file.modified_time|date:'F d, Y' }}" 
+                data-resolution="{{ file.resolution|default:'' }}">
+          <i class="fas fa-eye"></i>
+        </button>
+        <button class="btn-icon copy-url-btn" title="Copy URL" data-url="{{ file.url }}">
+          <i class="fas fa-copy"></i>
+        </button>
+        <button class="btn-icon delete-btn" title="Delete" data-filename="{{ file.name }}">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- List View -->
+  <div class="media-list" id="mediaList" style="display: none;">
+    <table class="media-table">
+      <thead>
+        <tr>
+          <th class="checkbox-col">
+            <input type="checkbox" id="selectAllList">
+          </th>
+          <th class="preview-col">Preview</th>
+          <th class="name-col">Name</th>
+          <th class="type-col">Type</th>
+          <th class="size-col">Size</th>
+          <th class="date-col">Date</th>
+          <th class="actions-col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for file in media_files %}
+        <tr class="media-row" data-type="{{ file.type }}" data-date="{{ file.modified_time|date:'Y-m-d' }}" data-filename="{{ file.name }}">
+          <td>
+            <input type="checkbox" class="media-select" data-filename="{{ file.name }}">
+          </td>
+          <td>
+            <div class="list-preview">
+              {% if file.type == 'image' %}
+                <img src="{{ file.url }}" alt="{{ file.name }}" loading="lazy">
+              {% elif file.type == 'document' %}
+                <i class="fas fa-file-pdf"></i>
+              {% elif file.type == 'video' %}
+                <i class="fas fa-file-video"></i>
+              {% elif file.type == 'audio' %}
+                <i class="fas fa-file-audio"></i>
+              {% else %}
+                <i class="fas fa-file"></i>
+              {% endif %}
+            </div>
+          </td>
+          <td><span class="file-name">{{ file.name }}</span></td>
+          <td><span class="file-type">{{ file.type|title }}</span></td>
+          <td><span class="file-size">{{ file.size_display }}</span></td>
+          <td><span class="file-date">{{ file.modified_time|date:"M d, Y" }}</span></td>
+          <td>
+            <div class="list-actions">
+              <button class="btn-icon media-details-btn" title="View Details" 
+                      data-name="{{ file.name }}" 
+                      data-url="{{ file.url }}" 
+                      data-type="{{ file.type }}" 
+                      data-size="{{ file.size_display }}" 
+                      data-date="{{ file.modified_time|date:'F d, Y' }}" 
+                      data-resolution="{{ file.resolution|default:'' }}">
+                <i class="fas fa-eye"></i>
+              </button>
+              <button class="btn-icon copy-url-btn" title="Copy URL" data-url="{{ file.url }}">
+                <i class="fas fa-copy"></i>
+              </button>
+              <button class="btn-icon delete-btn" title="Delete" data-filename="{{ file.name }}">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  {% if paginator.num_pages > 1 %}
+  <div class="media-pagination">
+    <div class="pagination-info">
+      Showing {{ page_obj.start_index }}-{{ page_obj.end_index }} of {{ total_files }} files
+    </div>
+    <div class="pagination-controls">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}{% if date_filter %}&date={{ date_filter }}{% endif %}" class="btn-pagination">
+          Previous
+        </a>
+      {% else %}
+        <button class="btn-pagination" disabled>
+          Previous
+        </button>
+      {% endif %}
+      <div class="pagination-numbers">
+        {% for num in paginator.page_range %}
+          {% if page_obj.number == num %}
+            <button class="btn-page active">{{ num }}</button>
+          {% else %}
+            <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}{% if date_filter %}&date={{ date_filter }}{% endif %}" class="btn-page">{{ num }}</a>
+          {% endif %}
+        {% endfor %}
+      </div>
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}{% if date_filter %}&date={{ date_filter }}{% endif %}" class="btn-pagination">
+          Next
+        </a>
+      {% else %}
+        <button class="btn-pagination" disabled>
+          Next
+        </button>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+  {% else %}
+  <!-- Empty State (only once, not in both views) -->
+  <div class="empty-state">
+    <i class="fas fa-photo-video"></i>
+    <h3>No media files found</h3>
+    <p>Upload some files to get started</p>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Media Details Modal -->
+<div class="modal-overlay" id="mediaModal" style="display: none;">
+  <div class="modal media-modal">
+    <div class="modal-header">
+      <h3>Media Details</h3>
+      <button class="modal-close" id="closeMediaModal">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="media-detail-content">
+        <div class="media-preview-large">
+        </div>
+        <div class="media-details">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" id="closeMediaModalBtn">Close</button>
+      <button class="btn btn-danger" id="deleteFromModalBtn">Delete File</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" id="deleteModal" style="display: none;">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Confirm Delete</h3>
+      <button class="modal-close" id="closeDeleteModal">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="delete-warning">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p id="deleteMessage">Are you sure you want to delete this file? This action cannot be undone.</p>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" id="cancelDelete">Cancel</button>
+      <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- Success/Error Messages -->
+<div id="messageContainer"></div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'admin_dashboard/scripts/media_library.js' %}"></script>
+{% endblock %}
