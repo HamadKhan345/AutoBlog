@@ -1,0 +1,181 @@
+{% extends 'admin_dashboard/admin_base.html' %}
+
+{% load static %}
+
+{% block title %}
+Categories - Admin Dashboard
+{% endblock %}
+
+{% block page_title %}
+Categories
+{% endblock %}
+
+{% block Postsactive %}class="nav-link active"{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'admin_dashboard/styles/categories.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="categories-header">
+  <div class="categories-actions">
+    <button class="btn btn-primary" id="addCategoryBtn">
+      <i class="fas fa-plus"></i>
+      Add New Category
+    </button>
+    <button class="btn btn-danger bulk-delete-btn" id="bulkDeleteBtn" style="display: none;">
+      <i class="fas fa-trash"></i>
+      Delete Selected (<span id="selectedCount">0</span>)
+    </button>
+  </div>
+  <!-- Removed search form -->
+</div>
+
+<div class="categories-container">
+  <!-- Categories Grid -->
+  <div class="categories-grid" id="categoriesGrid">
+    <!-- Sample Category Cards - Replace with Django template loop -->
+{% for category in categories %}
+<div class="category-card">
+  <div class="category-header">
+    <!-- Removed checkbox selection -->
+    <div class="category-actions">
+      <button class="btn-action btn-edit" title="Edit Category" data-category-id="{{ category.id }}">
+        <i class="fas fa-edit"></i>
+      </button>
+      <button class="btn-action btn-delete" title="Delete Category" data-category-id="{{ category.id }}">
+        <i class="fas fa-trash"></i>
+      </button>
+    </div>
+  </div>
+  <div class="category-image">
+    <img src="{{ category.thumbnail.url }}" alt="{{ category.name }}">
+  </div>
+  <div class="category-content">
+    <h3 class="category-name">{{ category.name }}</h3>
+    <p class="category-description">{{ category.description }}</p>
+    <div class="category-stats">
+      <span class="post-count">
+        <i class="fas fa-file-alt"></i>
+        {{ category.blogs.count }} Posts
+      </span>
+      <span class="category-slug">
+        <a href="{{ category.get_absolute_url }}" target="_blank" style="text-decoration: none; color: inherit;">
+        <i class="fas fa-link"></i>
+        {{ category.get_absolute_url }}</a>
+      </span>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+  <!-- Empty State -->
+  <div class="empty-state" id="emptyState" style="display: none;">
+    <div class="empty-icon">
+      <i class="fas fa-tags"></i>
+    </div>
+    <h3>No Categories Found</h3>
+    <p>Create your first category to organize your blog posts.</p>
+    <button class="btn btn-primary" id="addFirstCategoryBtn">
+      <i class="fas fa-plus"></i>
+      Add Your First Category
+    </button>
+  </div>
+</div>
+
+<!-- Add/Edit Category Modal -->
+<div class="modal-overlay" id="categoryModal" style="display: none;">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">Add New Category</h3>
+      <button class="modal-close" id="closeModal">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form id="categoryForm">
+        <div class="form-group">
+          <label for="categoryName" class="form-label">Category Name *</label>
+          <input type="text" id="categoryName" name="name" class="form-input" 
+                 placeholder="Enter category name..." maxlength="100" required>
+          <div class="input-feedback">
+            <span class="char-count">0/100 characters</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="categorySlug" class="form-label">Slug</label>
+          <input type="text" id="categorySlug" name="slug" class="form-input" 
+                 placeholder="category-slug" maxlength="100">
+          <small class="form-help">URL-friendly version of the name. Leave empty to auto-generate.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="categoryDescription" class="form-label">Description *</label>
+          <textarea id="categoryDescription" name="description" class="form-textarea" 
+                    placeholder="Describe what this category is about..." rows="4" maxlength="500" required></textarea>
+          <div class="input-feedback">
+            <span class="char-count">0/500 characters</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="categoryImage" class="form-label">Category Image</label>
+          <div class="image-upload-area" id="imageUploadArea">
+            <div class="upload-placeholder" id="uploadPlaceholder">
+              <i class="fas fa-image"></i>
+              <p><strong>Click or drag to upload category image</strong></p>
+              <small>Max size: 5MB. JPG, PNG, GIF, WEBP.</small>
+            </div>
+            <div class="image-preview" id="imagePreview" style="display: none;">
+              <img id="previewImage" src="" alt="Preview">
+              <div class="image-actions">
+                <button type="button" class="btn btn-remove" id="removeImage">Remove</button>
+              </div>
+            </div>
+          </div>
+          <input type="file" id="categoryImage" name="thumbnail" accept="image/*" style="display:none;">
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+      <button type="button" class="btn btn-primary" id="saveCategoryBtn">
+        <i class="fas fa-save"></i>
+        Save Category
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" id="deleteModal" style="display: none;">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Confirm Delete</h3>
+      <button class="modal-close" id="closeDeleteModal">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p>Are you sure you want to delete this category? This action cannot be undone.</p>
+      <div class="warning-note">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span>Posts in this category will be moved to "Uncategorized".</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" id="cancelDelete">Cancel</button>
+      <button class="btn btn-danger" id="confirmDelete">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- Success/Error Messages -->
+<div id="messageContainer"></div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'admin_dashboard/scripts/categories.js' %}"></script>
+{% endblock %}

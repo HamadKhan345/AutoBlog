@@ -19,7 +19,7 @@ from datetime import datetime, timedelta
 def login(request):
   if request.user.is_authenticated:
     user = request.user
-    return render(request, 'admin_dashboard/admin_base.html') # Already Logged In
+    return redirect('dashboard') # Already Logged In
   
     
   
@@ -31,7 +31,7 @@ def login(request):
     user = authenticate(request, username=username, password=password)
     if user is not None:
       auth_login(request, user)
-      return render(request, 'admin_dashboard/admin_base.html') # Redirect to Dashboard
+      return redirect('dashboard') # Redirect to Dashboard
     else:
       message = "Invalid username or password."
       
@@ -390,3 +390,13 @@ def media_library_list_json(request):
         })
     except Exception as e:
         return JsonResponse({'files': [], 'error': str(e)}, status=500)
+    
+
+
+# Account Settings
+# @login_required
+# def account_settings(request):
+
+
+# @login_required
+# def update_settings(request):

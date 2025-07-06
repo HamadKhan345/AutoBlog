@@ -92,7 +92,12 @@ document.addEventListener('DOMContentLoaded', function () {
     fullscreenOverlay.style.display = 'flex';
     toggleFullscreenBtn.innerHTML = '<i class="fas fa-compress"></i>';
     isFullscreen = true;
-    setTimeout(() => { quill.resize(); }, 100);
+    // Removed quill.resize(); as it does not exist in Quill API
+    // Optionally, force a redraw by blurring and focusing the editor
+    setTimeout(() => {
+      quill.root.blur();
+      quill.root.focus();
+    }, 100);
   }
   function exitFullscreen() {
     const editorContainer = document.querySelector('.editor-container');
@@ -101,7 +106,12 @@ document.addEventListener('DOMContentLoaded', function () {
     fullscreenOverlay.style.display = 'none';
     toggleFullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
     isFullscreen = false;
-    setTimeout(() => { quill.resize(); }, 100);
+    // Removed quill.resize(); as it does not exist in Quill API
+    // Optionally, force a redraw by blurring and focusing the editor
+    setTimeout(() => {
+      quill.root.blur();
+      quill.root.focus();
+    }, 100);
   }
 
   // --- Tags functionality ---
