@@ -316,7 +316,7 @@ def upload_media(request):
             return JsonResponse({'success': 0, 'error': str(e)})
     return JsonResponse({'success': 0, 'error': 'Invalid request method.'})
 
-# Delete Media (robust, clear errors)
+# Delete Media
 @require_POST
 @login_required
 def delete_media(request):
@@ -348,11 +348,13 @@ def delete_media(request):
         })
     except Exception as e:
         return JsonResponse({'success': 0, 'error': str(e)})
+    
+# Media Library List JSON For Quill etc.
 @login_required
 def media_library_list_json(request):
     """
     Returns a paginated JSON list of image files in media/uploads/ for the media library modal.
-    Supports ?search= and ?page= query params.
+
     """
     try:
         search_query = request.GET.get('search', '').strip().lower()

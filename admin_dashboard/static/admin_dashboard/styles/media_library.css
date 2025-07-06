@@ -656,7 +656,7 @@
   max-height: 90vh;
   overflow: hidden;
   box-shadow: var(--ml-shadow-lg);
-  width: 100%;
+  /* width: 100%; */
 }
 
 .media-modal {
