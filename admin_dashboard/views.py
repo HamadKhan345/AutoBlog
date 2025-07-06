@@ -351,22 +351,40 @@ def delete_media(request):
 @login_required
 def media_library_list_json(request):
     """
-    Returns a JSON list of all image files in media/uploads/ for the media library modal.
+    Returns a paginated JSON list of image files in media/uploads/ for the media library modal.
+    Supports ?search= and ?page= query params.
     """
     try:
+        search_query = request.GET.get('search', '').strip().lower()
+        page = int(request.GET.get('page', 1))
         files = default_storage.listdir('uploads')[1]
         image_files = []
         for file_name in files:
-            file_path = f'uploads/{file_name}'
-            file_url = default_storage.url(file_path)
             file_extension = os.path.splitext(file_name)[1].lower()
             if file_extension in ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp']:
+                if search_query and search_query not in file_name.lower():
+                    continue
+                file_path = f'uploads/{file_name}'
+                file_url = default_storage.url(file_path)
                 image_files.append({
                     'name': file_name,
                     'url': file_url,
                     'type': 'image',
                     'extension': file_extension
                 })
-        return JsonResponse({'files': image_files})
+        # Sort by name (or by date if you prefer)
+        image_files.sort(key=lambda x: x['name'])
+        # Pagination
+        paginator = Paginator(image_files, 20)
+        try:
+            images_page = paginator.page(page)
+        except (PageNotAnInteger, EmptyPage):
+            images_page = paginator.page(1)
+        return JsonResponse({
+            'files': list(images_page),
+            'page': images_page.number,
+            'num_pages': paginator.num_pages,
+            'total': paginator.count,
+        })
     except Exception as e:
         return JsonResponse({'files': [], 'error': str(e)}, status=500)

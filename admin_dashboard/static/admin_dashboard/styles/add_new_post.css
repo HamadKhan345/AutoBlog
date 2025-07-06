@@ -1032,6 +1032,13 @@
   padding: 0.5rem;
   position: relative;
 }
+.media-filename {
+  font-size: 12px;
+  text-align: center;
+  margin-top: 4px;
+  color: #666;
+  word-break: break-all;
+}
 .media-library-item.selected {
   border: 2px solid var(--primary-color, #007bff);
   box-shadow: 0 2px 8px rgba(0,123,255,0.08);

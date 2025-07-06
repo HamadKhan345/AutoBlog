@@ -26,7 +26,8 @@ Media Library
     <form method="get" class="filter-form" style="flex: 1 1 auto;">
       <div class="search-box">
         <i class="fas fa-search"></i>
-        <input type="text" name="search" id="searchInput" placeholder="Search media files..." value="{{ search_query }}">
+        <input type="text" name="search" id="searchInput" placeholder="Search media files..."
+          value="{{ search_query }}">
       </div>
       <select class="filter-select" name="type" id="typeFilter">
         <option value="">All Types</option>
@@ -42,14 +43,15 @@ Media Library
         <option value="month" {% if date_filter == 'month' %}selected{% endif %}>This Month</option>
         <option value="year" {% if date_filter == 'year' %}selected{% endif %}>This Year</option>
       </select>
-      <button type="button" class="btn btn-primary upload-btn" id="uploadBtn">
-        <i class="fas fa-cloud-upload-alt"></i>
-        Upload Files
-      </button>
       <button type="submit" class="btn btn-secondary">
         <i class="fas fa-filter"></i>
         Filter
       </button>
+      <button type="button" class="btn btn-primary upload-btn" id="uploadBtn">
+        <i class="fas fa-cloud-upload-alt"></i>
+        Upload Files
+      </button>
+
       <div class="view-toggle">
         <button class="view-btn active" id="gridView" type="button" title="Grid View">
           <i class="fas fa-th"></i>
@@ -58,7 +60,8 @@ Media Library
           <i class="fas fa-list"></i>
         </button>
       </div>
-      <button type="button" class="btn btn-danger delete-selected-btn" id="deleteSelectedBtn" disabled style="display: none; margin-left: 1rem;">
+      <button type="button" class="btn btn-danger delete-selected-btn" id="deleteSelectedBtn" disabled
+        style="display: none; margin-left: 1rem;">
         <i class="fas fa-trash"></i>
         Delete Selected (<span id="selectedCount">0</span>)
       </button>
@@ -97,21 +100,22 @@ Media Library
   <!-- Media Grid -->
   <div class="media-grid" id="mediaGrid">
     {% for file in media_files %}
-    <div class="media-item" data-type="{{ file.type }}" data-date="{{ file.modified_time|date:'Y-m-d' }}" data-filename="{{ file.name }}">
+    <div class="media-item" data-type="{{ file.type }}" data-date="{{ file.modified_time|date:'Y-m-d' }}"
+      data-filename="{{ file.name }}">
       <div class="media-checkbox">
         <input type="checkbox" class="media-select" data-filename="{{ file.name }}">
       </div>
       <div class="media-preview">
         {% if file.type == 'image' %}
-          <img src="{{ file.url }}" alt="{{ file.name }}" loading="lazy">
+        <img src="{{ file.url }}" alt="{{ file.name }}" loading="lazy">
         {% elif file.type == 'document' %}
-          <div class="file-icon"><i class="fas fa-file-pdf"></i></div>
+        <div class="file-icon"><i class="fas fa-file-pdf"></i></div>
         {% elif file.type == 'video' %}
-          <div class="file-icon"><i class="fas fa-file-video"></i></div>
+        <div class="file-icon"><i class="fas fa-file-video"></i></div>
         {% elif file.type == 'audio' %}
-          <div class="file-icon"><i class="fas fa-file-audio"></i></div>
+        <div class="file-icon"><i class="fas fa-file-audio"></i></div>
         {% else %}
-          <div class="file-icon"><i class="fas fa-file"></i></div>
+        <div class="file-icon"><i class="fas fa-file"></i></div>
         {% endif %}
       </div>
       <div class="media-info">
@@ -122,13 +126,9 @@ Media Library
         </p>
       </div>
       <div class="media-actions">
-        <button class="btn-icon media-details-btn" title="View Details" 
-                data-name="{{ file.name }}" 
-                data-url="{{ file.url }}" 
-                data-type="{{ file.type }}" 
-                data-size="{{ file.size_display }}" 
-                data-date="{{ file.modified_time|date:'F d, Y' }}" 
-                data-resolution="{{ file.resolution|default:'' }}">
+        <button class="btn-icon media-details-btn" title="View Details" data-name="{{ file.name }}"
+          data-url="{{ file.url }}" data-type="{{ file.type }}" data-size="{{ file.size_display }}"
+          data-date="{{ file.modified_time|date:'F d, Y' }}" data-resolution="{{ file.resolution|default:'' }}">
           <i class="fas fa-eye"></i>
         </button>
         <button class="btn-icon copy-url-btn" title="Copy URL" data-url="{{ file.url }}">
@@ -160,22 +160,23 @@ Media Library
       </thead>
       <tbody>
         {% for file in media_files %}
-        <tr class="media-row" data-type="{{ file.type }}" data-date="{{ file.modified_time|date:'Y-m-d' }}" data-filename="{{ file.name }}">
+        <tr class="media-row" data-type="{{ file.type }}" data-date="{{ file.modified_time|date:'Y-m-d' }}"
+          data-filename="{{ file.name }}">
           <td>
             <input type="checkbox" class="media-select" data-filename="{{ file.name }}">
           </td>
           <td>
             <div class="list-preview">
               {% if file.type == 'image' %}
-                <img src="{{ file.url }}" alt="{{ file.name }}" loading="lazy">
+              <img src="{{ file.url }}" alt="{{ file.name }}" loading="lazy">
               {% elif file.type == 'document' %}
-                <i class="fas fa-file-pdf"></i>
+              <i class="fas fa-file-pdf"></i>
               {% elif file.type == 'video' %}
-                <i class="fas fa-file-video"></i>
+              <i class="fas fa-file-video"></i>
               {% elif file.type == 'audio' %}
-                <i class="fas fa-file-audio"></i>
+              <i class="fas fa-file-audio"></i>
               {% else %}
-                <i class="fas fa-file"></i>
+              <i class="fas fa-file"></i>
               {% endif %}
             </div>
           </td>
@@ -185,13 +186,9 @@ Media Library
           <td><span class="file-date">{{ file.modified_time|date:"M d, Y" }}</span></td>
           <td>
             <div class="list-actions">
-              <button class="btn-icon media-details-btn" title="View Details" 
-                      data-name="{{ file.name }}" 
-                      data-url="{{ file.url }}" 
-                      data-type="{{ file.type }}" 
-                      data-size="{{ file.size_display }}" 
-                      data-date="{{ file.modified_time|date:'F d, Y' }}" 
-                      data-resolution="{{ file.resolution|default:'' }}">
+              <button class="btn-icon media-details-btn" title="View Details" data-name="{{ file.name }}"
+                data-url="{{ file.url }}" data-type="{{ file.type }}" data-size="{{ file.size_display }}"
+                data-date="{{ file.modified_time|date:'F d, Y' }}" data-resolution="{{ file.resolution|default:'' }}">
                 <i class="fas fa-eye"></i>
               </button>
               <button class="btn-icon copy-url-btn" title="Copy URL" data-url="{{ file.url }}">
@@ -216,31 +213,34 @@ Media Library
     </div>
     <div class="pagination-controls">
       {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}{% if date_filter %}&date={{ date_filter }}{% endif %}" class="btn-pagination">
-          Previous
-        </a>
+      <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}{% if date_filter %}&date={{ date_filter }}{% endif %}"
+        class="btn-pagination">
+        Previous
+      </a>
       {% else %}
-        <button class="btn-pagination" disabled>
-          Previous
-        </button>
+      <button class="btn-pagination" disabled>
+        Previous
+      </button>
       {% endif %}
       <div class="pagination-numbers">
         {% for num in paginator.page_range %}
-          {% if page_obj.number == num %}
-            <button class="btn-page active">{{ num }}</button>
-          {% else %}
-            <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}{% if date_filter %}&date={{ date_filter }}{% endif %}" class="btn-page">{{ num }}</a>
-          {% endif %}
+        {% if page_obj.number == num %}
+        <button class="btn-page active">{{ num }}</button>
+        {% else %}
+        <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}{% if date_filter %}&date={{ date_filter }}{% endif %}"
+          class="btn-page">{{ num }}</a>
+        {% endif %}
         {% endfor %}
       </div>
       {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}{% if date_filter %}&date={{ date_filter }}{% endif %}" class="btn-pagination">
-          Next
-        </a>
+      <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}{% if date_filter %}&date={{ date_filter }}{% endif %}"
+        class="btn-pagination">
+        Next
+      </a>
       {% else %}
-        <button class="btn-pagination" disabled>
-          Next
-        </button>
+      <button class="btn-pagination" disabled>
+        Next
+      </button>
       {% endif %}
     </div>
   </div>

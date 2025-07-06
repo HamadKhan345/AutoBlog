@@ -235,12 +235,22 @@ Add New Post
   <div class="media-library-modal-content">
     <button type="button" id="closeMediaLibraryModal" class="close-modal-btn">&times;</button>
     <h3 class="media-library-title">Select Images</h3>
+    <!-- Search box -->
+    <div style="padding: 0 1.5rem 0.5rem 1.5rem;">
+      <input type="text" id="mediaLibrarySearch" class="form-input" placeholder="Search images..." style="width:100%;margin-bottom:1rem;">
+    </div>
+    <!-- Image grid -->
     <div id="mediaLibraryGrid" class="media-library-grid"></div>
-    <div class="media-library-footer">
+    <div class="media-library-footer" style="justify-content: space-between;">
+      <div style="display:flex;align-items:center;gap:0.5rem;">
+        <button type="button" id="mediaLibraryPrev" class="btn btn-secondary" style="display:none;">Prev</button>
+        <span id="mediaLibraryPageInfo"></span>
+        <button type="button" id="mediaLibraryNext" class="btn btn-secondary" style="display:none;">Next</button>
+      </div>
       <button type="button" id="selectMediaBtn" class="btn btn-primary" disabled>Select</button>
     </div>
   </div>
-</div>
+</div>0
 {% endblock %}
 
 {% block extra_scripts %}

@@ -244,50 +244,106 @@ document.addEventListener('DOMContentLoaded', function () {
     captionGroup.style.display = 'none';
   });
 
-  // --- Media Library Modal Logic (for Quill image insert, multi-select, close on outside click/X) ---
+  // --- Media Library Modal Logic (with search & pagination) ---
   function openMediaLibrary(onSelect) {
     const overlay = document.getElementById('mediaLibraryOverlay');
     const grid = document.getElementById('mediaLibraryGrid');
     const selectBtn = document.getElementById('selectMediaBtn');
     let selectedUrls = new Set();
 
-    // Reset modal state
-    grid.innerHTML = '<div style="text-align:center;width:100%">Loading...</div>';
-    selectBtn.disabled = true;
-    selectedUrls.clear();
-    overlay.style.display = 'flex';
+    // Add search and pagination controls if not already present
+    if (!document.getElementById('mediaLibrarySearch')) {
+      const searchDiv = document.createElement('div');
+      searchDiv.style = "padding: 0 1.5rem 0.5rem 1.5rem;";
+      searchDiv.innerHTML = `<input type="text" id="mediaLibrarySearch" class="form-input" placeholder="Search images..." style="width:100%;margin-bottom:1rem;">`;
+      overlay.querySelector('.media-library-modal-content').insertBefore(searchDiv, grid);
 
-    // Fetch media files from server (expects a JSON endpoint)
-    fetch('/admin/dashboard/media_library/list/')
-      .then(res => res.json())
-      .then(data => {
-        grid.innerHTML = '';
-        if (!data.files || !data.files.length) {
-          grid.innerHTML = '<div style="text-align:center;width:100%">No images found in media library.</div>';
-          return;
-        }
-        data.files.forEach(file => {
-          const item = document.createElement('div');
-          item.className = 'media-library-item';
-          item.tabIndex = 0;
-          item.title = file.name;
-          item.innerHTML = `<img src="${file.url}" alt="${file.name}">`;
-          item.onclick = function (e) {
-            if (item.classList.contains('selected')) {
-              item.classList.remove('selected');
-              selectedUrls.delete(file.url);
-            } else {
-              item.classList.add('selected');
-              selectedUrls.add(file.url);
-            }
-            selectBtn.disabled = selectedUrls.size === 0;
-          };
-          grid.appendChild(item);
+      const footer = overlay.querySelector('.media-library-footer');
+      const pagDiv = document.createElement('div');
+      pagDiv.style = "display:flex;align-items:center;gap:0.5rem;";
+      pagDiv.innerHTML = `
+        <button type="button" id="mediaLibraryPrev" class="btn btn-secondary" style="display:none;">Prev</button>
+        <span id="mediaLibraryPageInfo"></span>
+        <button type="button" id="mediaLibraryNext" class="btn btn-secondary" style="display:none;">Next</button>
+      `;
+      footer.insertBefore(pagDiv, selectBtn);
+    }
+
+    const searchInput = document.getElementById('mediaLibrarySearch');
+    const prevBtn = document.getElementById('mediaLibraryPrev');
+    const nextBtn = document.getElementById('mediaLibraryNext');
+    const pageInfo = document.getElementById('mediaLibraryPageInfo');
+
+    let currentPage = 1;
+    let currentSearch = '';
+
+    function fetchImages(page = 1, search = '') {
+      grid.innerHTML = '<div style="text-align:center;width:100%">Loading...</div>';
+      selectBtn.disabled = true;
+      selectedUrls.clear();
+      let url = `/admin/dashboard/media_library/list/?page=${page}`;
+      if (search) url += `&search=${encodeURIComponent(search)}`;
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          grid.innerHTML = '';
+          if (!data.files || !data.files.length) {
+            grid.innerHTML = '<div style="text-align:center;width:100%">No images found.</div>';
+          } else {
+            data.files.forEach(file => {
+              const item = document.createElement('div');
+              item.className = 'media-library-item';
+              item.tabIndex = 0;
+              item.title = file.name;
+              item.innerHTML = `
+                <img src="${file.url}" alt="${file.name}">
+                <div class="media-filename" style="font-size:12px;text-align:center;word-break:break-all;">${file.name}</div>
+              `;
+              item.onclick = function () {
+                if (item.classList.contains('selected')) {
+                  item.classList.remove('selected');
+                  selectedUrls.delete(file.url);
+                } else {
+                  item.classList.add('selected');
+                  selectedUrls.add(file.url);
+                }
+                selectBtn.disabled = selectedUrls.size === 0;
+              };
+              grid.appendChild(item);
+            });
+          }
+          // Pagination controls
+          currentPage = data.page;
+          pageInfo.textContent = `Page ${data.page} of ${data.num_pages}`;
+          prevBtn.style.display = data.page > 1 ? '' : 'none';
+          nextBtn.style.display = data.page < data.num_pages ? '' : 'none';
+        })
+        .catch(() => {
+          grid.innerHTML = '<div style="text-align:center;width:100%">Failed to load media files.</div>';
+          pageInfo.textContent = '';
+          prevBtn.style.display = 'none';
+          nextBtn.style.display = 'none';
         });
-      })
-      .catch(() => {
-        grid.innerHTML = '<div style="text-align:center;width:100%">Failed to load media files.</div>';
-      });
+    }
+
+    // Search
+    searchInput.value = '';
+    searchInput.oninput = function () {
+      currentSearch = this.value.trim();
+      fetchImages(1, currentSearch);
+    };
+
+    // Pagination
+    prevBtn.onclick = function () {
+      if (currentPage > 1) fetchImages(currentPage - 1, currentSearch);
+    };
+    nextBtn.onclick = function () {
+      fetchImages(currentPage + 1, currentSearch);
+    };
+
+    // Modal open/close logic
+    overlay.style.display = 'flex';
+    fetchImages(1, '');
 
     selectBtn.onclick = function () {
       if (selectedUrls.size > 0) {
@@ -298,7 +354,6 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('closeMediaLibraryModal').onclick = function () {
       overlay.style.display = 'none';
     };
-    // Close modal when clicking outside modal content
     overlay.onclick = function (e) {
       if (e.target === overlay) overlay.style.display = 'none';
     };
