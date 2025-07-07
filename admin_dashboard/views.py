@@ -12,6 +12,7 @@ from django.core.files.storage import default_storage
 import os
 from PIL import Image
 from datetime import datetime, timedelta
+import traceback
 
 # Create your views here.
 
@@ -127,7 +128,7 @@ def add_or_edit_post(request, post_id=None):
     }
     return render(request, 'admin_dashboard/add_or_edit_post.html', context)
 
-# Save Post
+# Save New or Edited Post
 @login_required
 def save_post(request):
     if request.method == 'POST':
@@ -194,11 +195,108 @@ def save_post(request):
 
         return redirect('all_posts')
 
-
 # Categories
 @login_required
 def dashboard_categories(request):
-   return render(request, 'admin_dashboard/categories.html')
+   return render(request, 'admin_dashboard/categories.html',)
+
+
+# Save New or Edited Category
+@login_required
+def add_update_category(request):
+    import traceback
+    if request.method == 'POST':
+        try:
+            category_id = request.POST.get('category_id')
+            name = request.POST.get('name', '').strip()
+            description = request.POST.get('description', '').strip()
+            thumbnail = request.FILES.get('thumbnail')
+
+            # Validation
+            if not name:
+                return JsonResponse({'success': 0, 'error': 'Category name is required.'})
+            if len(name) > 100:
+                return JsonResponse({'success': 0, 'error': 'Category name cannot exceed 100 characters.'})
+            if not description:
+                return JsonResponse({'success': 0, 'error': 'Category description is required.'})
+
+            # If updating, fetch the category
+            if category_id:
+                try:
+                    category = Category.objects.get(id=category_id)
+                except Category.DoesNotExist:
+                    return JsonResponse({'success': 0, 'error': 'Category not found.'})
+
+                # Check for duplicate name (exclude self)
+                if Category.objects.filter(name__iexact=name).exclude(id=category_id).exists():
+                    return JsonResponse({'success': 0, 'error': 'Another category with this name already exists.'})
+
+                category.name = name
+                category.description = description
+                if thumbnail:
+                    if thumbnail.size > 5 * 1024 * 1024:
+                        return JsonResponse({'success': 0, 'error': 'Thumbnail size exceeds 5MB.'})
+                    category.thumbnail = thumbnail
+                category.save()
+                return JsonResponse({
+                    'success': 1,
+                    'message': 'Category updated successfully.',
+                    'category': {
+                        'id': category.id,
+                        'name': category.name,
+                        'description': category.description,
+                        'thumbnail_url': category.thumbnail.url,
+                        'slug': category.slug,
+                        'get_absolute_url': category.get_absolute_url(),
+                    }
+                })
+            else:
+                # Create new category
+                if Category.objects.filter(name__iexact=name).exists():
+                    return JsonResponse({'success': 0, 'error': 'Category with this name already exists.'})
+                if thumbnail and thumbnail.size > 5 * 1024 * 1024:
+                    return JsonResponse({'success': 0, 'error': 'Thumbnail size exceeds 5MB.'})
+                category = Category.objects.create(
+                    name=name,
+                    description=description,
+                    thumbnail=thumbnail
+                )
+                return JsonResponse({
+                    'success': 1,
+                    'message': 'Category created successfully.',
+                    'category': {
+                        'id': category.id,
+                        'name': category.name,
+                        'description': category.description,
+                        'thumbnail_url': category.thumbnail.url,
+                        'slug': category.slug,
+                        'get_absolute_url': category.get_absolute_url(),
+                    }
+                })
+        except Exception as e:
+            print('Error in add_update_category:', e)
+            traceback.print_exc()
+            return JsonResponse({'success': 0, 'error': f'Server error: {str(e)}'})
+    return JsonResponse({'success': 0, 'error': 'Invalid request method.'})
+
+# Delete Category
+@login_required
+@require_POST
+def delete_category(request):
+    try:
+        category_id = request.POST.get('category_id')
+        if not category_id:
+            return JsonResponse({'success': 0, 'error': 'No category specified.'})
+        try:
+            category = Category.objects.get(id=category_id)
+        except Category.DoesNotExist:
+            return JsonResponse({'success': 0, 'error': 'Category not found.'})
+
+        category.delete()
+        return JsonResponse({'success': 1, 'message': 'Category deleted.'})
+    except Exception as e:
+        traceback.print_exc()
+        return JsonResponse({'success': 0, 'error': f'Server error: {str(e)}'})
 
 # Media Library
 @login_required
@@ -410,39 +508,3 @@ def media_library_list_json(request):
         })
     except Exception as e:
         return JsonResponse({'files': [], 'error': str(e)}, status=500)
-    
-
-@login_required
-def add_new_category(request):
-    if request.method == 'POST':
-        name = request.POST.get('name', '').strip()
-        description = request.POST.get('description', '').strip()
-        thumbnail = request.FILES.get('thumbnail')
-       
-        if not name:
-            return JsonResponse({'success': 0, 'error': 'Category name is required.'})
-        if len(name) > 50:
-            return JsonResponse({'success': 0, 'error': 'Category name cannot exceed 50 characters.'})
-        
-        if Category.objects.filter(name__iexact=name).exists():
-            return JsonResponse({'success': 0, 'error': 'Category with this name already exists.'})
-       
-        if not description:
-            return JsonResponse({'success': 0, 'error': 'Category description is required.'})
-        
-        if thumbnail:
-            if thumbnail.size > 5 * 1024 * 1024:
-                return JsonResponse({'success': 0, 'error': 'Thumbnail size exceeds 5MB.'})
-        try:
-            category = Category.objects.create(
-                name=name,
-                description=description,
-                thumbnail=thumbnail
-            )
-            return JsonResponse({'success': 1, 'message': 'Category created successfully.'})
-        except Exception as e:
-            return JsonResponse({'success': 0, 'error': str(e)})
-    return JsonResponse({'success': 0, 'error': 'Invalid request method.'})
-
-
-

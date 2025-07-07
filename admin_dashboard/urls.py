@@ -8,28 +8,32 @@ urlpatterns = [
 
     # Dashboard
     path('dashboard/', views.dashboard, name='dashboard'),
-    path('dashboard/all_posts/', views.all_posts, name='all_posts'),
-    path('dashboard/add_or_edit_post/', views.add_or_edit_post, name='add_or_edit_post'),
-    path('dashboard/categories/', views.dashboard_categories, name='dashboard_categories'),
     
-    # Edit Post
-    path('dashboard/edit_post/<int:post_id>/', views.add_or_edit_post, name='edit_post'),
+    # View, Delete Posts
+    path('dashboard/all_posts/', views.all_posts, name='all_posts'),
+    path('posts/delete/', views.delete_post, name='delete_post'),
 
+    # Add, Edit, and Update Posts
+    path('dashboard/add_or_edit_post/', views.add_or_edit_post, name='add_or_edit_post'),
+    path('dashboard/edit_post/<int:post_id>/', views.add_or_edit_post, name='edit_post'),
+    path('posts/add/', views.save_post, name='save_post'),
+    
 
     # Media Library
     path('dashboard/media_library/', views.media_library, name='media_library'),
     path('dashboard/media_library/upload/', views.upload_media, name='upload_media'),
     path('dashboard/media/delete/', views.delete_media, name='delete_media'),
+    # List media library items in JSON format
     path('dashboard/media_library/list/', views.media_library_list_json, name='media_library_list_json'),
 
-    # Add new category
-    # path('categories/add/', views.add_new_category, name='add_new_category'),
 
-    # Delete post
-    path('posts/delete/', views.delete_post, name='delete_post'),
+    # Categories
+    path('dashboard/categories/', views.dashboard_categories, name='dashboard_categories'),
+    path('dashboard/categories/add_update/', views.add_update_category, name='add_update_category'),
+    path('dashboard/categories/delete/', views.delete_category, name='delete_category'),
 
-    # Add new post
-    path('posts/add/', views.save_post, name='save_post'),
+  
+    
 
 
     

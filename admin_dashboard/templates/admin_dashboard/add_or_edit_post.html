@@ -193,7 +193,7 @@
             <div class="image-upload-area" id="imageUploadArea" style="cursor:pointer;">
               <div class="upload-placeholder" id="uploadPlaceholder" {% if blog and blog.thumbnail %}style="display:none;"{% endif %}>
                 <p><strong>Click or drag to upload a featured image</strong></p>
-                <small>Max size: 5MB. JPG, PNG, GIF, WEBP.</small>
+                <small>Max size: 5MB. JPG, PNG, WEBP.</small>
               </div>
               <div class="image-preview" id="imagePreview" {% if not blog or not blog.thumbnail %}style="display: none;"{% endif %}>
                 <img id="previewImage" src="{% if blog and blog.thumbnail %}{{ blog.thumbnail.url }}{% endif %}" alt="Preview">

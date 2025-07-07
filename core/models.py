@@ -54,6 +54,14 @@ class Category(models.Model):
     return self.name
   
   def save(self, *args, **kwargs):
+    if self.pk:
+      try:
+        old = Category.objects.get(pk=self.pk)
+        if old.thumbnail and self.thumbnail != old.thumbnail:
+          if old.thumbnail.name != 'categories/default.jpg' and os.path.isfile(old.thumbnail.path):
+            os.remove(old.thumbnail.path)
+      except Category.DoesNotExist:
+        pass
     if not self.slug:
       self.slug = slugify(self.name)
     super().save(*args, **kwargs)
@@ -94,10 +102,24 @@ class Blog(models.Model):
 
   status = models.CharField(max_length=10, choices=STATUS_CHOICES, default=DRAFT)
 
+  def __init__(self, *args, **kwargs):
+    super().__init__(*args, **kwargs)
+    self._original_thumbnail = self.thumbnail
+
   def save(self, *args, **kwargs):
+    # If updating and thumbnail changed, delete old file (unless default)
+    if self.pk:
+      try:
+        old = Blog.objects.get(pk=self.pk)
+        if old.thumbnail and self.thumbnail != old.thumbnail:
+          if old.thumbnail.name != 'blogs/default.jpg' and os.path.isfile(old.thumbnail.path):
+            os.remove(old.thumbnail.path)
+      except Blog.DoesNotExist:
+        pass
     if not self.slug:
-        self.slug = slugify(self.title)
+      self.slug = slugify(self.title)
     super().save(*args, **kwargs)
+    self._original_thumbnail = self.thumbnail
 
   def __str__(self):
     return self.title
@@ -126,4 +148,3 @@ class Tag(models.Model):
 
   def __str__(self):
     return self.name
-  
