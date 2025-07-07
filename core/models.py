@@ -45,9 +45,9 @@ class Author(models.Model):
 
 # Category Model
 class Category(models.Model):  
-  name = models.CharField(max_length=100, blank=False, null=False)
+  name = models.CharField(max_length=20, blank=False, null=False)
   slug = models.SlugField(unique=True, blank=True)
-  description = models.TextField(blank=False, null=False)
+  description = models.TextField(max_length=500, blank=False, null=False,)
   thumbnail = models.ImageField(upload_to='categories/', blank=False, null=False, default='categories/default.jpg', validators=[validate_image_size, validate_image_type])
 
   def __str__(self):

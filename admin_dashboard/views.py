@@ -215,8 +215,8 @@ def add_update_category(request):
             # Validation
             if not name:
                 return JsonResponse({'success': 0, 'error': 'Category name is required.'})
-            if len(name) > 100:
-                return JsonResponse({'success': 0, 'error': 'Category name cannot exceed 100 characters.'})
+            if len(name) > 20:
+                return JsonResponse({'success': 0, 'error': 'Category name cannot exceed 20 characters.'})
             if not description:
                 return JsonResponse({'success': 0, 'error': 'Category description is required.'})
 

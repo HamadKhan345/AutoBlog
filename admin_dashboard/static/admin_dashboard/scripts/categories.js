@@ -23,6 +23,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const cancelDelete = document.getElementById('cancelDelete');
     const confirmDelete = document.getElementById('confirmDelete');
 
+    // Character counters for name and description
+    const nameCharCount = document.querySelector('#categoryName ~ .input-feedback .char-count');
+    const descCharCount = document.querySelector('#categoryDescription ~ .input-feedback .char-count');
+
+    nameInput.setAttribute('maxlength', 20);
+    descInput.setAttribute('maxlength', 500);
+
+    function updateNameCharCount() {
+        nameCharCount.textContent = `${nameInput.value.length}/20 characters`;
+    }
+    function updateDescCharCount() {
+        descCharCount.textContent = `${descInput.value.length}/500 characters`;
+    }
+    nameInput.addEventListener('input', updateNameCharCount);
+    descInput.addEventListener('input', updateDescCharCount);
+
     // Open modal for Add
     function openAddModal() {
         modalTitle.textContent = 'Add New Category';
@@ -32,6 +48,8 @@ document.addEventListener('DOMContentLoaded', function() {
         previewImage.src = '';
         uploadPlaceholder.style.display = '';
         modal.style.display = 'flex';
+        updateNameCharCount();
+        updateDescCharCount();
     }
 
     // Open modal for Edit
@@ -50,6 +68,8 @@ document.addEventListener('DOMContentLoaded', function() {
             uploadPlaceholder.style.display = '';
         }
         modal.style.display = 'flex';
+        updateNameCharCount();
+        updateDescCharCount();
     }
 
     // Add button
