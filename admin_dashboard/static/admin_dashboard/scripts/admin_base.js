@@ -1,5 +1,9 @@
 /* filepath: admin_dashboard/static/admin_dashboard/scripts/admin_base.js */
 document.addEventListener('DOMContentLoaded', function() {
+    // Enable smooth scrolling for the whole admin dashboard
+    document.documentElement.style.scrollBehavior = 'smooth';
+    document.body.style.scrollBehavior = 'smooth';
+
     // Sidebar elements
     const sidebar = document.getElementById('adminSidebar');
     const sidebarToggle = document.getElementById('sidebarToggle');

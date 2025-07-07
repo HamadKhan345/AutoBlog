@@ -63,4 +63,8 @@ window.addEventListener('resize', function() {
     document.body.style.overflow = '';
     }
 });
+
+// Enable smooth scrolling for the whole site
+document.documentElement.style.scrollBehavior = 'smooth';
+document.body.style.scrollBehavior = 'smooth';
 });
