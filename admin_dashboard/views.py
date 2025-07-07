@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from core.models import Blog
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
@@ -100,7 +100,8 @@ def delete_post(request):
     bulk_ids = request.POST.get('bulk_delete_ids')
     if bulk_ids:
         ids = [int(i) for i in bulk_ids.split(',') if i.isdigit()]
-        Blog.objects.filter(id__in=ids).delete()
+        for blog in Blog.objects.filter(id__in=ids):
+            blog.delete()  # This will call your custom delete method
         return redirect('all_posts')
     # Single delete
     post_id = request.POST.get('delete_post')
@@ -114,14 +115,23 @@ def delete_post(request):
 
 # Add New Post
 @login_required
-def add_new_post(request):
-  return render(request, 'admin_dashboard/add_new_post.html')
-
+def add_or_edit_post(request, post_id=None):
+    blog = None
+    selected_tags = []
+    if post_id:
+        blog = get_object_or_404(Blog, id=post_id)
+        selected_tags = list(blog.tags.values_list('name', flat=True))  # or adjust for your tag model
+    context = {
+        'blog': blog,
+        'selected_tags': selected_tags,
+    }
+    return render(request, 'admin_dashboard/add_or_edit_post.html', context)
 
 # Save Post
 @login_required
 def save_post(request):
     if request.method == 'POST':
+        post_id = request.POST.get('post_id')
         title = request.POST.get('title')
         excerpt = request.POST.get('excerpt')
         content = request.POST.get('content')
@@ -138,39 +148,49 @@ def save_post(request):
             except Category.DoesNotExist:
                 category = None
 
-        try:
-            author = Author.objects.get(user=request.user)
-        except Author.DoesNotExist:
-            author = None
+        blog = None
+        if post_id:
+            try:
+                blog = Blog.objects.get(id=post_id)
+            except Blog.DoesNotExist:
+                blog = None
 
-        
+        if blog:
+            # Update existing post
+            blog.title = title
+            blog.excerpt = excerpt
+            blog.content = content
+            blog.status = status
+            blog.category = category
+            if thumbnail:
+                blog.thumbnail = thumbnail
+            # If no thumbnail uploaded, keep existing (default or previous)
+            blog.thumbnail_caption = thumbnail_caption
+            blog.save()
+        else:
+            # Create new post
+            author = request.user.author if hasattr(request.user, 'author') else None
+            blog_data = {
+                'title': title,
+                'excerpt': excerpt,
+                'content': content,
+                'status': status,
+                'category': category,
+                'thumbnail_caption': thumbnail_caption,
+                'author': author
+            }
+            if thumbnail:
+                blog_data['thumbnail'] = thumbnail
+            blog = Blog.objects.create(**blog_data)
 
-        blog_kwargs = dict(
-            title=title,
-            excerpt=excerpt,
-            content=content,
-            status=status,
-            category=category,
-            thumbnail_caption=thumbnail_caption,
-            author=author
-        )
-        if thumbnail:
-            blog_kwargs['thumbnail'] = thumbnail  # Only set if uploaded
-
-        blog = Blog.objects.create(**blog_kwargs)
-
-        try:
-           tags_list = json.loads(tags_json)
-           if not isinstance(tags_list, list):
-             tags_list = []
-           for tag_name in tags_list:
-              tag_name = str(tag_name).strip()
-              if not tag_name or len(tag_name) > 50:
-                 continue  # Skip empty or too-long tags
-              tag, created = Tag.objects.get_or_create(name=tag_name)
-              blog.tags.add(tag)
-        except Exception:
-            pass
+        # Handle tags (assuming tags_json is a JSON array of tag names)
+        tag_names = json.loads(tags_json)
+        tags = []
+        for tag_name in tag_names:
+            tag, _ = Tag.objects.get_or_create(name=tag_name)
+            tags.append(tag)
+        blog.tags.set(tags)
+        blog.save()
 
         return redirect('all_posts')
 
@@ -392,11 +412,37 @@ def media_library_list_json(request):
         return JsonResponse({'files': [], 'error': str(e)}, status=500)
     
 
+@login_required
+def add_new_category(request):
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        description = request.POST.get('description', '').strip()
+        thumbnail = request.FILES.get('thumbnail')
+       
+        if not name:
+            return JsonResponse({'success': 0, 'error': 'Category name is required.'})
+        if len(name) > 50:
+            return JsonResponse({'success': 0, 'error': 'Category name cannot exceed 50 characters.'})
+        
+        if Category.objects.filter(name__iexact=name).exists():
+            return JsonResponse({'success': 0, 'error': 'Category with this name already exists.'})
+       
+        if not description:
+            return JsonResponse({'success': 0, 'error': 'Category description is required.'})
+        
+        if thumbnail:
+            if thumbnail.size > 5 * 1024 * 1024:
+                return JsonResponse({'success': 0, 'error': 'Thumbnail size exceeds 5MB.'})
+        try:
+            category = Category.objects.create(
+                name=name,
+                description=description,
+                thumbnail=thumbnail
+            )
+            return JsonResponse({'success': 1, 'message': 'Category created successfully.'})
+        except Exception as e:
+            return JsonResponse({'success': 0, 'error': str(e)})
+    return JsonResponse({'success': 0, 'error': 'Invalid request method.'})
 
-# Account Settings
-# @login_required
-# def account_settings(request):
 
 
-# @login_required
-# def update_settings(request):

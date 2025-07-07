@@ -19,7 +19,7 @@ All Posts
 {% block content %}
 <div class="posts-header">
   <div class="posts-actions">
-    <a href="{% url 'add_new_post' %}" class="btn btn-primary">
+    <a href="{% url 'add_or_edit_post' %}" class="btn btn-primary">
       <i class="fas fa-plus"></i>
       Add New Post
     </a>
@@ -110,9 +110,11 @@ All Posts
         </td>
         <td>
           <div class="actions-buttons">
+            <a href="{% url 'edit_post' blog.id %}">
             <button class="btn-action btn-edit" title="Edit Post">
               <i class="fas fa-edit"></i>
             </button>
+            </a>
             <a href="{{ blog.get_absolute_url }}" target="_blank">
               <button class="btn-action btn-view" title="View Post">
                 <i class="fas fa-eye"></i>

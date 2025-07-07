@@ -27,6 +27,12 @@ document.addEventListener('DOMContentLoaded', function () {
     placeholder: 'Write here...'
   });
 
+  // Set Quill content if editing
+  var initialContent = document.getElementById('postContent').value;
+  if (initialContent) {
+    quill.root.innerHTML = initialContent;
+  }
+
   // --- Elements ---
   const postTitle = document.getElementById('postTitle');
   const postContent = document.getElementById('postContent');
@@ -186,18 +192,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // --- On form submit, update hidden fields and let the form submit normally ---
   form.addEventListener('submit', function (e) {
-    postContent.value = quill.root.innerHTML;
+    // Update hidden tags field before submit
     hiddenTags.value = JSON.stringify(tags);
-
-    // Require content: check for non-empty text in Quill
-    const plainText = quill.getText().trim();
-    if (!plainText) {
-      alert('Post content is required.');
-      e.preventDefault();
-      return false;
-    }
-
-    isFormDirty = false; // Prevent "leave site" alert after save
+    isFormDirty = false; // Prevent beforeunload alert on submit
   });
 
   // --- Featured Image: Upload and Preview ---
@@ -371,4 +368,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // --- Initialize ---
   updateWordCount();
+
+  // Initialize tags if editing using json_script
+  let initialTags = [];
+  const initialTagsScript = document.getElementById('initial-tags');
+  if (initialTagsScript) {
+    try {
+      initialTags = JSON.parse(initialTagsScript.textContent);
+    } catch (e) {}
+  } else if (hiddenTags && hiddenTags.value) {
+    try {
+      initialTags = JSON.parse(hiddenTags.value);
+    } catch (e) {}
+  }
+  if (Array.isArray(initialTags) && initialTags.length) {
+    initialTags.forEach(tag => {
+      if (!tags.includes(tag)) tags.push(tag);
+    });
+    renderTags();
+  }
 });

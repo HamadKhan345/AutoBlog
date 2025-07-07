@@ -9,9 +9,12 @@ urlpatterns = [
     # Dashboard
     path('dashboard/', views.dashboard, name='dashboard'),
     path('dashboard/all_posts/', views.all_posts, name='all_posts'),
-    path('dashboard/add_new_post/', views.add_new_post, name='add_new_post'),
+    path('dashboard/add_or_edit_post/', views.add_or_edit_post, name='add_or_edit_post'),
     path('dashboard/categories/', views.dashboard_categories, name='dashboard_categories'),
     
+    # Edit Post
+    path('dashboard/edit_post/<int:post_id>/', views.add_or_edit_post, name='edit_post'),
+
 
     # Media Library
     path('dashboard/media_library/', views.media_library, name='media_library'),

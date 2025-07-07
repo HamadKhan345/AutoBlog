@@ -40,12 +40,12 @@
                         </a>
                         <ul class="submenu">
                             <li><a href="{% url 'all_posts' %}">All Posts</a></li>
-                            <li><a href="{% url 'add_new_post' %}">Add New Post</a></li>
+                            <li><a href="{% url 'add_or_edit_post' %}">Add New Post</a></li>
                             <li><a href="{% url 'dashboard_categories' %}">Categories</a></li>
                             <li><a href="#">Tags</a></li>
                         </ul>
                     </li>
-                    
+                    {% if request.user.is_superuser %}
                     <li class="nav-item has-submenu">
                         <a href="#" {% block Useractive %}class="nav-link" {% endblock %}>
                             <i class="fas fa-users"></i>
@@ -56,9 +56,9 @@
                             <li><a href="#">All Users</a></li>
                             <li><a href="#">Add New User</a></li>
                             <li><a href="#">User Roles</a></li>
-                            <li><a href="#">Profile Settings</a></li>
                         </ul>
                     </li>
+                    {% endif %}
                     
                     <li class="nav-item">
                         <a href="{% url 'media_library' %}" {% block Mediaactive %}class="nav-link" {% endblock %}>
