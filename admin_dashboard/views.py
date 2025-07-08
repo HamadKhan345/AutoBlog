@@ -14,6 +14,7 @@ import os
 from PIL import Image
 from datetime import datetime, timedelta
 import traceback
+from django.utils.text import slugify
 
 # Create your views here.
 
@@ -189,7 +190,11 @@ def save_post(request):
         tag_names = json.loads(tags_json)
         tags = []
         for tag_name in tag_names:
-            tag, _ = Tag.objects.get_or_create(name=tag_name)
+            tag_slug = slugify(tag_name)
+            tag, _ = Tag.objects.get_or_create(
+                slug=tag_slug,
+                defaults={'name': tag_name}
+            )
             tags.append(tag)
         blog.tags.set(tags)
         blog.save()
