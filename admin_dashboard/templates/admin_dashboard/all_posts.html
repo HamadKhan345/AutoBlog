@@ -45,7 +45,7 @@ All Posts
       <option value="">All Categories</option>
       <option value="None" {% if category_filter == 'None' %}selected{% endif %}>No Category</option>
       {% for category in categories %}
-      <option value="{{category}}" {% if category_filter == 'category' %}selected{% endif %}>{{category}}</option>
+      <option value="{{category.name}}" {% if category_filter == category.name %}selected{% endif %}>{{category}}</option>
       {% endfor %}
     </select>
     <button type="submit" style="display:none"></button>

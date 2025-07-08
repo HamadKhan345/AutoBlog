@@ -36,6 +36,18 @@ class Author(models.Model):
   def __str__(self):
     return f"{self.user.first_name} {self.user.last_name}".strip() or self.user.username
   
+  def save(self, *args, **kwargs):
+    # If updating and profile picture changed, delete old file (unless default)
+    if self.pk:
+      try:
+        old = Author.objects.get(pk=self.pk)
+        if old.profile_picture and self.profile_picture != old.profile_picture:
+          if old.profile_picture.name != 'authors/default.jpg' and os.path.isfile(old.profile_picture.path):
+            os.remove(old.profile_picture.path)
+      except Author.DoesNotExist:
+        pass
+    super().save(*args, **kwargs)
+  
   def delete(self, *args, **kwargs):
     if self.profile_picture and self.profile_picture.name != 'authors/default.jpg':
       if os.path.isfile(self.profile_picture.path):

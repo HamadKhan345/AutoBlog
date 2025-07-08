@@ -1,0 +1,129 @@
+{% extends 'admin_dashboard/admin_base.html' %}
+{% load static %}
+
+{% block title %}Profile - Admin Dashboard{% endblock %}
+{% block page_title %}My Profile{% endblock %}
+
+{% block extra_head %}
+<link href="{% static 'admin_dashboard/styles/profile.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+{% with author=user.author|default_if_none:None %}
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-avatar-section">
+            <div class="avatar-container" id="avatarContainer">
+                <img src="{% if author and author.profile_picture %}{{ author.profile_picture.url }}{% else %}{% static 'images/default-avatar.jpg' %}{% endif %}" 
+                     alt="Profile Picture" class="profile-avatar" id="profileAvatar">
+                <div class="avatar-overlay">
+                    <i class="fas fa-camera"></i>
+                    <span>Change Photo</span>
+                </div>
+            </div>
+        </div>
+        <div class="profile-info">
+            <h2 class="profile-name">{{ user.first_name|default:"" }} {{ user.last_name|default:"" }}</h2>
+            <p class="profile-role">Administrator</p>
+            <p class="profile-email">{{ user.email|default:"" }}</p>
+        </div>
+    </div>
+
+    <div class="profile-content">
+        <div class="profile-card">
+            <div class="card-header">
+                <h3><i class="fas fa-user"></i> Personal Information</h3>
+                <button type="button" class="btn-edit" id="editProfileBtn">
+                    <i class="fas fa-edit"></i> Edit Profile
+                </button>
+            </div>
+
+            <form class="profile-form" id="profileForm" method="post" action="{% url 'update_profile' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" id="avatarInput" name="profile_picture" accept="image/*" style="display: none;">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" name="first_name" value="{{ user.first_name|default:"" }}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" name="last_name" value="{{ user.last_name|default:"" }}" readonly>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" value="{{ user.email|default:"" }}" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="bio">Bio</label>
+                    <textarea id="bio" name="bio" rows="4" placeholder="Tell us about yourself..." readonly>{% if author %}{{ author.bio|default:"" }}{% else %}{% endif %}</textarea>
+                </div>
+
+                <div class="password-section" id="passwordSection" style="display: none;">
+                    <div class="form-group">
+                        <label for="currentPassword">Current Password</label>
+                        <div class="password-input">
+                            <input type="password" id="currentPassword" name="current_password" placeholder="Enter your current password" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('currentPassword')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions" id="formActions" style="display: none;">
+                    <button type="submit" class="btn-save">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                    <button type="button" class="btn-cancel" id="cancelEditBtn">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="profile-card">
+            <div class="card-header">
+                <h3><i class="fas fa-chart-line"></i> Account Statistics</h3>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-number">{% if author and author.blogs %}{{ author.blogs.count }}{% else %}0{% endif %}</span>
+                        <span class="stat-label">Total Posts</span>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-number">{{ total_views|default:"0" }}</span>
+                        <span class="stat-label">Total Views</span>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-number">{{ user.date_joined|date:"M Y" }}</span>
+                        <span class="stat-label">Member Since</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endwith %}
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'admin_dashboard/scripts/profile.js' %}"></script>
+{% endblock %}

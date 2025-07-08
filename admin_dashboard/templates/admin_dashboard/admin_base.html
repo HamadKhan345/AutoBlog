@@ -128,8 +128,8 @@
                  <!-- User Menu -->
                         <div class="user-menu">
                             <button class="user-menu-btn">
-                                {% if request.user.Author.profile_picture %}
-                                <img src="{{ request.user.Author.profile_picture.url }}" alt="User Avatar" class="user-avatar">
+                                {% if request.user.author.profile_picture %}
+                                <img src="{{ request.user.author.profile_picture.url }}" alt="User Avatar" class="user-avatar">
                                 {% else %}
                                 <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'><circle cx='20' cy='20' r='20' fill='%23212529'/><text x='20' y='26' fill='white' text-anchor='middle' font-family='Arial' font-size='16' font-weight='bold'>{{ request.user.get_full_name|default:request.user.username|first|upper }}</text></svg>" alt="User Avatar" class="user-avatar">
                                 {% endif %}  
@@ -137,7 +137,7 @@
                                 <i class="fas fa-chevron-down"></i>
                             </button>
                             <div class="user-dropdown">
-                                <a href="#">
+                                <a href="{% url 'profile' %}">
                                     <i class="fas fa-user"></i> My Profile
                                 </a>
                                 <a href="#">

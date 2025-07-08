@@ -4,6 +4,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth import logout as auth_logout
+from django.contrib import messages
 from django.views.decorators.http import require_POST
 from core.models import Blog, Category, Tag, Author
 import json
@@ -34,9 +35,9 @@ def login(request):
       auth_login(request, user)
       return redirect('dashboard') # Redirect to Dashboard
     else:
-      message = "Invalid username or password."
+      messages.error(request, 'Invalid username or password.')
       
-  return render(request, 'admin_dashboard/login.html', {'message': message})
+  return render(request, 'admin_dashboard/login.html')
   
 # Logout
 def logout(request):
@@ -508,3 +509,84 @@ def media_library_list_json(request):
         })
     except Exception as e:
         return JsonResponse({'files': [], 'error': str(e)}, status=500)
+
+# Profile
+@login_required
+def profile(request):
+    # Total views calculation
+    total_views = 0
+    if hasattr(request.user, 'author'):
+        total_views = sum(blog.view_count for blog in request.user.author.blogs.all())
+    return render(request, 'admin_dashboard/profile.html', {'total_views': total_views})
+
+
+# Update Profile
+@login_required
+@require_POST
+def update_profile(request):
+    try:
+        user = request.user
+
+        # Require current password for any update
+        current_password = request.POST.get('current_password', '').strip()
+        if not current_password:
+            messages.error(request, 'Current password is required to update your profile.')
+            return redirect('profile')
+        if not user.check_password(current_password):
+            messages.error(request, 'Current password is incorrect.')
+            return redirect('profile')
+
+        # Update User fields
+        user.first_name = request.POST.get('first_name', '').strip()
+        user.last_name = request.POST.get('last_name', '').strip()
+        user.email = request.POST.get('email', '').strip()
+
+        # Validation
+        if not user.first_name:
+            messages.error(request, 'First name is required.')
+            return redirect('profile')
+        if not user.last_name:
+            messages.error(request, 'Last name is required.')
+            return redirect('profile')
+        if not user.email:
+            messages.error(request, 'Email is required.')
+            return redirect('profile')
+
+        # Update Author fields if exists, create if doesn't exist
+        author = getattr(user, 'author', None)
+        if not author:
+            author = Author.objects.create(user=user)
+
+        # Update bio
+        author.bio = request.POST.get('bio', '').strip()
+
+        # Handle profile picture upload
+        profile_picture = request.FILES.get('profile_picture')
+        if profile_picture:
+            # Validate file size (5MB limit)
+            if profile_picture.size > 5 * 1024 * 1024:
+                messages.error(request, 'Profile picture size exceeds 5MB.')
+                return redirect('profile')
+
+            # Validate file type
+            valid_extensions = ['.jpg', '.jpeg', '.png', '.webp']
+            file_extension = os.path.splitext(profile_picture.name)[1].lower()
+            if file_extension not in valid_extensions:
+                messages.error(request, 'Invalid image type. Only JPEG, PNG, and WebP are allowed.')
+                return redirect('profile')
+
+            author.profile_picture = profile_picture
+
+        # Save changes
+        author.save()
+        user.save()
+
+        messages.success(request, 'Profile updated successfully.')
+        return redirect('profile')
+
+    except Exception as e:
+        traceback.print_exc()
+        messages.error(request, f'Server error: {str(e)}')
+        return redirect('profile')
+        
+    

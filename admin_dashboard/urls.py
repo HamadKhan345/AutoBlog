@@ -33,7 +33,9 @@ urlpatterns = [
     path('dashboard/categories/delete/', views.delete_category, name='delete_category'),
 
   
-    
+    # Profile
+    path('dashboard/profile/', views.profile, name='profile'),
+    path('dashboard/profile/update/', views.update_profile, name='update_profile'),
 
 
     
