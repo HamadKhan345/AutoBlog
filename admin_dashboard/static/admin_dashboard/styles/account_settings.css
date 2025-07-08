@@ -1,0 +1,455 @@
+:root {
+    --primary-color: #000000;
+    --primary-light: #222325;
+    --secondary-color: #161616;
+    --light-bg: #f8f9fa;
+    --white: #ffffff;
+    --border-color: #e9ecef;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --info-color: #17a2b8;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===========================
+   MAIN CONTAINER
+   =========================== */
+.account-settings-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0;
+}
+
+/* ===========================
+   HEADER SECTION
+   =========================== */
+.settings-header {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.header-info h1 {
+    color: var(--primary-color);
+    margin: 0 0 0.5rem 0;
+    font-size: 2rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.header-info h1 i {
+    color: var(--primary-color);
+    font-size: 1.8rem;
+}
+
+.header-info p {
+    color: var(--secondary-color);
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+/* ===========================
+   SETTINGS CONTENT
+   =========================== */
+.settings-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.settings-card {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.settings-card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.info-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+/* ===========================
+   CARD HEADER
+   =========================== */
+.card-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--light-bg);
+}
+
+.card-header h3 {
+    color: var(--primary-color);
+    margin: 0 0 0.5rem 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.card-header h3 i {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+}
+
+.card-description {
+    color: var(--secondary-color);
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* ===========================
+   CARD CONTENT
+   =========================== */
+.card-content {
+    padding: 2rem;
+}
+
+/* ===========================
+   FORM STYLES
+   =========================== */
+.settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-label {
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    transition: var(--transition);
+    background: var(--white);
+    outline: none;
+}
+
+.form-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.form-input:read-only {
+    background: var(--light-bg);
+    color: var(--secondary-color);
+    cursor: not-allowed;
+}
+
+.form-input::placeholder {
+    color: #6c757d;
+    font-style: normal;
+}
+
+/* ===========================
+   PASSWORD INPUT
+   =========================== */
+.password-input {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input .form-input {
+    padding-right: 3rem;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    color: var(--secondary-color);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.password-toggle:hover {
+    color: var(--primary-color);
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* ===========================
+   INPUT FEEDBACK
+   =========================== */
+.input-feedback {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.25rem;
+}
+
+.form-help {
+    color: var(--secondary-color);
+    font-size: 0.8rem;
+}
+
+.char-count {
+    color: var(--secondary-color);
+    font-size: 0.8rem;
+}
+
+.password-match-indicator {
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+    display: none;
+}
+
+.password-match-indicator.match {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #10b981;
+    display: block;
+}
+
+.password-match-indicator.no-match {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #ef4444;
+    display: block;
+}
+
+/* ===========================
+   SECURITY TIPS
+   =========================== */
+.security-tips {
+    background: #f0f9ff;
+    border: 1px solid #0ea5e9;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+}
+
+.security-tips h4 {
+    color: var(--primary-color);
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.security-tips h4 i {
+    color: var(--info-color);
+}
+
+.security-tips ul {
+    margin: 0;
+    padding-left: 1.5rem;
+    color: var(--secondary-color);
+}
+
+.security-tips li {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+/* ===========================
+   FORM ACTIONS
+   =========================== */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+    justify-content: flex-end;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--primary-light), var(--primary-color));
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* .btn-secondary {
+    background: var(--secondary-color);
+    color: white;
+    box-shadow: 0 2px 10px rgba(22, 22, 22, 0.2);
+}
+
+.btn-secondary:hover {
+    background: #343a40;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(22, 22, 22, 0.3);
+} */
+
+/* ===========================
+   SECURITY INFORMATION
+   =========================== */
+.security-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--white);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+}
+
+.info-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.info-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: white;
+    border-radius: 50%;
+    font-size: 1.2rem;
+}
+
+.info-details h4 {
+    color: var(--primary-color);
+    margin: 0 0 0.25rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.info-details p {
+    color: var(--secondary-color);
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* ===========================
+   RESPONSIVE DESIGN
+   =========================== */
+@media (max-width: 768px) {
+    .account-settings-container {
+        padding: 0 1rem;
+    }
+
+    .settings-header {
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .header-info h1 {
+        font-size: 1.6rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .card-content {
+        padding: 1.5rem;
+    }
+
+    .card-header {
+        padding: 1rem 1.5rem;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .security-info {
+        gap: 1rem;
+    }
+
+    .info-item {
+        padding: 0.75rem;
+    }
+
+    .info-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .settings-header {
+        padding: 1rem;
+    }
+
+    .header-info h1 {
+        font-size: 1.4rem;
+    }
+
+    .card-content {
+        padding: 1rem;
+    }
+
+    .card-header {
+        padding: 1rem;
+    }
+
+    .card-header h3 {
+        font-size: 1.1rem;
+    }
+
+    .btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.8rem;
+    }
+
+    .security-tips {
+        padding: 1rem;
+    }
+}

@@ -37,6 +37,10 @@ urlpatterns = [
     path('dashboard/profile/', views.profile, name='profile'),
     path('dashboard/profile/update/', views.update_profile, name='update_profile'),
 
+    # Account Settings
+    path('dashboard/account_settings/', views.account_settings, name='account_settings'),
+    path('dashboard/account_settings/update/' , views.update_account_settings, name='update_account_settings'),
+
 
     
     

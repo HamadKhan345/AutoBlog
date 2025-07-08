@@ -1,0 +1,172 @@
+{% extends 'admin_dashboard/admin_base.html' %}
+{% load static %}
+
+{% block page_title %}Account Settings{% endblock %}
+
+{% block extra_head %}
+<link href="{% static 'admin_dashboard/styles/account_settings.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="account-settings-container">
+    <div class="settings-header">
+        <div class="header-info">
+            <h1><i class="fas fa-cog"></i> Account Settings</h1>
+            <p>Manage your account security and login credentials</p>
+        </div>
+    </div>
+
+    <div class="settings-content">
+        <!-- Change Username Section -->
+        <div class="settings-card">
+            <div class="card-header">
+                <h3><i class="fas fa-user-edit"></i> Change Username</h3>
+                <p class="card-description">Update your login username</p>
+            </div>
+            <div class="card-content">
+                <form id="usernameForm" class="settings-form" method="post" action="{% url 'update_account_settings' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="currentUsername" class="form-label">Current Username</label>
+                        <input type="text" id="currentUsername" class="form-input" value="{{ user.username }}" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="newUsername" class="form-label">New Username *</label>
+                        <input type="text" id="newUsername" name="new_username" class="form-input" 
+                               placeholder="Enter new username..." maxlength="30" required>
+                        <div class="input-feedback">
+                            <span class="form-help">Username must be 3-30 characters long</span>
+                            <span class="char-count">0/30 characters</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="usernameCurrentPassword" class="form-label">Current Password *</label>
+                        <div class="password-input">
+                            <input type="password" id="usernameCurrentPassword" name="current_password" 
+                                   class="form-input" placeholder="Enter your current password..." required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('usernameCurrentPassword')">
+                                <i class="fas fa-eye-slash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Update Username
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Change Password Section -->
+        <div class="settings-card">
+            <div class="card-header">
+                <h3><i class="fas fa-lock"></i> Change Password</h3>
+                <p class="card-description">Update your account password for better security</p>
+            </div>
+            <div class="card-content">
+                <form id="passwordForm" class="settings-form" method="post" action="{% url 'update_account_settings' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="currentPassword" class="form-label">Current Password *</label>
+                        <div class="password-input">
+                            <input type="password" id="currentPassword" name="current_password" 
+                                   class="form-input" placeholder="Enter your current password..." required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('currentPassword')">
+                                <i class="fas fa-eye-slash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="newPassword" class="form-label">New Password *</label>
+                        <div class="password-input">
+                            <input type="password" id="newPassword" name="new_password" 
+                                   class="form-input" placeholder="Enter new password..." required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('newPassword')">
+                                <i class="fas fa-eye-slash"></i>
+                            </button>
+                        </div>
+                        <div class="input-feedback">
+                            <span class="form-help">Password must be at least 8 characters long</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword" class="form-label">Confirm New Password *</label>
+                        <div class="password-input">
+                            <input type="password" id="confirmPassword" name="confirm_password" 
+                                   class="form-input" placeholder="Confirm new password..." required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword')">
+                                <i class="fas fa-eye-slash"></i>
+                            </button>
+                        </div>
+                        <div class="password-match-indicator" id="passwordMatch"></div>
+                    </div>
+
+                    <div class="security-tips">
+                        <h4><i class="fas fa-shield-alt"></i> Password Security Tips</h4>
+                        <ul>
+                            <li>Use a mix of uppercase and lowercase letters</li>
+                            <li>Include numbers and special characters</li>
+                            <li>Avoid using personal information</li>
+                            <li>Use a unique password for this account</li>
+                        </ul>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Update Password
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Security Information -->
+        <div class="settings-card info-card">
+            <div class="card-header">
+                <h3><i class="fas fa-info-circle"></i> Security Information</h3>
+            </div>
+            <div class="card-content">
+                <div class="security-info">
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="info-details">
+                            <h4>Last Login</h4>
+                            <p>{{ user.last_login|date:"F d, Y - g:i A" }}</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="info-details">
+                            <h4>Account Created</h4>
+                            <p>{{ user.date_joined|date:"F d, Y" }}</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-key"></i>
+                        </div>
+                        <div class="info-details">
+                            <h4>Security</h4>
+                            <p>We recommend changing your password every 90 days</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'admin_dashboard/scripts/account_settings.js' %}"></script>
+{% endblock %}

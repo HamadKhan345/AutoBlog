@@ -539,7 +539,7 @@ def update_profile(request):
         # Update User fields
         user.first_name = request.POST.get('first_name', '').strip()
         user.last_name = request.POST.get('last_name', '').strip()
-        user.email = request.POST.get('email', '').strip()
+        # user.email = request.POST.get('email', '').strip()
 
         # Validation
         if not user.first_name:
@@ -548,9 +548,9 @@ def update_profile(request):
         if not user.last_name:
             messages.error(request, 'Last name is required.')
             return redirect('profile')
-        if not user.email:
-            messages.error(request, 'Email is required.')
-            return redirect('profile')
+        # if not user.email:
+        #     messages.error(request, 'Email is required.')
+        #     return redirect('profile')
 
         # Update Author fields if exists, create if doesn't exist
         author = getattr(user, 'author', None)
@@ -590,3 +590,68 @@ def update_profile(request):
         return redirect('profile')
         
     
+# Account Settings
+@login_required
+def account_settings(request):
+    """
+    Render the account settings page.
+    """
+    return render(request, 'admin_dashboard/account_settings.html')
+
+# ...existing code...
+
+@login_required
+@require_POST
+def update_account_settings(request):
+    user = request.user
+
+    # Change Username
+    if 'new_username' in request.POST:
+        new_username = request.POST.get('new_username', '').strip()
+        current_password = request.POST.get('current_password', '').strip()
+
+        # Validation
+        if not new_username or len(new_username) < 3 or len(new_username) > 30:
+            messages.error(request, 'Username must be 3-30 characters long.')
+            return redirect('account_settings')
+        if not current_password or not user.check_password(current_password):
+            messages.error(request, 'Current password is incorrect.')
+            return redirect('account_settings')
+        if new_username != user.username and \
+           user.__class__.objects.filter(username__iexact=new_username).exists():
+            messages.error(request, 'This username is already taken.')
+            return redirect('account_settings')
+
+        user.username = new_username
+        user.save()
+        messages.success(request, 'Username updated successfully.')
+        return redirect('account_settings')
+
+    # Change Password
+    elif 'new_password' in request.POST:
+        current_password = request.POST.get('current_password', '').strip()
+        new_password = request.POST.get('new_password', '').strip()
+        confirm_password = request.POST.get('confirm_password', '').strip()
+
+        if not current_password or not user.check_password(current_password):
+            messages.error(request, 'Current password is incorrect.')
+            return redirect('account_settings')
+        if len(new_password) < 8:
+            messages.error(request, 'New password must be at least 8 characters long.')
+            return redirect('account_settings')
+        if new_password != confirm_password:
+            messages.error(request, 'New password and confirmation do not match.')
+            return redirect('account_settings')
+        if current_password == new_password:
+            messages.error(request, 'New password cannot be the same as the current password.')
+            return redirect('account_settings')
+
+        user.set_password(new_password)
+        user.save()
+        messages.success(request, 'Password updated successfully. Please log in again.')
+        return redirect('login')
+
+    # If neither form is submitted
+    messages.error(request, 'Invalid request.')
+    return redirect('account_settings')
+# ...existing code...
