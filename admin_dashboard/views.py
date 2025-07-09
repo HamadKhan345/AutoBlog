@@ -210,7 +210,6 @@ def dashboard_categories(request):
 # Save New or Edited Category
 @login_required
 def add_update_category(request):
-    import traceback
     if request.method == 'POST':
         try:
             category_id = request.POST.get('category_id')
