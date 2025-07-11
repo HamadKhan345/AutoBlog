@@ -29,9 +29,9 @@ DEBUG = True
 # USING MY MOBILE TO ACCESS THE SERVER
 # Set this to False in production
 ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '192.168.18.125',  # Add your local IP here
+    # 'localhost',
+    # '127.0.0.1',
+    # '192.168.18.125',  # Add your local IP here
 ]
 
 

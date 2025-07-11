@@ -602,8 +602,6 @@ def account_settings(request):
     """
     return render(request, 'admin_dashboard/account_settings.html')
 
-# ...existing code...
-
 @login_required
 @require_POST
 def update_account_settings(request):
@@ -658,4 +656,3 @@ def update_account_settings(request):
     # If neither form is submitted
     messages.error(request, 'Invalid request.')
     return redirect('account_settings')
-# ...existing code...
