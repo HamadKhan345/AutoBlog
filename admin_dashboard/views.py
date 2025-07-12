@@ -15,6 +15,7 @@ from PIL import Image
 from datetime import datetime, timedelta
 import traceback
 from django.utils.text import slugify
+from django.urls import reverse
 
 # Create your views here.
 
@@ -123,7 +124,7 @@ def add_or_edit_post(request, post_id=None):
     selected_tags = []
     if post_id:
         blog = get_object_or_404(Blog, id=post_id)
-        selected_tags = list(blog.tags.values_list('name', flat=True))  # or adjust for your tag model
+        selected_tags = list(blog.tags.values_list('name', flat=True))
     context = {
         'blog': blog,
         'selected_tags': selected_tags,
@@ -150,7 +151,7 @@ def save_post(request):
                 category = Category.objects.get(id=category_id)
             except Category.DoesNotExist:
                 category = None
-
+  
         blog = None
         if post_id:
             try:
@@ -158,7 +159,39 @@ def save_post(request):
             except Blog.DoesNotExist:
                 blog = None
 
+        # Validation
+        if not title:
+            messages.error(request, 'Title is required.')
+            return redirect('add_or_edit_post')
+        if not excerpt:
+            messages.error(request, 'Excerpt is required.')
+            return redirect('add_or_edit_post')
+        if not content:
+            messages.error(request, 'Content is required.')
+            return redirect('add_or_edit_post')
+        if not category:
+            messages.error(request, 'Category is required.')
+            return redirect('add_or_edit_post')
+        if thumbnail and thumbnail.size > 5 * 1024 * 1024:
+            messages.error(request, 'Thumbnail size exceeds 5MB.')
+            return redirect('add_or_edit_post')
+        
+         # Duplicate title check (case-insensitive, prevents slug conflict)
         if blog:
+            # Editing: allow same title if it's the same post
+            if Blog.objects.filter(title__iexact=title).exclude(id=blog.id).exists():
+                messages.error(request, 'A post with this title already exists.')
+                return redirect(reverse('edit_post', args=[post_id]))
+        else:
+            # Creating: any match is a duplicate
+            if Blog.objects.filter(title__iexact=title).exists():
+                messages.error(request, 'A post with this title already exists.')
+                return redirect('add_or_edit_post')
+        
+
+
+        if blog:
+          
             # Update existing post
             blog.title = title
             blog.excerpt = excerpt
@@ -171,6 +204,7 @@ def save_post(request):
             blog.thumbnail_caption = thumbnail_caption
             blog.save()
         else:
+
             # Create new post
             author = request.user.author if hasattr(request.user, 'author') else None
             blog_data = {
