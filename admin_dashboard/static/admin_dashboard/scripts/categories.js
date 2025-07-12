@@ -95,7 +95,14 @@ document.addEventListener('DOMContentLoaded', function() {
     cancelBtn.addEventListener('click', () => modal.style.display = 'none');
 
     // Image upload preview
-    imageUploadArea.addEventListener('click', () => imageInput.click());
+    imageUploadArea.addEventListener('click', function(e) {
+        // Only trigger file input if not clicking the remove button
+        if (e.target === removeImageBtn || removeImageBtn.contains(e.target)) {
+            return;
+        }
+        imageInput.click();
+    });
+
     imageInput.addEventListener('change', function() {
         if (this.files && this.files[0]) {
             const reader = new FileReader();
@@ -107,8 +114,10 @@ document.addEventListener('DOMContentLoaded', function() {
             reader.readAsDataURL(this.files[0]);
         }
     });
+
     removeImageBtn.addEventListener('click', function(e) {
         e.preventDefault();
+        e.stopPropagation(); // Prevent bubbling to imageUploadArea
         imageInput.value = '';
         previewImage.src = '';
         imagePreview.style.display = 'none';

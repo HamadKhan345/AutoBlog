@@ -258,7 +258,9 @@ def add_update_category(request):
                 return JsonResponse({'success': 0, 'error': 'Category name cannot exceed 20 characters.'})
             if not description:
                 return JsonResponse({'success': 0, 'error': 'Category description is required.'})
-
+            if len(description) > 200:
+                return JsonResponse({'success': 0, 'error': 'Category description cannot exceed 200 characters.'})   
+            
             # If updating, fetch the category
             if category_id:
                 try:
@@ -269,6 +271,9 @@ def add_update_category(request):
                 # Check for duplicate name (exclude self)
                 if Category.objects.filter(name__iexact=name).exclude(id=category_id).exists():
                     return JsonResponse({'success': 0, 'error': 'Another category with this name already exists.'})
+                
+                # if not category.thumbnail or not thumbnail:
+                #     return JsonResponse({'success': 0, 'error': 'Thumbnail is required.'})
 
                 category.name = name
                 category.description = description
@@ -293,6 +298,10 @@ def add_update_category(request):
                 # Create new category
                 if Category.objects.filter(name__iexact=name).exists():
                     return JsonResponse({'success': 0, 'error': 'Category with this name already exists.'})
+                
+                if not thumbnail:
+                    return JsonResponse({'success': 0, 'error': 'Thumbnail is required.'})
+
                 if thumbnail and thumbnail.size > 5 * 1024 * 1024:
                     return JsonResponse({'success': 0, 'error': 'Thumbnail size exceeds 5MB.'})
                 category = Category.objects.create(
