@@ -191,7 +191,6 @@ def save_post(request):
 
 
         if blog:
-          
             # Update existing post
             blog.title = title
             blog.excerpt = excerpt
@@ -200,11 +199,14 @@ def save_post(request):
             blog.category = category
             if thumbnail:
                 blog.thumbnail = thumbnail
-            # If no thumbnail uploaded, keep existing (default or previous)
             blog.thumbnail_caption = thumbnail_caption
+            try:
+                blog.full_clean()
+            except Exception as e:
+                messages.error(request, f"Validation error: {str(e)}")
+                return redirect('add_or_edit_post')
             blog.save()
         else:
-
             # Create new post
             author = request.user.author if hasattr(request.user, 'author') else None
             blog_data = {
@@ -218,9 +220,15 @@ def save_post(request):
             }
             if thumbnail:
                 blog_data['thumbnail'] = thumbnail
-            blog = Blog.objects.create(**blog_data)
+            blog = Blog(**blog_data)
+            try:
+                blog.full_clean()
+            except Exception as e:
+                messages.error(request, f"Validation error: {str(e)}")
+                return redirect('add_or_edit_post')
+            blog.save()
 
-        # Handle tags (assuming tags_json is a JSON array of tag names)
+        # Handle tags
         tag_names = json.loads(tags_json)
         tags = []
         for tag_name in tag_names:
@@ -271,9 +279,6 @@ def add_update_category(request):
                 # Check for duplicate name (exclude self)
                 if Category.objects.filter(name__iexact=name).exclude(id=category_id).exists():
                     return JsonResponse({'success': 0, 'error': 'Another category with this name already exists.'})
-                
-                # if not category.thumbnail or not thumbnail:
-                #     return JsonResponse({'success': 0, 'error': 'Thumbnail is required.'})
 
                 category.name = name
                 category.description = description
@@ -281,6 +286,10 @@ def add_update_category(request):
                     if thumbnail.size > 5 * 1024 * 1024:
                         return JsonResponse({'success': 0, 'error': 'Thumbnail size exceeds 5MB.'})
                     category.thumbnail = thumbnail
+                try:
+                    category.full_clean()
+                except Exception as e:
+                    return JsonResponse({'success': 0, 'error': f'Validation error: {str(e)}'})
                 category.save()
                 return JsonResponse({
                     'success': 1,
@@ -298,17 +307,20 @@ def add_update_category(request):
                 # Create new category
                 if Category.objects.filter(name__iexact=name).exists():
                     return JsonResponse({'success': 0, 'error': 'Category with this name already exists.'})
-                
                 if not thumbnail:
                     return JsonResponse({'success': 0, 'error': 'Thumbnail is required.'})
-
                 if thumbnail and thumbnail.size > 5 * 1024 * 1024:
                     return JsonResponse({'success': 0, 'error': 'Thumbnail size exceeds 5MB.'})
-                category = Category.objects.create(
+                category = Category(
                     name=name,
                     description=description,
                     thumbnail=thumbnail
                 )
+                try:
+                    category.full_clean()
+                except Exception as e:
+                    return JsonResponse({'success': 0, 'error': f'Validation error: {str(e)}'})
+                category.save()
                 return JsonResponse({
                     'success': 1,
                     'message': 'Category created successfully.',
@@ -624,7 +636,13 @@ def update_profile(request):
 
             author.profile_picture = profile_picture
 
-        # Save changes
+
+        # Save changes with validation
+        try:
+            author.full_clean()
+        except Exception as e:
+            messages.error(request, f'Validation error: {str(e)}')
+            return redirect('profile')
         author.save()
         user.save()
 
