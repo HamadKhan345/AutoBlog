@@ -92,7 +92,7 @@ class Category(models.Model):
 # Blog Model
 class Blog(models.Model):
   title = models.CharField(max_length=200, blank=False, null=False)
-  slug = models.SlugField(unique=True, blank=True, max_length=200)
+  slug = models.SlugField(unique=True, blank=False, max_length=200)
   content = models.TextField(blank=False, null=False)
   excerpt = models.CharField(max_length=160, blank=False, null=False)
   thumbnail = models.ImageField(upload_to='blogs/', blank=False, null=False, default='blogs/default.jpg', validators=[validate_image_size, validate_image_type])
