@@ -19,6 +19,7 @@ Categories
 {% block content %}
 <div class="categories-header">
   <div class="categories-actions">
+    {% if request.user.is_superuser or request.user.author.role == 'admin' or request.user.author.role == 'moderator' %}
     <button class="btn btn-primary" id="addCategoryBtn">
       <i class="fas fa-plus"></i>
       Add New Category
@@ -27,6 +28,7 @@ Categories
       <i class="fas fa-trash"></i>
       Delete Selected (<span id="selectedCount">0</span>)
     </button>
+    {% endif %}
   </div>
 </div>
 
@@ -37,6 +39,7 @@ Categories
 {% for category in categories %}
 <div class="category-card">
   <div class="category-header">
+    {% if request.user.is_superuser or request.user.author.role == 'admin' or request.user.author.role == 'moderator' %}
     <div class="category-actions">
       <button class="btn-action btn-edit" title="Edit Category" data-category-id="{{ category.id }}">
         <i class="fas fa-edit"></i>
@@ -45,6 +48,7 @@ Categories
         <i class="fas fa-trash"></i>
       </button>
     </div>
+    {% endif %}
   </div>
   <div class="category-image">
     <img src="{{ category.thumbnail.url }}" alt="{{ category.name }}">

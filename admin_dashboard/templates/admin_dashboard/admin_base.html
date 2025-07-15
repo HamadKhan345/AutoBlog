@@ -44,7 +44,7 @@
                             <li><a href="{% url 'dashboard_categories' %}">Categories</a></li>
                         </ul>
                     </li>
-                    {% if request.user.is_superuser %}
+                    {% if request.user.is_superuser or request.user.author.role == 'admin' or request.user.author.role == 'moderator' %}
                     <li class="nav-item has-submenu">
                         <a href="#" {% block Useractive %}class="nav-link" {% endblock %}>
                             <i class="fas fa-users"></i>

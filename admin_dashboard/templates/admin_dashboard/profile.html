@@ -24,7 +24,7 @@
         </div>
         <div class="profile-info">
             <h2 class="profile-name">{{ user.first_name|default:"" }} {{ user.last_name|default:"" }}</h2>
-            <p class="profile-role">Administrator</p>
+            <p class="profile-role">{{ request.user.author.role | upper }}</p>
             <p class="profile-email">{{ user.email|default:"" }}</p>
         </div>
     </div>

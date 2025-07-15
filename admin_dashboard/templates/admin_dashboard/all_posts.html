@@ -29,6 +29,7 @@ All Posts
     </button>
   </div>
 
+
   <form class="posts-filters" method="get" id="postsFilterForm"
     style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
     <div class="search-box">
@@ -51,7 +52,11 @@ All Posts
     <button type="submit" style="display:none"></button>
   </form>
 </div>
-
+  <!-- The Color Represent that you are the authro of this post -->
+  <p style="font-size: 13px; color: #666; margin: 8px 0; background: #f8f9fa; padding: 8px 12px; border-radius: 4px;">
+    <i class="fas fa-info-circle" style="color: #007bff; margin-right: 6px;"></i>
+    Posts highlighted in <strong style="color: #007bff;">blue</strong> are authored by you.
+  </p>
 <div class="posts-table-container">
   <table class="posts-table">
     <thead>
@@ -73,12 +78,14 @@ All Posts
     </thead>
     <tbody id="postsTableBody">
       {% for blog in blogs %}
-      <tr class="post-row">
+      <tr class="post-row" {% if blog.author.user == request.user %}style="background-color: #f2f9ff;"{% endif %}>
         <td>
+          {% if request.user.is_superuser or request.user.author.role == 'admin' or request.user.author.role == 'moderator' or request.user == blog.author.user %}
           <label class="checkbox-container">
             <input type="checkbox" class="post-checkbox" data-post-id="{{ blog.id }}">
             <span class="checkmark"></span>
           </label>
+          {% endif %}
         </td>
         <td>
           <div class="post-image">
@@ -110,19 +117,23 @@ All Posts
         </td>
         <td>
           <div class="actions-buttons">
+            {% if request.user.is_superuser or request.user.author.role == 'admin' or request.user.author.role == 'moderator' or request.user == blog.author.user %}
             <a href="{% url 'edit_post' blog.id %}">
             <button class="btn-action btn-edit" title="Edit Post">
               <i class="fas fa-edit"></i>
             </button>
             </a>
+            {% endif %}
             <a href="{{ blog.get_absolute_url }}" target="_blank">
               <button class="btn-action btn-view" title="View Post">
                 <i class="fas fa-eye"></i>
               </button>
             </a>
+            {% if request.user.is_superuser or request.user.author.role == 'admin' or request.user.author.role == 'moderator' or request.user == blog.author.user %}
             <button class="btn-action btn-delete" title="Delete Post" data-post-id="{{ blog.id }}">
               <i class="fas fa-trash"></i>
             </button>
+            {% endif %}
           </div>
         </td>
       </tr>

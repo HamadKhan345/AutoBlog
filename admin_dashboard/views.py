@@ -97,6 +97,9 @@ def all_posts(request):
   return render(request, 'admin_dashboard/all_posts.html', context=context)
 
 # Delete Post
+
+# This view handles both single and bulk deletion of posts. Superuser, admin and moderator can delete any post,
+# while editors can only delete their own posts. Both single and bulk deletion are handled in the same view for simplicity.
 @login_required
 @require_POST
 def delete_post(request):
@@ -104,26 +107,58 @@ def delete_post(request):
     bulk_ids = request.POST.get('bulk_delete_ids')
     if bulk_ids:
         ids = [int(i) for i in bulk_ids.split(',') if i.isdigit()]
-        for blog in Blog.objects.filter(id__in=ids):
-            blog.delete()  # This will call your custom delete method
-        return redirect('all_posts')
+        blogs = Blog.objects.filter(id__in=ids)
+        # Superuser/admin/moderator: can delete any
+        if request.user.is_superuser or request.user.author.role in ['admin', 'moderator']:
+            for blog in blogs:
+                blog.delete()
+            return redirect('all_posts')
+        # Editor: can only delete their own blogs
+        elif request.user.author.role == 'editor':
+            for blog in blogs:
+                if blog.author.user == request.user:
+                    blog.delete()
+            return redirect('all_posts')
+        else:
+            messages.error(request, 'You do not have permission to bulk delete posts.')
+            return redirect('all_posts')
+
     # Single delete
     post_id = request.POST.get('delete_post')
     if post_id:
         try:
             blog = Blog.objects.get(id=post_id)
-            blog.delete()
         except Blog.DoesNotExist:
-            pass
+            messages.error(request, 'Post not found.')
+            return redirect('all_posts')
+        if (
+            request.user.is_superuser or
+            request.user.author.role in ['admin', 'moderator'] or
+            blog.author.user == request.user
+        ):
+            blog.delete()
+            return redirect('all_posts')
+        else:
+            messages.error(request, 'You do not have permission to delete this post.')
+            return redirect('all_posts')
+
+    messages.error(request, 'No post specified for deletion.')
     return redirect('all_posts')
 
 # Add New Post
+
+# Here we are also check who are actually allowed to edit posts. Superuser, admin and moderator can edit any post,
+# while editors can only edit their own posts. This is done by checking the post's author against the current user.
 @login_required
 def add_or_edit_post(request, post_id=None):
     blog = None
     selected_tags = []
     if post_id:
         blog = get_object_or_404(Blog, id=post_id)
+        # Permission check for editing
+        if not (request.user.is_superuser or request.user.author.role in ['admin', 'moderator'] or blog.author.user == request.user):
+            messages.error(request, 'You do not have permission to edit this post.')
+            return redirect('all_posts')
         selected_tags = list(blog.tags.values_list('name', flat=True))
     context = {
         'blog': blog,
@@ -252,111 +287,118 @@ def dashboard_categories(request):
 # Save New or Edited Category
 @login_required
 def add_update_category(request):
-    if request.method == 'POST':
-        try:
-            category_id = request.POST.get('category_id')
-            name = request.POST.get('name', '').strip()
-            description = request.POST.get('description', '').strip()
-            thumbnail = request.FILES.get('thumbnail')
+    if request.user.is_superuser or request.user.author.role in ['admin', 'moderator']:
+    
+        if request.method == 'POST':
+            try:
+                category_id = request.POST.get('category_id')
+                name = request.POST.get('name', '').strip()
+                description = request.POST.get('description', '').strip()
+                thumbnail = request.FILES.get('thumbnail')
 
-            # Validation
-            if not name:
-                return JsonResponse({'success': 0, 'error': 'Category name is required.'})
-            if len(name) > 20:
-                return JsonResponse({'success': 0, 'error': 'Category name cannot exceed 20 characters.'})
-            if not description:
-                return JsonResponse({'success': 0, 'error': 'Category description is required.'})
-            if len(description) > 200:
-                return JsonResponse({'success': 0, 'error': 'Category description cannot exceed 200 characters.'})   
-            
-            # If updating, fetch the category
-            if category_id:
-                try:
-                    category = Category.objects.get(id=category_id)
-                except Category.DoesNotExist:
-                    return JsonResponse({'success': 0, 'error': 'Category not found.'})
+                # Validation
+                if not name:
+                    return JsonResponse({'success': 0, 'error': 'Category name is required.'})
+                if len(name) > 20:
+                    return JsonResponse({'success': 0, 'error': 'Category name cannot exceed 20 characters.'})
+                if not description:
+                    return JsonResponse({'success': 0, 'error': 'Category description is required.'})
+                if len(description) > 500:
+                    return JsonResponse({'success': 0, 'error': 'Category description cannot exceed 500 characters.'})   
+                
+                # If updating, fetch the category
+                if category_id:
+                    try:
+                        category = Category.objects.get(id=category_id)
+                    except Category.DoesNotExist:
+                        return JsonResponse({'success': 0, 'error': 'Category not found.'})
 
-                # Check for duplicate name (exclude self)
-                if Category.objects.filter(name__iexact=name).exclude(id=category_id).exists():
-                    return JsonResponse({'success': 0, 'error': 'Another category with this name already exists.'})
+                    # Check for duplicate name (exclude self)
+                    if Category.objects.filter(name__iexact=name).exclude(id=category_id).exists():
+                        return JsonResponse({'success': 0, 'error': 'Another category with this name already exists.'})
 
-                category.name = name
-                category.description = description
-                if thumbnail:
-                    if thumbnail.size > 5 * 1024 * 1024:
+                    category.name = name
+                    category.description = description
+                    if thumbnail:
+                        if thumbnail.size > 5 * 1024 * 1024:
+                            return JsonResponse({'success': 0, 'error': 'Thumbnail size exceeds 5MB.'})
+                        category.thumbnail = thumbnail
+                    try:
+                        category.full_clean()
+                    except Exception as e:
+                        return JsonResponse({'success': 0, 'error': f'Validation error: {str(e)}'})
+                    category.save()
+                    return JsonResponse({
+                        'success': 1,
+                        'message': 'Category updated successfully.',
+                        'category': {
+                            'id': category.id,
+                            'name': category.name,
+                            'description': category.description,
+                            'thumbnail_url': category.thumbnail.url,
+                            'slug': category.slug,
+                            'get_absolute_url': category.get_absolute_url(),
+                        }
+                    })
+                else:
+                    # Create new category
+                    if Category.objects.filter(name__iexact=name).exists():
+                        return JsonResponse({'success': 0, 'error': 'Category with this name already exists.'})
+                    if not thumbnail:
+                        return JsonResponse({'success': 0, 'error': 'Thumbnail is required.'})
+                    if thumbnail and thumbnail.size > 5 * 1024 * 1024:
                         return JsonResponse({'success': 0, 'error': 'Thumbnail size exceeds 5MB.'})
-                    category.thumbnail = thumbnail
-                try:
-                    category.full_clean()
-                except Exception as e:
-                    return JsonResponse({'success': 0, 'error': f'Validation error: {str(e)}'})
-                category.save()
-                return JsonResponse({
-                    'success': 1,
-                    'message': 'Category updated successfully.',
-                    'category': {
-                        'id': category.id,
-                        'name': category.name,
-                        'description': category.description,
-                        'thumbnail_url': category.thumbnail.url,
-                        'slug': category.slug,
-                        'get_absolute_url': category.get_absolute_url(),
-                    }
-                })
-            else:
-                # Create new category
-                if Category.objects.filter(name__iexact=name).exists():
-                    return JsonResponse({'success': 0, 'error': 'Category with this name already exists.'})
-                if not thumbnail:
-                    return JsonResponse({'success': 0, 'error': 'Thumbnail is required.'})
-                if thumbnail and thumbnail.size > 5 * 1024 * 1024:
-                    return JsonResponse({'success': 0, 'error': 'Thumbnail size exceeds 5MB.'})
-                category = Category(
-                    name=name,
-                    description=description,
-                    thumbnail=thumbnail
-                )
-                try:
-                    category.full_clean()
-                except Exception as e:
-                    return JsonResponse({'success': 0, 'error': f'Validation error: {str(e)}'})
-                category.save()
-                return JsonResponse({
-                    'success': 1,
-                    'message': 'Category created successfully.',
-                    'category': {
-                        'id': category.id,
-                        'name': category.name,
-                        'description': category.description,
-                        'thumbnail_url': category.thumbnail.url,
-                        'slug': category.slug,
-                        'get_absolute_url': category.get_absolute_url(),
-                    }
-                })
-        except Exception as e:
-            print('Error in add_update_category:', e)
-            traceback.print_exc()
-            return JsonResponse({'success': 0, 'error': f'Server error: {str(e)}'})
-    return JsonResponse({'success': 0, 'error': 'Invalid request method.'})
+                    category = Category(
+                        name=name,
+                        description=description,
+                        thumbnail=thumbnail
+                    )
+                    try:
+                        category.full_clean()
+                    except Exception as e:
+                        return JsonResponse({'success': 0, 'error': f'Validation error: {str(e)}'})
+                    category.save()
+                    return JsonResponse({
+                        'success': 1,
+                        'message': 'Category created successfully.',
+                        'category': {
+                            'id': category.id,
+                            'name': category.name,
+                            'description': category.description,
+                            'thumbnail_url': category.thumbnail.url,
+                            'slug': category.slug,
+                            'get_absolute_url': category.get_absolute_url(),
+                        }
+                    })
+            except Exception as e:
+                print('Error in add_update_category:', e)
+                traceback.print_exc()
+                return JsonResponse({'success': 0, 'error': f'Server error: {str(e)}'})
+        return JsonResponse({'success': 0, 'error': 'Invalid request method.'})
+    else:
+        return JsonResponse({'success': 0, 'error': 'You do not have permission to add or edit categories.'})
 
 # Delete Category
 @login_required
 @require_POST
 def delete_category(request):
-    try:
-        category_id = request.POST.get('category_id')
-        if not category_id:
-            return JsonResponse({'success': 0, 'error': 'No category specified.'})
+    if request.user.is_superuser or request.user.author.role in ['admin', 'moderator']:
         try:
-            category = Category.objects.get(id=category_id)
-        except Category.DoesNotExist:
-            return JsonResponse({'success': 0, 'error': 'Category not found.'})
+            category_id = request.POST.get('category_id')
+            if not category_id:
+                return JsonResponse({'success': 0, 'error': 'No category specified.'})
+            try:
+                category = Category.objects.get(id=category_id)
+            except Category.DoesNotExist:
+                return JsonResponse({'success': 0, 'error': 'Category not found.'})
 
-        category.delete()
-        return JsonResponse({'success': 1, 'message': 'Category deleted.'})
-    except Exception as e:
-        traceback.print_exc()
-        return JsonResponse({'success': 0, 'error': f'Server error: {str(e)}'})
+            category.delete()
+            return JsonResponse({'success': 1, 'message': 'Category deleted.'})
+        except Exception as e:
+            traceback.print_exc()
+            return JsonResponse({'success': 0, 'error': f'Server error: {str(e)}'})
+    else:
+        return JsonResponse({'success': 0, 'error': 'You do not have permission to delete categories.'})
 
 # Media Library
 @login_required

@@ -33,6 +33,13 @@ class Author(models.Model):
   bio = models.TextField(blank=True, null=True)
   profile_picture = models.ImageField(upload_to='authors/', blank=False, null=False, default='authors/default.jpg', validators=[validate_image_size, validate_image_type])
 
+  ROLE_CHOICES = [
+    ('admin', 'Admin'),
+    ('moderator', 'Moderator'),
+    ('editor', 'Editor'),
+  ]
+  role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='editor')
+
   def __str__(self):
     return f"{self.user.first_name} {self.user.last_name}".strip() or self.user.username
   
@@ -59,7 +66,7 @@ class Author(models.Model):
 class Category(models.Model):  
   name = models.CharField(max_length=20, blank=False, null=False)
   slug = models.SlugField(unique=True, blank=True)
-  description = models.TextField(max_length=500, blank=False, null=False,)
+  description = models.CharField(max_length=500, blank=False, null=False,)
   thumbnail = models.ImageField(upload_to='categories/', blank=False, null=False, default='categories/default.jpg', validators=[validate_image_size, validate_image_type])
 
   def __str__(self):

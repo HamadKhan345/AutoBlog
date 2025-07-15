@@ -731,11 +731,10 @@ body {
     }
 
     .user-dropdown {
-        right: -1rem;
-        left: 1rem;
-        min-width: auto;
-        width: auto;
-        max-width: calc(100vw - 2rem);
+        right: 0;
+        left: auto;
+        /* transform: translateX(calc(-100% + 3rem)); */
+        min-width: 180px;
     }
 }
 

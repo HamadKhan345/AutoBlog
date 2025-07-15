@@ -52,7 +52,7 @@
               </div>
             </div>
             <div class="post-stats">
-              <span class="post-date">{{ blog.created_at | timesince}} ago</span>
+                <span class="post-date">{{ blog.created_at|date:"F j, Y" }}</span>
               <!-- <span class="post-read-time"></span> -->
               <span class="post-views">{{ blog.view_count }} views</span>
             </div>
