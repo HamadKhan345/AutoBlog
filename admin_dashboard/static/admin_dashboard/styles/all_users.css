@@ -143,8 +143,8 @@
 
 /* Column Widths */
 .avatar-col { width: 80px; }
-.name-col { width: 25%; }
-.email-col { width: 25%; }
+/* .name-col { width: 25%; } */
+/* .email-col { width: 25%; } */
 .role-col { width: 120px; }
 .login-col { width: 140px; }
 .joined-col { width: 140px; }

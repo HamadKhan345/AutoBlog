@@ -1,0 +1,463 @@
+/* ===========================
+   ADD USER - ADMIN DASHBOARD
+   =========================== */
+
+:root {
+    --primary-color: #000000;
+    --primary-light: #222325;
+    --secondary-color: #161616;
+    --light-bg: #f8f9fa;
+    --white: #ffffff;
+    --border-color: #e9ecef;
+    --border-hover: #adb5bd;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --info-color: #17a2b8;
+    --text-muted: #6c757d;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 15px rgba(33, 37, 41, 0.15);
+}
+
+/* ===========================
+   CONTAINER
+   =========================== */
+.add-user-content {
+    padding: 2rem 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ===========================
+   FORM CARD
+   =========================== */
+.user-form-card {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    margin: 0 auto;
+    max-width: 800px;
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card-header {
+    padding: 2rem;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--light-bg);
+}
+
+.card-header h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.card-subtitle {
+    margin: 0;
+    color: var(--secondary-color);
+    font-size: 0.95rem;
+    opacity: 0.8;
+}
+
+/* ===========================
+   FORM STYLES
+   =========================== */
+.user-form {
+    padding: 2rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    font-size: 0.9rem;
+}
+
+.required {
+    color: var(--danger-color);
+    font-weight: 700;
+}
+
+/* ===========================
+   INPUT STYLING - FIXED ALL BORDER ISSUES
+   =========================== */
+.form-input,
+.form-select {
+    width: 100%;
+    padding: 0.875rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-family: inherit;
+    transition: var(--transition);
+    background: var(--white);
+    color: var(--primary-color);
+    box-sizing: border-box;
+}
+
+/* Remove all default browser styling */
+.form-input,
+.form-select {
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* Focus states - clean single border */
+.form-input:focus,
+.form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(33, 37, 41, 0.1);
+}
+
+/* Hover states */
+.form-input:hover:not(:focus),
+.form-select:hover:not(:focus) {
+    border-color: var(--border-hover);
+}
+
+/* Remove invalid/valid styling that causes red borders */
+.form-input:invalid,
+.form-input:valid {
+    border-color: var(--border-color);
+    box-shadow: none;
+}
+
+.form-input:focus:invalid {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(33, 37, 41, 0.1);
+}
+
+.form-input::placeholder {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    opacity: 0.7;
+}
+
+/* ===========================
+   SELECT STYLING
+   =========================== */
+.form-select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+    padding-right: 2.5rem;
+}
+
+.form-select option {
+    padding: 0.75rem;
+    font-size: 0.875rem;
+    color: var(--primary-color);
+    background: var(--white);
+}
+
+/* ===========================
+   PASSWORD INPUT
+   =========================== */
+.password-input {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input .form-input {
+    padding-right: 3rem;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    color: var(--secondary-color);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    outline: none;
+}
+
+.password-toggle:hover {
+    color: var(--primary-color);
+    background-color: rgba(33, 37, 41, 0.1);
+}
+
+.password-toggle:focus {
+    color: var(--primary-color);
+    background-color: rgba(33, 37, 41, 0.15);
+}
+
+.password-toggle i {
+    transition: var(--transition);
+}
+
+.password-toggle:hover i {
+    transform: scale(1.1);
+}
+
+/* ===========================
+   HELP TEXT
+   =========================== */
+.help-text {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--secondary-color);
+    line-height: 1.4;
+    opacity: 0.8;
+}
+
+/* ===========================
+   BUTTONS
+   =========================== */
+.btn {
+    padding: 0.875rem 1.75rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    line-height: 1;
+    outline: none;
+    min-height: 44px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: var(--white);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background: linear-gradient(135deg, var(--primary-light), var(--primary-color));
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+    text-decoration: none;
+    color: var(--white);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+/* ===========================
+   FORM ACTIONS
+   =========================== */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+    margin-top: 2rem;
+}
+
+/* ===========================
+   RESPONSIVE DESIGN
+   =========================== */
+@media (max-width: 768px) {
+    .add-user-content {
+        padding: 1rem;
+    }
+
+    .user-form {
+        padding: 1.5rem;
+    }
+
+    .card-header {
+        padding: 1.5rem;
+    }
+
+    .card-header h3 {
+        font-size: 1.25rem;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+        padding-top: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .add-user-content {
+        padding: 0.5rem;
+    }
+
+    .user-form {
+        padding: 1rem;
+    }
+
+    .card-header {
+        padding: 1rem;
+    }
+
+    .card-header h3 {
+        font-size: 1.1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .form-input,
+    .form-select {
+        font-size: 16px; /* Prevents zoom on iOS */
+        padding: 0.75rem;
+        min-height: 44px;
+    }
+
+    .password-input .form-input {
+        padding-right: 3rem;
+    }
+
+    .password-toggle {
+        width: 36px;
+        height: 36px;
+    }
+}
+
+/* ===========================
+   ACCESSIBILITY
+   =========================== */
+.form-input:focus-visible,
+.form-select:focus-visible,
+.password-toggle:focus-visible,
+.btn:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* ===========================
+   LOADING STATE
+   =========================== */
+.btn.loading {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.btn.loading::after {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-left: 0.5rem;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ===========================
+   FORM VALIDATION STYLES (CUSTOM)
+   =========================== */
+.form-group.error .form-input,
+.form-group.error .form-select {
+    border-color: var(--danger-color);
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+.form-group.success .form-input,
+.form-group.success .form-select {
+    border-color: var(--success-color);
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+}
+
+.error-text {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--danger-color);
+    font-weight: 500;
+}
+
+/* ===========================
+   WEBKIT/FIREFOX SPECIFIC FIXES
+   =========================== */
+.form-input::-webkit-outer-spin-button,
+.form-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.form-input[type=number] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.form-input::-webkit-search-decoration,
+.form-input::-webkit-search-cancel-button,
+.form-input::-webkit-search-results-button,
+.form-input::-webkit-search-results-decoration {
+    -webkit-appearance: none;
+}
+
+.form-select::-ms-expand {
+    display: none;
+}

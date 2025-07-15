@@ -44,5 +44,6 @@ urlpatterns = [
 
     # Users
     path('dashboard/all_users/', views.all_users, name='all_users'),
+    path('dashboard/add_new_user/', views.add_new_user, name='add_new_user'),
     
 ]

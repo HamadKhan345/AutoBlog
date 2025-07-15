@@ -729,8 +729,12 @@ def update_account_settings(request):
             return redirect('account_settings')
 
         user.username = new_username
-        user.save()
-        messages.success(request, 'Username updated successfully.')
+        try:
+            user.full_clean()
+            user.save()
+            messages.success(request, 'Username updated successfully.')
+        except Exception as e:
+            messages.error(request, f'Validation error: {str(e)}')
         return redirect('account_settings')
 
     # Change Password
@@ -753,9 +757,14 @@ def update_account_settings(request):
             return redirect('account_settings')
 
         user.set_password(new_password)
-        user.save()
-        messages.success(request, 'Password updated successfully. Please log in again.')
-        return redirect('login')
+        try:
+            user.full_clean()
+            user.save()
+            messages.success(request, 'Password updated successfully. Please log in again.')
+            return redirect('login')
+        except Exception as e:
+            messages.error(request, f'Validation error: {str(e)}')
+            return redirect('account_settings')
 
     # If neither form is submitted
     messages.error(request, 'Invalid request.')
@@ -819,3 +828,85 @@ def all_users(request):
     }
     
     return render(request, 'admin_dashboard/all_users.html', context)
+
+
+# Add New User
+@login_required
+def add_new_user(request):
+    if not (request.user.is_superuser or request.user.author.role in ['admin', 'moderator']):
+        messages.error(request, 'You do not have permission to add new users.')
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name', '').strip()
+        last_name = request.POST.get('last_name', '').strip()
+        email = request.POST.get('email', '').strip()
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '')
+        confirm_password = request.POST.get('confirm_password', '')
+        role = request.POST.get('role', '')
+
+        # Basic validation
+        if not all([first_name, last_name, email, username, password, confirm_password, role]):
+            messages.error(request, 'All fields are required.')
+            return render(request, 'admin_dashboard/add_new_user.html', {
+                'role_choices': Author.ROLE_CHOICES
+            })
+
+        if password != confirm_password:
+            messages.error(request, 'Passwords do not match.')
+            return render(request, 'admin_dashboard/add_new_user.html', {
+                'role_choices': Author.ROLE_CHOICES
+            })
+
+        if len(password) < 8:
+            messages.error(request, 'Password must be at least 8 characters long.')
+            return render(request, 'admin_dashboard/add_new_user.html', {
+                'role_choices': Author.ROLE_CHOICES
+            })
+
+        if User.objects.filter(username__iexact=username).exists():
+            messages.error(request, 'Username already exists.')
+            return render(request, 'admin_dashboard/add_new_user.html', {
+                'role_choices': Author.ROLE_CHOICES
+            })
+
+        if User.objects.filter(email__iexact=email).exists():
+            messages.error(request, 'Email already exists.')
+            return render(request, 'admin_dashboard/add_new_user.html', {
+                'role_choices': Author.ROLE_CHOICES
+            })
+
+        try:
+            # Create User
+            user = User(
+                username=username,
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                is_active=True
+            )
+            user.set_password(password)
+            user.full_clean()
+            user.save()
+
+            # Create Author
+            author = Author(
+                user=user,
+                role=role
+            )
+            author.full_clean()
+            author.save()
+
+            messages.success(request, 'User created successfully.')
+            return redirect('all_users')
+        except Exception as e:
+            messages.error(request, f'Error creating user: {str(e)}')
+            return render(request, 'admin_dashboard/add_new_user.html', {
+                'role_choices': Author.ROLE_CHOICES
+            })
+
+    # GET request
+    return render(request, 'admin_dashboard/add_new_user.html', {
+        'role_choices': Author.ROLE_CHOICES
+    })
