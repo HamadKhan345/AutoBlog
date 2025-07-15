@@ -29,14 +29,14 @@ Media Library
         <input type="text" name="search" id="searchInput" placeholder="Search media files..."
           value="{{ search_query }}">
       </div>
-      <select class="filter-select" name="type" id="typeFilter">
+      <select class="filter-select" name="type" id="typeFilter" onchange="this.form.submit()">
         <option value="">All Types</option>
         <option value="image" {% if type_filter == 'image' %}selected{% endif %}>Images</option>
         <option value="document" {% if type_filter == 'document' %}selected{% endif %}>Documents</option>
         <option value="video" {% if type_filter == 'video' %}selected{% endif %}>Videos</option>
         <option value="audio" {% if type_filter == 'audio' %}selected{% endif %}>Audio</option>
       </select>
-      <select class="filter-select" name="date" id="dateFilter">
+      <select class="filter-select" name="date" id="dateFilter" onchange="this.form.submit()">
         <option value="">All Dates</option>
         <option value="today" {% if date_filter == 'today' %}selected{% endif %}>Today</option>
         <option value="week" {% if date_filter == 'week' %}selected{% endif %}>This Week</option>

@@ -316,12 +316,14 @@ position: absolute;
     font-size: 0.875rem;
     color: var(--primary-color);
     font-weight: 500;
+    white-space: nowrap;
 }
 
 .post-date .time {
     display: block;
     font-size: 0.75rem;
     color: var(--secondary-color);
+    white-space: nowrap;
 }
 
 /* Views Count */

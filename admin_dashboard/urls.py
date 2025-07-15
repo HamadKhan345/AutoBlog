@@ -42,6 +42,7 @@ urlpatterns = [
     path('dashboard/account_settings/update/' , views.update_account_settings, name='update_account_settings'),
 
 
-    
+    # Users
+    path('dashboard/all_users/', views.all_users, name='all_users'),
     
 ]

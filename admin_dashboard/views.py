@@ -6,8 +6,9 @@ from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib import messages
 from django.views.decorators.http import require_POST
-from core.models import Blog, Category, Tag, Author
+from core.models import Blog, Category, Tag, Author, User
 import json
+from django.db.models import Q, Count, Sum
 from django.http import JsonResponse
 from django.core.files.storage import default_storage
 import os
@@ -759,3 +760,62 @@ def update_account_settings(request):
     # If neither form is submitted
     messages.error(request, 'Invalid request.')
     return redirect('account_settings')
+
+
+# All Users
+
+@login_required
+def all_users(request):
+    
+    if not (request.user.is_superuser or request.user.author.role in ['admin', 'moderator']):
+        messages.error(request, 'You do not have permission to view this page.')
+        return redirect('dashboard')
+    
+    # Get filter parameters
+    search_query = request.GET.get('search', '').strip()
+    role_filter = request.GET.get('role', '')
+    status_filter = request.GET.get('status', '')
+    page = request.GET.get('page', 1)
+    
+    # Get ALL users and adding two more fields: total_views and total_blogs
+    users = User.objects.annotate(total_views=Sum('author__blogs__view_count'), total_blogs=Count('author__blogs'))
+    
+    # Apply search filter
+    if search_query:
+        users = users.filter(
+            Q(first_name__icontains=search_query) |
+            Q(last_name__icontains=search_query) |
+            Q(username__icontains=search_query) |
+            Q(email__icontains=search_query)
+        )
+    
+    # Apply role filter - only filter users who have Author records
+    if role_filter:
+        users = users.filter(author__role=role_filter)
+    
+    # Apply status filter
+    if status_filter == 'active':
+        users = users.filter(is_active=True)
+    elif status_filter == 'inactive':
+        users = users.filter(is_active=False)
+    
+    # Order by date joined (newest first)
+    users = users.order_by('-date_joined')
+    
+    # Pagination
+    paginator = Paginator(users, 20)  # Show 20 users per page
+    
+    try:
+        users_page = paginator.page(page)
+    except:
+        users_page = paginator.page(1)
+    
+    context = {
+        'users': users_page,
+        'search_query': search_query,
+        'role_filter': role_filter,
+        'status_filter': status_filter,
+        'role_choices': Author.ROLE_CHOICES,
+    }
+    
+    return render(request, 'admin_dashboard/all_users.html', context)
