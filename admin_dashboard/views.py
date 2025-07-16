@@ -74,11 +74,6 @@ def dashboard(request):
     last_7_days = time - timedelta(days=7)
     global_stats['posts_last_7_days'] = Blog.objects.filter(created_at__gte=last_7_days).count()
 
-    # Get total number of views in last 30days global
-    last_30_days = time - timedelta(days=30)
-    total_views_last_30_days = Blog.objects.filter(created_at__gte=last_30_days).aggregate(total_views=Sum('view_count'))['total_views'] or 0
-    global_stats['total_views_last_30_days'] = total_views_last_30_days
-
 
     # User statistics for the dashboard
     user_stats = {
@@ -91,9 +86,6 @@ def dashboard(request):
     user_last_7_days = Blog.objects.filter(author__user=request.user, created_at__gte=last_7_days).count()
     user_stats['posts_last_7_days'] = user_last_7_days
 
-    # Get total number of view in last 30days for user
-    user_total_views_last_30_days = Blog.objects.filter(author__user=request.user, created_at__gte=last_30_days).aggregate(total_views=Sum('view_count'))['total_views'] or 0
-    user_stats['total_views_last_30_days'] = user_total_views_last_30_days
 
     # Recent activities for the current user
     recent_activities = LogEntry.objects.filter(user=request.user).select_related('content_type').order_by('-action_time')[:10]
