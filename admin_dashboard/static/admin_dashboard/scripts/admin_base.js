@@ -235,22 +235,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Add active class to current page navigation
-    const currentPath = window.location.pathname;
-    const navLinks = document.querySelectorAll('.nav-link');
-    
-    navLinks.forEach(link => {
-        if (link.getAttribute('href') === currentPath) {
-            link.classList.add('active');
-            
-            // If it's in a submenu, open the parent
-            const parentSubmenu = link.closest('.nav-item.has-submenu');
-            if (parentSubmenu) {
-                parentSubmenu.classList.add('open');
-            }
-        }
-    });
-
     // Smooth scroll for internal links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {

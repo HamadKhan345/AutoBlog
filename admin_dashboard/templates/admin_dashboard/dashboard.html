@@ -1,0 +1,311 @@
+{% extends 'admin_dashboard/admin_base.html' %}
+{% load static %}
+
+{% block title %}
+Admin Dashboard
+{% endblock %}
+
+{% block page_title %}
+Dashboard
+{% endblock %}
+
+{% block Dashboardactive %}class="nav-link active"{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'admin_dashboard/styles/dashboard.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<!-- Welcome Section -->
+<div class="dashboard-welcome">
+  <div class="welcome-content">
+    <h2>Welcome back, {{ request.user.get_full_name|default:request.user.username }}!</h2>
+    <p>Here's what's happening with your blog today.</p>
+  </div>
+  <div class="welcome-actions">
+    <a href="{% url 'add_or_edit_post' %}" class="btn btn-primary">
+      <i class="fas fa-plus"></i>
+      Create New Post
+    </a>
+  </div>
+</div>
+
+<!-- Global Stats Section -->
+<div class="stats-section">
+  <h3 class="section-title">
+    <i class="fas fa-globe"></i>
+    Global Statistics
+  </h3>
+  <div class="stats-grid">
+    <div class="stat-card" data-href="{% url 'all_posts' %}">
+      <div class="stat-icon total-posts">
+        <i class="fas fa-file-alt"></i>
+      </div>
+      <div class="stat-content">
+        <h4>Total Posts</h4>
+        <p class="stat-number">{{ global_stats.total_posts }}</p>
+        <span class="stat-change positive">+{{ global_stats.posts_last_7_days }} this week</span>
+      </div>
+    </div>
+
+    <div class="stat-card" data-href="{% url 'dashboard_categories' %}">
+      <div class="stat-icon total-categories">
+        <i class="fas fa-tags"></i>
+      </div>
+      <div class="stat-content">
+        <h4>Total Categories</h4>
+        <p class="stat-number">{{ global_stats.total_categories }}</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon total-views">
+        <i class="fas fa-eye"></i>
+      </div>
+      <div class="stat-content">
+        <h4>Total Views</h4>
+        <p class="stat-number">{{ global_stats.total_views }}</p>
+        <span class="stat-change positive">+{{ global_stats.total_views_last_30_days }} views (30d)</span>
+      </div>
+    </div>
+
+    <div class="stat-card" data-href="{% url 'all_posts' %}?status=draft">
+      <div class="stat-icon draft-posts">
+        <i class="fas fa-edit"></i>
+      </div>
+      <div class="stat-content">
+        <h4>Draft Posts</h4>
+        <p class="stat-number">{{ global_stats.draft_posts }}</p>
+        <span class="stat-change neutral">Pending review</span>
+      </div>
+    </div>
+
+    <div class="stat-card" data-href="{% url 'all_users' %}?status=active">
+      <div class="stat-icon active-authors">
+        <i class="fas fa-users"></i>
+      </div>
+      <div class="stat-content">
+        <h4>Active Authors</h4>
+        <p class="stat-number">{{ global_stats.active_authors }}</p>
+      </div>
+    </div>
+
+    <div class="stat-card" data-href="{% url 'all_users' %}?status=inactive">
+      <div class="stat-icon inactive-authors">
+        <i class="fas fa-user-slash"></i>
+      </div>
+      <div class="stat-content">
+        <h4>Inactive Authors</h4>
+        <p class="stat-number">{{ global_stats.inactive_authors }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Personal Stats Section -->
+<div class="stats-section">
+  <h3 class="section-title">
+    <i class="fas fa-user"></i>
+    Your Statistics
+  </h3>
+  <div class="stats-grid personal-stats">
+    <div class="stat-card">
+      <div class="stat-icon your-posts">
+        <i class="fas fa-pencil-alt"></i>
+      </div>
+      <div class="stat-content">
+        <h4>Your Posts</h4>
+        <p class="stat-number">{{ user_stats.total_posts }}</p>
+        <span class="stat-change positive">+{{ user_stats.posts_last_7_days }} this week</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon your-views">
+        <i class="fas fa-chart-line"></i>
+      </div>
+      <div class="stat-content">
+        <h4>Your Views</h4>
+        <p class="stat-number">{{ user_stats.total_views }}</p>
+        <span class="stat-change positive">+{{ user_stats.total_views_last_30_days }} views (30d)</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon your-drafts">
+        <i class="fas fa-file-edit"></i>
+      </div>
+      <div class="stat-content">
+        <h4>Your Drafts</h4>
+        <p class="stat-number">{{ user_stats.draft_posts }}</p>
+        <span class="stat-change neutral">Ready to publish</span>
+      </div>
+    </div>
+
+    <!-- <div class="stat-card">
+      <div class="stat-icon avg-engagement">
+        <i class="fas fa-heart"></i>
+      </div>
+      <div class="stat-content">
+        <h4>Avg. Engagement</h4>
+        <p class="stat-number">{{ personal_stats.avg_engagement|default:"92%" }}</p>
+        <span class="stat-change positive">Above average</span>
+      </div>
+    </div> -->
+  </div>
+</div>
+
+<!-- Charts and Activity Section -->
+<div class="dashboard-content">
+  <!-- Charts Section -->
+  <div class="charts-section">
+    <div class="chart-card">
+      <div class="chart-header">
+        <h4><i class="fas fa-chart-bar"></i> Views Over Time</h4>
+        <div class="chart-controls">
+          <select id="viewsTimeframe" class="chart-select">
+            <option value="7">Last 7 days</option>
+            <option value="30" selected>Last 30 days</option>
+            <option value="90">Last 3 months</option>
+          </select>
+        </div>
+      </div>
+      <div class="chart-container">
+        <canvas id="viewsChart"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-header">
+        <h4><i class="fas fa-pie-chart"></i> Posts by Category</h4>
+      </div>
+      <div class="chart-container">
+        <canvas id="categoryChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Activity and Quick Actions -->
+  <div class="activity-section">
+    <!-- Recent Activity Feed -->
+    <div class="activity-card">
+      <div class="activity-header">
+        <h4><i class="fas fa-clock"></i> Recent Activity</h4>
+        <a href="#" class="view-all"></a>
+      </div>
+      <div class="activity-list">
+        <!-- Sample activity items - replace with Django loop -->
+        {% for entry in recent_activities %}
+        <div class="activity-item">
+          <div
+            class="activity-icon {% if entry.action_flag == 1 %}created{% elif entry.action_flag == 2 %}updated{% elif entry.action_flag == 3 %}deleted{% endif %}">
+            <i class="fas 
+        {% if entry.action_flag == 1 %}fa-plus
+        {% elif entry.action_flag == 2 %}fa-edit
+        {% elif entry.action_flag == 3 %}fa-trash
+        {% else %}fa-history{% endif %}"></i>
+          </div>
+          <div class="activity-content">
+            <p class="activity-text">
+              {% if entry.content_type.model == "blog" %}
+              {% if entry.action_flag == 1 %}
+              You created a post: <span class="activity-target">{{ entry.object_repr }}</span>
+              {% elif entry.action_flag == 2 %}
+              You edited a post: <span class="activity-target">{{ entry.object_repr }}</span>
+              {% elif entry.action_flag == 3 %}
+              You deleted a post: <span class="activity-target">{{ entry.object_repr }}</span>
+              {% endif %}
+              {% elif entry.content_type.model == "user" %}
+              {% if entry.action_flag == 1 %}
+              You created a user: <span class="activity-target">{{ entry.object_repr }}</span>
+              {% elif entry.action_flag == 2 %}
+              You edited your profile
+              {% elif entry.action_flag == 3 %}
+              You deleted a user: <span class="activity-target">{{ entry.object_repr }}</span>
+              {% endif %}
+              {% else %}
+              {% if entry.action_flag == 1 %}
+              You created {{ entry.content_type }}: <span class="activity-target">{{ entry.object_repr }}</span>
+              {% elif entry.action_flag == 2 %}
+              You edited {{ entry.content_type }}: <span class="activity-target">{{ entry.object_repr }}</span>
+              {% elif entry.action_flag == 3 %}
+              You deleted {{ entry.content_type }}: <span class="activity-target">{{ entry.object_repr }}</span>
+              {% else %}
+              You performed an action on {{ entry.content_type }}: <span
+                class="activity-target">{{ entry.object_repr }}</span>
+              {% endif %}
+              {% endif %}
+            </p>
+            <span class="activity-time">{{ entry.action_time|timesince }} ago</span>
+          </div>
+        </div>
+        {% empty %}
+        <div class="activity-item">
+          <div class="activity-icon created">
+            <i class="fas fa-plus"></i>
+          </div>
+          <div class="activity-content">
+            <p class="activity-text">
+              No recent activity.
+            </p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions-card">
+      <div class="quick-actions-header">
+        <h4><i class="fas fa-bolt"></i> Quick Actions</h4>
+      </div>
+      <div class="quick-actions-grid">
+        <a href="{% url 'add_or_edit_post' %}" class="quick-action">
+          <i class="fas fa-plus"></i>
+          <span>New Post</span>
+        </a>
+
+        {% if request.user.is_superuser or request.user.author.role == 'admin' or request.user.author.role == 'moderator' %}
+        <a href="{% url 'dashboard_categories' %}" class="quick-action">
+          <i class="fas fa-tags"></i>
+          <span>Manage Categories</span>
+        </a>
+        {% endif %}
+
+        <a href="{% url 'media_library' %}" class="quick-action">
+          <i class="fas fa-images"></i>
+          <span>Media Library</span>
+        </a>
+
+        {% if request.user.is_superuser or request.user.author.role == 'admin' or request.user.author.role == 'moderator' %}
+        <a href="{% url 'all_users' %}" class="quick-action">
+          <i class="fas fa-users"></i>
+          <span>Manage Users</span>
+        </a>
+        {% endif %}
+
+        <a href="{% url 'all_posts' %}?status=draft" class="quick-action">
+          <i class="fas fa-edit"></i>
+          <span>Review Drafts</span>
+        </a>
+
+        <a href="{% url 'profile' %}" class="quick-action">
+          <i class="fas fa-user-cog"></i>
+          <span>Profile Settings</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+<script>
+  const postsByCategory = JSON.parse('{{ posts_by_category_json|escapejs }}');
+</script>
+<script src="{% static 'admin_dashboard/scripts/dashboard.js' %}"></script>
+
+{% endblock %}

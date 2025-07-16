@@ -13,10 +13,13 @@ from django.http import JsonResponse
 from django.core.files.storage import default_storage
 import os
 from PIL import Image
-from datetime import datetime, timedelta
+from datetime import timedelta
+from django.utils import timezone
 import traceback
 from django.utils.text import slugify
 from django.urls import reverse
+from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
+from django.contrib.contenttypes.models import ContentType
 
 # Create your views here.
 
@@ -52,7 +55,66 @@ def logout(request):
 
 @login_required
 def dashboard(request):
-  return render(request, 'admin_dashboard/admin_base.html')
+    
+    # Global statistics for the dashboard
+
+    global_stats = {
+      'total_posts': Blog.objects.count(),
+      'total_categories': Category.objects.count(),
+      'total_views': Blog.objects.aggregate(total_views=Sum('view_count'))['total_views'] or 0,
+      'draft_posts': Blog.objects.filter(status='draft').count(),
+      'published_posts': Blog.objects.filter(status='published').count(),
+      'active_authors': Author.objects.filter(user__is_active=True).count(),
+      'inactive_authors': Author.objects.filter(user__is_active=False).count(),
+    }
+
+
+    # Get the total number of posts created in the last 7 days
+    time = timezone.now()
+    last_7_days = time - timedelta(days=7)
+    global_stats['posts_last_7_days'] = Blog.objects.filter(created_at__gte=last_7_days).count()
+
+    # Get total number of views in last 30days global
+    last_30_days = time - timedelta(days=30)
+    total_views_last_30_days = Blog.objects.filter(created_at__gte=last_30_days).aggregate(total_views=Sum('view_count'))['total_views'] or 0
+    global_stats['total_views_last_30_days'] = total_views_last_30_days
+
+
+    # User statistics for the dashboard
+    user_stats = {
+        'total_posts' : Blog.objects.filter(author__user=request.user).count(),
+        'total_views' : Blog.objects.filter(author__user=request.user).aggregate(total_views=Sum('view_count'))['total_views'] or 0,
+        'draft_posts' : Blog.objects.filter(author__user=request.user, status='draft').count(),
+    }
+
+    # Get the total number of posts created by the user in the last 7 days
+    user_last_7_days = Blog.objects.filter(author__user=request.user, created_at__gte=last_7_days).count()
+    user_stats['posts_last_7_days'] = user_last_7_days
+
+    # Get total number of view in last 30days for user
+    user_total_views_last_30_days = Blog.objects.filter(author__user=request.user, created_at__gte=last_30_days).aggregate(total_views=Sum('view_count'))['total_views'] or 0
+    user_stats['total_views_last_30_days'] = user_total_views_last_30_days
+
+    # Recent activities for the current user
+    recent_activities = LogEntry.objects.filter(user=request.user).select_related('content_type').order_by('-action_time')[:10]
+
+    # Posts by Category
+    category_counts = (
+        Category.objects.annotate(post_count=Count('blogs'))
+        .values('name', 'post_count')
+        .order_by('-post_count')
+    )
+    posts_by_category = {item['name']: item['post_count'] for item in category_counts}
+    posts_by_category_json = json.dumps(posts_by_category)
+
+
+
+    return render(request, 'admin_dashboard/dashboard.html', {
+        'global_stats': global_stats,
+        'user_stats': user_stats,
+        'recent_activities': recent_activities,
+        'posts_by_category_json': posts_by_category_json,
+    })
 
 # All Posts
 @login_required
@@ -112,12 +174,28 @@ def delete_post(request):
         # Superuser/admin/moderator: can delete any
         if request.user.is_superuser or request.user.author.role in ['admin', 'moderator']:
             for blog in blogs:
+                LogEntry.objects.log_action(
+                    user_id=request.user.pk,
+                    content_type_id=ContentType.objects.get_for_model(blog).pk,
+                    object_id=blog.pk,
+                    object_repr=str(blog),
+                    action_flag=DELETION,
+                    change_message="Deleted via dashboard (bulk)"
+                )
                 blog.delete()
             return redirect('all_posts')
         # Editor: can only delete their own blogs
         elif request.user.author.role == 'editor':
             for blog in blogs:
                 if blog.author.user == request.user:
+                    LogEntry.objects.log_action(
+                        user_id=request.user.pk,
+                        content_type_id=ContentType.objects.get_for_model(blog).pk,
+                        object_id=blog.pk,
+                        object_repr=str(blog),
+                        action_flag=DELETION,
+                        change_message="Deleted via dashboard (bulk)"
+                    )
                     blog.delete()
             return redirect('all_posts')
         else:
@@ -137,6 +215,14 @@ def delete_post(request):
             request.user.author.role in ['admin', 'moderator'] or
             blog.author.user == request.user
         ):
+            LogEntry.objects.log_action(
+                user_id=request.user.pk,
+                content_type_id=ContentType.objects.get_for_model(blog).pk,
+                object_id=blog.pk,
+                object_repr=str(blog),
+                action_flag=DELETION,
+                change_message="Deleted via dashboard"
+            )
             blog.delete()
             return redirect('all_posts')
         else:
@@ -242,6 +328,15 @@ def save_post(request):
                 messages.error(request, f"Validation error: {str(e)}")
                 return redirect('add_or_edit_post')
             blog.save()
+            # Log the edit
+            LogEntry.objects.log_action(
+                user_id=request.user.pk,
+                content_type_id=ContentType.objects.get_for_model(blog).pk,
+                object_id=blog.pk,
+                object_repr=str(blog),
+                action_flag=CHANGE,
+                change_message="Edited via dashboard"
+            )
         else:
             # Create new post
             author = request.user.author if hasattr(request.user, 'author') else None
@@ -263,6 +358,15 @@ def save_post(request):
                 messages.error(request, f"Validation error: {str(e)}")
                 return redirect('add_or_edit_post')
             blog.save()
+            # Log the creation
+            LogEntry.objects.log_action(
+                user_id=request.user.pk,
+                content_type_id=ContentType.objects.get_for_model(blog).pk,
+                object_id=blog.pk,
+                object_repr=str(blog),
+                action_flag=ADDITION,
+                change_message="Created via dashboard"
+            )
 
         # Handle tags
         tag_names = json.loads(tags_json)
@@ -329,6 +433,15 @@ def add_update_category(request):
                     except Exception as e:
                         return JsonResponse({'success': 0, 'error': f'Validation error: {str(e)}'})
                     category.save()
+                    # Log the edit
+                    LogEntry.objects.log_action(
+                        user_id=request.user.pk,
+                        content_type_id=ContentType.objects.get_for_model(category).pk,
+                        object_id=category.pk,
+                        object_repr=str(category),
+                        action_flag=CHANGE,
+                        change_message="Edited category via dashboard"
+                    )
                     return JsonResponse({
                         'success': 1,
                         'message': 'Category updated successfully.',
@@ -359,6 +472,15 @@ def add_update_category(request):
                     except Exception as e:
                         return JsonResponse({'success': 0, 'error': f'Validation error: {str(e)}'})
                     category.save()
+                    # Log the creation
+                    LogEntry.objects.log_action(
+                        user_id=request.user.pk,
+                        content_type_id=ContentType.objects.get_for_model(category).pk,
+                        object_id=category.pk,
+                        object_repr=str(category),
+                        action_flag=ADDITION,
+                        change_message="Created category via dashboard"
+                    )
                     return JsonResponse({
                         'success': 1,
                         'message': 'Category created successfully.',
@@ -393,6 +515,14 @@ def delete_category(request):
             except Category.DoesNotExist:
                 return JsonResponse({'success': 0, 'error': 'Category not found.'})
 
+            LogEntry.objects.log_action(
+                user_id=request.user.pk,
+                content_type_id=ContentType.objects.get_for_model(category).pk,
+                object_id=category.pk,
+                object_repr=str(category),
+                action_flag=DELETION,
+                change_message="Deleted category via dashboard"
+            )
             category.delete()
             return JsonResponse({'success': 1, 'message': 'Category deleted.'})
         except Exception as e:
@@ -415,7 +545,7 @@ def media_library(request):
     try:
         # Get list of files in the uploads directory
         upload_dirs = default_storage.listdir('uploads')[1]
-        now = datetime.now()
+        now = timezone.now()
         for file_name in upload_dirs:
             file_path = f'uploads/{file_name}'
             file_url = default_storage.url(file_path)
@@ -689,6 +819,17 @@ def update_profile(request):
         author.save()
         user.save()
 
+        # Log the profile update
+        
+        LogEntry.objects.log_action(
+            user_id=request.user.pk,
+            content_type_id=ContentType.objects.get_for_model(user).pk,
+            object_id=user.pk,
+            object_repr=str(user),
+            action_flag=CHANGE,
+            change_message="Edited profile via dashboard"
+        )
+
         messages.success(request, 'Profile updated successfully.')
         return redirect('profile')
 
@@ -728,10 +869,22 @@ def update_account_settings(request):
             messages.error(request, 'This username is already taken.')
             return redirect('account_settings')
 
+        old_username = user.username
         user.username = new_username
         try:
             user.full_clean()
             user.save()
+            
+            # Log the username change
+            LogEntry.objects.log_action(
+                user_id=request.user.pk,
+                content_type_id=ContentType.objects.get_for_model(user).pk,
+                object_id=user.pk,
+                object_repr=str(user),
+                action_flag=CHANGE,
+                change_message=f"Changed username from '{old_username}' to '{new_username}' via dashboard"
+            )
+            
             messages.success(request, 'Username updated successfully.')
         except Exception as e:
             messages.error(request, f'Validation error: {str(e)}')
@@ -760,6 +913,17 @@ def update_account_settings(request):
         try:
             user.full_clean()
             user.save()
+            
+            # Log the password change
+            LogEntry.objects.log_action(
+                user_id=request.user.pk,
+                content_type_id=ContentType.objects.get_for_model(user).pk,
+                object_id=user.pk,
+                object_repr=str(user),
+                action_flag=CHANGE,
+                change_message="Changed password via dashboard"
+            )
+            
             messages.success(request, 'Password updated successfully. Please log in again.')
             return redirect('login')
         except Exception as e:
@@ -897,6 +1061,16 @@ def add_new_user(request):
             )
             author.full_clean()
             author.save()
+
+            # Log the creation of the user
+            LogEntry.objects.log_action(
+                user_id=request.user.pk,
+                content_type_id=ContentType.objects.get_for_model(user).pk,
+                object_id=user.pk,
+                object_repr=str(user),
+                action_flag=ADDITION,
+                change_message="Created user via dashboard"
+            )
 
             messages.success(request, 'User created successfully.')
             return redirect('all_users')
