@@ -88,7 +88,7 @@ def dashboard(request):
 
 
     # Recent activities for the current user
-    recent_activities = LogEntry.objects.filter(user=request.user).select_related('content_type').order_by('-action_time')[:10]
+    recent_activities = LogEntry.objects.filter(user=request.user).select_related('content_type').order_by('-action_time')[:25]
 
     # Posts by Category
     category_counts = (

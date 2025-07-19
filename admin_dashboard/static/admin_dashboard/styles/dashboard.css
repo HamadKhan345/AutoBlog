@@ -11,6 +11,7 @@
   border-radius: 12px;
   margin-bottom: 2rem;
   box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .welcome-content h2 {
@@ -31,17 +32,28 @@
   color: white;
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
+  padding: 0.3rem 0.6rem;
+  border-radius: 8px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 .welcome-actions .btn:hover {
   background: rgba(255, 255, 255, 0.3);
   border-color: rgba(255, 255, 255, 0.5);
   transform: translateY(-2px);
+  color: white;
+  text-decoration: none;
 }
 
 /* Stats Sections */
 .stats-section {
   margin-bottom: 2.5rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .section-title {
@@ -58,6 +70,7 @@
 
 .section-title i {
   color: #667eea;
+  flex-shrink: 0;
 }
 
 .stats-grid {
@@ -65,6 +78,7 @@
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
   margin-bottom: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .personal-stats {
@@ -82,6 +96,10 @@
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 100px;
 }
 
 .stat-card::before {
@@ -103,12 +121,6 @@
 .stat-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-}
-
-.stat-card {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
 }
 
 /* Stat Icons */
@@ -138,6 +150,7 @@
 /* Stat Content */
 .stat-content {
   flex: 1;
+  min-width: 0;
 }
 
 .stat-content h4 {
@@ -180,12 +193,16 @@
   color: #9e9e9e;
 }
 
-/* Dashboard Content Grid */
+/* Dashboard Content Grid - Fixed for sidebar transitions */
 .dashboard-content {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 2rem;
   margin-top: 2rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
 /* Charts Section */
@@ -193,6 +210,8 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  min-width: 0;
+  width: 100%;
 }
 
 .chart-card {
@@ -201,6 +220,9 @@
   padding: 1.5rem;
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
   border: 1px solid #f1f3f4;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+  min-width: 0;
 }
 
 .chart-header {
@@ -210,6 +232,8 @@
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid #e9ecef;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .chart-header h4 {
@@ -235,6 +259,7 @@
   color: #495057;
   cursor: pointer;
   transition: border-color 0.3s ease;
+  min-width: 120px;
 }
 
 .chart-select:focus {
@@ -246,13 +271,16 @@
 .chart-container {
   position: relative;
   height: 300px;
+  width: 100%;
 }
 
-/* Activity Section */
+/* Activity Section - Fixed for sidebar transitions */
 .activity-section {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  min-width: 0;
+  width: 100%;
 }
 
 .activity-card, .quick-actions-card {
@@ -261,6 +289,9 @@
   padding: 1.5rem;
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
   border: 1px solid #f1f3f4;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+  min-width: 0;
 }
 
 .activity-header, .quick-actions-header {
@@ -270,6 +301,8 @@
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid #e9ecef;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .activity-header h4, .quick-actions-header h4 {
@@ -305,6 +338,8 @@
   gap: 1rem;
   max-height: 400px;
   overflow-y: auto;
+  width: 100%;
+  min-width: 0;
 }
 
 .activity-item {
@@ -314,6 +349,7 @@
   padding: 0.75rem;
   border-radius: 8px;
   transition: background-color 0.3s ease;
+  min-width: 0;
 }
 
 .activity-item:hover {
@@ -339,6 +375,7 @@
 
 .activity-content {
   flex: 1;
+  min-width: 0;
 }
 
 .activity-text {
@@ -346,6 +383,7 @@
   font-size: 0.9rem;
   color: #495057;
   line-height: 1.4;
+  word-wrap: break-word;
 }
 
 .activity-target {
@@ -363,6 +401,8 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 1rem;
+  width: 100%;
+  min-width: 0;
 }
 
 .quick-action {
@@ -377,6 +417,8 @@
   color: #495057;
   transition: all 0.3s ease;
   border: 2px solid transparent;
+  text-align: center;
+  min-width: 0;
 }
 
 .quick-action:hover {
@@ -400,12 +442,24 @@
   font-size: 0.9rem;
   font-weight: 500;
   text-align: center;
+  word-wrap: break-word;
 }
 
 /* Responsive Design */
+@media (max-width: 1400px) {
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+  
+  .personal-stats {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+}
+
 @media (max-width: 1200px) {
   .dashboard-content {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
   
   .charts-section {
@@ -415,6 +469,40 @@
   .activity-section {
     order: 1;
   }
+  
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 992px) {
+  .dashboard-welcome {
+    padding: 1.5rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+  
+  .personal-stats {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+  
+  .chart-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .chart-header h4 {
+    width: 100%;
+  }
+  
+  .chart-select {
+    width: 100%;
+    max-width: 200px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -422,9 +510,25 @@
     flex-direction: column;
     text-align: center;
     gap: 1.5rem;
+    padding: 1.5rem;
+  }
+  
+  .welcome-content {
+    text-align: center;
+  }
+  
+  .welcome-actions {
+    width: 100%;
+    display: flex;
+    justify-content: center;
   }
   
   .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .personal-stats {
     grid-template-columns: 1fr;
   }
   
@@ -432,28 +536,13 @@
     flex-direction: column;
     text-align: center;
     gap: 1rem;
+    padding: 1.25rem;
   }
   
-  .quick-actions-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .section-title {
-    font-size: 1.1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .dashboard-welcome {
-    padding: 1.5rem;
-  }
-  
-  .welcome-content h2 {
-    font-size: 1.5rem;
-  }
-  
-  .stat-card {
-    padding: 1rem;
+  .stat-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 1.25rem;
   }
   
   .stat-number {
@@ -461,11 +550,193 @@
   }
   
   .quick-actions-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
   }
   
   .quick-action {
+    padding: 1rem 0.75rem;
+  }
+  
+  .section-title {
+    font-size: 1.1rem;
+    flex-wrap: wrap;
+  }
+  
+  .chart-container {
+    height: 250px;
+  }
+  
+  .activity-list {
+    max-height: 300px;
+  }
+  
+  .activity-item {
+    gap: 0.75rem;
+    padding: 0.5rem;
+  }
+  
+  .activity-icon {
+    width: 35px;
+    height: 35px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .dashboard-welcome {
     padding: 1rem;
+  }
+  
+  .welcome-content h2 {
+    font-size: 1.5rem;
+  }
+  
+  .welcome-content p {
+    font-size: 1rem;
+  }
+  
+  .welcome-actions .btn {
+    font-size: 0.9rem;
+  }
+  
+  .stats-section {
+    margin-bottom: 2rem;
+  }
+  
+  .stat-card {
+    padding: 1rem;
+    min-height: 80px;
+  }
+  
+  .stat-icon {
+    width: 45px;
+    height: 45px;
+    font-size: 1.1rem;
+  }
+  
+  .stat-number {
+    font-size: 1.5rem;
+  }
+  
+  .stat-content h4 {
+    font-size: 0.8rem;
+  }
+  
+  .stat-change {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.4rem;
+  }
+  
+  .quick-actions-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .quick-action {
+    padding: 1rem 0.5rem;
+    gap: 0.5rem;
+  }
+  
+  .quick-action i {
+    font-size: 1.25rem;
+  }
+  
+  .quick-action span {
+    font-size: 0.85rem;
+  }
+  
+  .chart-card,
+  .activity-card,
+  .quick-actions-card {
+    padding: 1rem;
+  }
+  
+  .chart-container {
+    height: 200px;
+  }
+  
+  .activity-list {
+    max-height: 250px;
+  }
+  
+  .activity-item {
+    padding: 0.5rem;
+    gap: 0.5rem;
+  }
+  
+  .activity-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 0.75rem;
+  }
+  
+  .activity-text {
+    font-size: 0.85rem;
+  }
+  
+  .activity-time {
+    font-size: 0.75rem;
+  }
+  
+  .section-title {
+    font-size: 1rem;
+    gap: 0.5rem;
+  }
+  
+  .chart-header h4 {
+    font-size: 1rem;
+  }
+  
+  .activity-header h4,
+  .quick-actions-header h4 {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-welcome {
+    padding: 0.75rem;
+  }
+  
+  .welcome-content h2 {
+    font-size: 1.25rem;
+  }
+  
+  .welcome-content p {
+    font-size: 0.9rem;
+  }
+  
+  .welcome-actions .btn {
+    font-size: 0.85rem;
+  }
+  
+  .stat-card {
+    padding: 0.75rem;
+  }
+  
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+  
+  .stat-number {
+    font-size: 1.25rem;
+  }
+  
+  .chart-card,
+  .activity-card,
+  .quick-actions-card {
+    padding: 0.75rem;
+  }
+  
+  .chart-container {
+    height: 180px;
+  }
+  
+  .activity-list {
+    max-height: 200px;
   }
 }
 
@@ -499,4 +770,118 @@
 .chart-container.loading::before {
   content: 'Loading chart...';
   font-size: 0.9rem;
+}
+
+/* Sidebar transition handling - Enhanced */
+.admin-content {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* Ensure smooth transitions for all dashboard elements */
+.dashboard-welcome,
+.stats-section,
+.stats-grid,
+.stat-card,
+.dashboard-content,
+.chart-card,
+.activity-card,
+.quick-actions-card,
+.charts-section,
+.activity-section {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Fix for stat card clickability */
+.stat-card[data-href] {
+  cursor: pointer;
+}
+
+/* Ensure text doesn't break awkwardly */
+.stat-content h4,
+.activity-text,
+.quick-action span {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Improve touch targets on mobile */
+@media (max-width: 768px) {
+  .stat-card {
+    min-height: 100px;
+  }
+  
+  .quick-action {
+    min-height: 80px;
+  }
+}
+
+/* Ensure consistent spacing */
+.stats-section:last-child {
+  margin-bottom: 2rem;
+}
+
+/* Fix for very small screens */
+@media (max-width: 360px) {
+  .dashboard-welcome {
+    padding: 0.5rem;
+  }
+  
+  .welcome-content h2 {
+    font-size: 1.1rem;
+  }
+  
+  .welcome-content p {
+    font-size: 0.85rem;
+  }
+  
+  .stat-card {
+    padding: 0.5rem;
+  }
+  
+  .stat-icon {
+    width: 35px;
+    height: 35px;
+    font-size: 0.9rem;
+  }
+  
+  .stat-number {
+    font-size: 1.1rem;
+  }
+  
+  .chart-container {
+    height: 150px;
+  }
+}
+
+/* Additional fixes for sidebar transition issues */
+.admin-main {
+  overflow-x: hidden;
+}
+
+.dashboard-content,
+.charts-section,
+.activity-section,
+.activity-card,
+.quick-actions-card,
+.chart-card {
+  box-sizing: border-box;
+}
+
+/* Force proper width calculations during transitions */
+.dashboard-content * {
+  box-sizing: border-box;
+}
+
+/* Prevent overflow during transitions */
+.activity-list,
+.quick-actions-grid {
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.activity-list {
+  overflow-y: auto;
 }
