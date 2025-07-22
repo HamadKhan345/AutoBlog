@@ -419,12 +419,12 @@
   border: 2px solid transparent;
   text-align: center;
   min-width: 0;
+  justify-content: center;
 }
 
 .quick-action:hover {
   background: #667eea;
   color: white;
-  transform: translateY(-3px);
   text-decoration: none;
 }
 
