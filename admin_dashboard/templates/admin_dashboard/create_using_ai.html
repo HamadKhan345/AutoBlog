@@ -1,0 +1,236 @@
+{% extends 'admin_dashboard/admin_base.html' %}
+{% load static %}
+
+{% block title %}
+Create Using AI
+{% endblock %}
+
+{% block page_title %}
+Create Using AI
+{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'admin_dashboard/styles/create_using_ai.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Welcome Section -->
+<div class="ai-welcome">
+  <div class="welcome-content">
+    <h2>Create Blog Post with AI</h2>
+    <p>Choose your research type and let AI create amazing content for you.</p>
+  </div>
+  <div class="ai-icon">
+    <i class="fas fa-robot"></i>
+  </div>
+</div>
+
+<!-- AI Creation Form -->
+<div class="ai-creation-section">
+  <form id="aiCreationForm" class="ai-form">
+    <!-- Research Type Selection -->
+    <div class="research-type-section">
+      <h3 class="section-title">
+        <i class="fas fa-search"></i>
+        Choose Research Type
+        <span class="required">*</span>
+      </h3>
+      <div class="research-options">
+        <div class="research-option" data-type="quick">
+          <div class="option-icon quick-research">
+            <i class="fas fa-bolt"></i>
+          </div>
+          <div class="option-content">
+            <h4>Quick Research</h4>
+            <p>Fast content generation with basic research. Perfect for quick blog posts and updates.</p>
+            <ul class="option-features">
+              <li><i class="fas fa-bolt"></i> 1-2 minutes generation</li>
+              <li><i class="fas fa-info-circle"></i> Basic SEO optimization</li>
+              <li><i class="fas fa-check"></i> Uses Less Resouces</li>
+            </ul>
+          </div>
+          <div class="option-select">
+            <input type="radio" id="quickResearch" name="researchType" value="quick" required checked>
+            <label for="quickResearch" class="radio-label">Select</label>
+          </div>
+        </div>
+
+        <div class="research-option" data-type="deep">
+          <div class="option-icon deep-research">
+            <i class="fas fa-microscope"></i>
+          </div>
+          <div class="option-content">
+            <h4>Deep Research</h4>
+            <p>Comprehensive research with detailed analysis. Ideal for authoritative and in-depth articles.</p>
+            <ul class="option-features">
+              <li><i class="fas fa-spinner"></i> 4-5 minutes generation</li>
+              <li><i class="fas fa-check"></i> Advanced SEO optimization</li>
+              <li><i class="fas fa-check"></i> Multiple sources research</li>
+              <li><i class="fas fa-pie-chart"></i> Uses More Resouces</li>
+            </ul>
+          </div>
+          <div class="option-select">
+            <input type="radio" id="deepResearch" name="researchType" value="deep" required>
+            <label for="deepResearch" class="radio-label">Select</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Blog Details Section -->
+    <div class="blog-details-section">
+      <h3 class="section-title">
+        <i class="fas fa-edit"></i>
+        Blog Details
+      </h3>
+      
+      <div class="form-grid">
+        <!-- Topic Input -->
+        <div class="form-group full-width">
+          <label for="blogTopic" class="form-label">
+            <i class="fas fa-lightbulb"></i>
+            Blog Topic
+            <span class="required">*</span>
+          </label>
+          <input 
+            type="text" 
+            id="blogTopic" 
+            name="blogTopic" 
+            class="form-input" 
+            placeholder="Enter the topic you want to write about..."
+            required
+          >
+          <small class="form-help">Be specific about your topic for better AI-generated content</small>
+        </div>
+
+        <!-- Category Selection -->
+        <div class="form-group">
+          <label for="blogCategory" class="form-label">
+            <i class="fas fa-tags"></i>
+            Category
+            <span class="required">*</span>
+          </label>
+          <select id="blogCategory" name="blogCategory" class="form-select" required>
+            <option value="">Select a category</option>
+            {% for category in categories %}
+            <option value="{{ category.id }}">{{ category.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Status Selection -->
+        <div class="form-group">
+          <label for="blogStatus" class="form-label">
+            <i class="fas fa-flag"></i>
+            Status
+            <span class="required">*</span>
+          </label>
+          <select id="blogStatus" name="blogStatus" class="form-select" required>
+            <option value="">Select status</option>
+            <option value="draft">Draft</option>
+            <option value="published">Publish</option>
+          </select>
+        </div>
+
+        <!-- Word Count Input -->
+        <div class="form-group">
+          <label for="wordCount" class="form-label">
+            <i class="fas fa-align-left"></i>
+            Number of Words
+            <span class="optional">(Optional)</span>
+          </label>
+          <input 
+            type="number" 
+            id="wordCount" 
+            name="wordCount" 
+            class="form-input" 
+            placeholder="e.g., 1500"
+            min="100"
+            max="4000"
+            step="50"
+          >
+          <small class="form-help">Specify desired word count (100-4000 words). Leave empty for AI to decide based on topic.</small>
+        </div>
+
+        <!-- Featured Image Upload -->
+        <div class="form-group full-width">
+          <label for="featuredImage" class="form-label">
+            <i class="fas fa-image"></i>
+            Featured Image
+            <span class="optional">(Optional)</span>
+          </label>
+          <div class="image-upload-area">
+            <input type="file" id="featuredImage" name="featuredImage" accept="image/*" class="image-input">
+            <div class="upload-placeholder">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <p>Click to upload or drag and drop</p>
+              <small>JPG, PNG, GIF up to 5MB</small>
+            </div>
+            <div class="image-preview" style="display: none;">
+              <img id="previewImg" src="" alt="Preview">
+              <button type="button" class="remove-image">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit Section -->
+    <div class="submit-section">
+      <div class="submit-info">
+        <div class="info-card">
+          <i class="fas fa-info-circle"></i>
+          <div>
+            <h4>AI Generation Process</h4>
+            <p>Once you submit, our AI will research your topic and create a comprehensive blog post.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="submit-actions">
+        <button type="button" class="btn btn-secondary" onclick="window.history.back()">
+          <i class="fas fa-arrow-left"></i>
+          Cancel
+        </button>
+        <button type="submit" class="btn btn-primary" id="submitBtn">
+          <i class="fas fa-robot"></i>
+          <span class="btn-text">Generate with AI</span>
+          <span class="btn-loading" style="display: none;">
+            <i class="fas fa-spinner fa-spin"></i>
+            Generating...
+          </span>
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- Loading Modal -->
+<div class="loading-modal" id="loadingModal" style="display: none;">
+  <div class="loading-content">
+    <div class="loading-animation">
+      <div class="ai-brain">
+        <i class="fas fa-brain"></i>
+      </div>
+      <div class="loading-dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+    <h3>AI is creating your blog post...</h3>
+    <p class="loading-stage">Analyzing topic and gathering information...</p>
+    <div class="progress-bar">
+      <div class="progress-fill"></div>
+    </div>
+    <small>This may take a few minutes depending on your research type.</small>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'admin_dashboard/scripts/create_using_ai.js' %}"></script>
+{% endblock %}

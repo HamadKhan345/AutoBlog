@@ -8,6 +8,7 @@ urlpatterns = [
 
     # Dashboard
     path('dashboard/', views.dashboard, name='dashboard'),
+
     
     # View, Delete Posts
     path('dashboard/all_posts/', views.all_posts, name='all_posts'),
@@ -17,6 +18,10 @@ urlpatterns = [
     path('dashboard/add_or_edit_post/', views.add_or_edit_post, name='add_or_edit_post'),
     path('dashboard/edit_post/<int:post_id>/', views.add_or_edit_post, name='edit_post'),
     path('posts/add/', views.save_post, name='save_post'),
+
+    # Create using AI
+    path('dashboard/craete_using_ai/', views.create_using_ai, name='create_using_ai'),
+
     
 
     # Media Library

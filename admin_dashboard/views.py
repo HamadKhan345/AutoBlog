@@ -108,6 +108,12 @@ def dashboard(request):
         'posts_by_category_json': posts_by_category_json,
     })
 
+
+# Create using AI
+@login_required
+def create_using_ai(request):
+    return render(request, 'admin_dashboard/create_using_ai.html')
+
 # All Posts
 @login_required
 def all_posts(request):
@@ -311,6 +317,10 @@ def save_post(request):
             blog.content = content
             blog.status = status
             blog.category = category
+
+            # Update Slug
+            blog.slug = slugify(title)
+
             if thumbnail:
                 blog.thumbnail = thumbnail
             blog.thumbnail_caption = thumbnail_caption
