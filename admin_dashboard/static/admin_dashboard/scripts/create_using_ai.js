@@ -61,14 +61,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (file) {
             // Validate file size (5MB limit)
             if (file.size > 5 * 1024 * 1024) {
-                alert('File size must be less than 5MB');
+                showCustomMessage('File size must be less than 5MB', 'error');
                 this.value = '';
                 return;
             }
 
             // Validate file type
             if (!file.type.startsWith('image/')) {
-                alert('Please select a valid image file');
+                showCustomMessage('Please select a valid image file', 'error');
                 this.value = '';
                 return;
             }
@@ -130,22 +130,22 @@ document.addEventListener('DOMContentLoaded', function() {
         const blogStatus = formData.get('blogStatus');
         
         if (!researchType) {
-            alert('Please select a research type');
+            showCustomMessage('Please select a research type', 'error');
             return;
         }
         
         if (!blogTopic || !blogTopic.trim()) {
-            alert('Please enter a blog topic');
+            showCustomMessage('Please enter a blog topic', 'error');
             return;
         }
         
         if (!blogCategory) {
-            alert('Please select a category');
+            showCustomMessage('Please select a category', 'error');
             return;
         }
         
         if (!blogStatus) {
-            alert('Please select a status');
+            showCustomMessage('Please select a status', 'error');
             return;
         }
 
@@ -180,28 +180,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateLoadingStage() {
-        const stages = [
-            'Analyzing topic and gathering information...',
-            'Researching relevant sources...',
-            'Generating content structure...',
-            'Writing and optimizing content...',
-            'Finalizing blog post...'
-        ];
-        
+        // Just show static loading text without stage progression
         const loadingStage = document.querySelector('.loading-stage');
-        let currentStage = 0;
-        
-        const stageInterval = setInterval(() => {
-            if (currentStage < stages.length) {
-                loadingStage.textContent = stages[currentStage];
-                currentStage++;
-            } else {
-                clearInterval(stageInterval);
-            }
-        }, 2000);
-        
-        // Store interval ID so we can clear it if needed
-        window.loadingStageInterval = stageInterval;
+        if (loadingStage) {
+            loadingStage.textContent = 'Processing your request...';
+        }
     }
 
     function submitFormToBackend(formData) {
@@ -210,7 +193,8 @@ document.addEventListener('DOMContentLoaded', function() {
             method: 'POST',
             body: formData,
             headers: {
-                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+                'X-Requested-With': 'XMLHttpRequest'
             }
         })
         .then(response => {
@@ -223,31 +207,151 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(html => {
             if (html) {
-                // If we got HTML back, it's likely the form with errors
-                // Parse the response and extract any error messages
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                const errorElements = doc.querySelectorAll('.alert-danger, .messages .error');
-                
                 hideLoadingState();
-                
-                if (errorElements.length > 0) {
-                    let errorMessage = '';
-                    errorElements.forEach(element => {
-                        errorMessage += element.textContent.trim() + '\n';
-                    });
-                    alert('Error: ' + errorMessage);
-                } else {
-                    // No specific error found, show generic message
-                    alert('An error occurred while generating the blog post. Please try again.');
-                }
+                displayDjangoMessagesFromHTML(html);
             }
         })
         .catch(error => {
             console.error('Error:', error);
             hideLoadingState();
-            alert('Network error occurred. Please check your connection and try again.');
+            showCustomMessage('Network error occurred. Please check your connection and try again.', 'error');
         });
+    }
+
+    // Helper to display Django messages from HTML response
+    function displayDjangoMessagesFromHTML(html) {
+        // Clear any existing messages first
+        const existingMessages = document.querySelector('.messages');
+        if (existingMessages) {
+            existingMessages.remove();
+        }
+
+        // Parse the HTML and extract the entire messages container
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const messagesContainer = doc.querySelector('.messages');
+        
+        if (messagesContainer) {
+            // Clone the entire messages container to preserve exact structure
+            const clonedContainer = messagesContainer.cloneNode(true);
+            
+            // Add event listeners to close buttons in the cloned container
+            const closeButtons = clonedContainer.querySelectorAll('.close-alert');
+            closeButtons.forEach(closeBtn => {
+                closeBtn.addEventListener('click', function() {
+                    const alert = this.parentElement;
+                    alert.style.opacity = '0';
+                    alert.style.transform = 'translateX(-20px)';
+                    
+                    setTimeout(() => {
+                        alert.remove();
+                        // Remove entire messages container if no alerts left
+                        if (clonedContainer.children.length === 0) {
+                            clonedContainer.remove();
+                        }
+                    }, 300);
+                });
+            });
+            
+            // Insert messages at the top of the admin-content area
+            const adminContent = document.querySelector('.admin-content');
+            if (adminContent) {
+                adminContent.insertBefore(clonedContainer, adminContent.firstChild);
+            } else {
+                // Fallback: insert before the form
+                form.parentNode.insertBefore(clonedContainer, form);
+            }
+            
+            // Auto-hide alerts after 5 seconds (matching admin_base.js behavior)
+            const alerts = clonedContainer.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    const closeBtn = alert.querySelector('.close-alert');
+                    if (closeBtn) {
+                        closeBtn.click();
+                    }
+                }, 5000);
+            });
+            
+            // Scroll to top to show the message
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            // Fallback: create error message with proper styling
+            showCustomMessage('An error occurred while generating the blog post. Please try again.', 'error');
+        }
+    }
+
+    // Function to show custom messages with exact admin dashboard styling
+    function showCustomMessage(messageText, messageType = 'error') {
+        // Clear any existing messages first
+        const existingMessages = document.querySelector('.messages');
+        if (existingMessages) {
+            existingMessages.remove();
+        }
+        
+        // Create messages container
+        const messagesContainer = document.createElement('div');
+        messagesContainer.className = 'messages';
+        
+        // Create alert with proper classes (matching admin_base.html structure)
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${messageType}`;
+        
+        // Add icon (using fa-info-circle like in admin_base.html)
+        const icon = document.createElement('i');
+        icon.className = 'fas fa-info-circle';
+        
+        // Add message text
+        const textNode = document.createTextNode(' ' + messageText);
+        
+        // Add close button (matching admin_base.html structure)
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'close-alert';
+        closeBtn.innerHTML = '&times;';
+        
+        // Add the same close functionality as admin_base.js
+        closeBtn.addEventListener('click', function() {
+            const alert = this.parentElement;
+            alert.style.opacity = '0';
+            alert.style.transform = 'translateX(-20px)';
+            
+            setTimeout(() => {
+                alert.remove();
+                // Remove entire messages container if no alerts left
+                if (messagesContainer.children.length === 0) {
+                    messagesContainer.remove();
+                }
+            }, 300);
+        });
+        
+        // Assemble the alert (matching admin_base.html structure)
+        alertDiv.appendChild(icon);
+        alertDiv.appendChild(textNode);
+        alertDiv.appendChild(closeBtn);
+        messagesContainer.appendChild(alertDiv);
+        
+        // Insert at the top of admin-content
+        const adminContent = document.querySelector('.admin-content');
+        if (adminContent) {
+            adminContent.insertBefore(messagesContainer, adminContent.firstChild);
+        } else {
+            // Fallback: insert before the form
+            form.parentNode.insertBefore(messagesContainer, form);
+        }
+        
+        // Auto-hide alert after 5 seconds (matching admin_base.js behavior)
+        setTimeout(() => {
+            const alert = messagesContainer.querySelector('.alert');
+            if (alert) {
+                const closeBtnAuto = alert.querySelector('.close-alert');
+                if (closeBtnAuto) {
+                    closeBtnAuto.click();
+                }
+            }
+        }, 5000);
+        
+        // Scroll to top to show the message
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     // Auto-resize textarea if you add one later

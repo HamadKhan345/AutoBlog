@@ -1102,119 +1102,118 @@ def quick_research(request):
         word_count = request.POST.get('wordCount')
         thumbnail = request.FILES.get('featuredImage')
 
+        # Helper function to handle both AJAX and regular requests
+        def handle_error_response(message):
+            messages.error(request, message)
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                # For AJAX requests, render the template with messages
+                categories = Category.objects.all()
+                return render(request, 'admin_dashboard/create_using_ai.html', {'categories': categories})
+            else:
+                # For regular requests, redirect as before
+                return redirect('create_using_ai')
+
         # Validate inputs
         if not research_type:
-            messages.error(request, 'Research type is required.')
-            return redirect('create_using_ai')
+            return handle_error_response('Research type is required.')
         
         if not blog_topic:
-            messages.error(request, 'Blog topic is required.')
-            return redirect('create_using_ai')
+            return handle_error_response('Blog topic is required.')
         
         if len(blog_topic) > 200:  # Add length validation
-            messages.error(request, 'Blog topic cannot exceed 200 characters.')
-            return redirect('create_using_ai')
+            return handle_error_response('Blog topic cannot exceed 200 characters.')
         
         if not blog_category:
-            messages.error(request, 'Blog category is required.')
-            return redirect('create_using_ai')
+            return handle_error_response('Blog category is required.')
         
         if not blog_status:
-            messages.error(request, 'Blog status is required.')
-            return redirect('create_using_ai')
+            return handle_error_response('Blog status is required.')
 
         # Validate thumbnail if provided
         if thumbnail:
             if thumbnail.size > 5 * 1024 * 1024:  # 5MB limit
-                messages.error(request, 'Featured image size cannot exceed 5MB.')
-                return redirect('create_using_ai')
+                return handle_error_response('Featured image size cannot exceed 5MB.')
 
         if research_type == 'quick':
             payload = {
                 'topic': blog_topic,
                 'max_results': 10
             }
-            response = requests.post("http://localhost:8001/generate_blog", json=payload)
-            if response.status_code == 200:
-                try:  # ADD: JSON parsing protection
-                    data = response.json()
-                except json.JSONDecodeError:
-                    messages.error(request, 'Invalid response from AI service. Please try again.')
-                    return redirect('create_using_ai')
+            try:
+                response = requests.post("http://localhost:8001/generate_blog", json=payload)
+                if response.status_code == 200:
+                    try:  # ADD: JSON parsing protection
+                        data = response.json()
+                    except json.JSONDecodeError:
+                        return handle_error_response('Invalid response from AI service. Please try again.')
+                        
+                    # Extract fields from response
+                    title = data.get('title', '').strip()
+                    excerpt = data.get('excerpt', '').strip()
+                    content = data.get('content', '').strip()
+                    tags = data.get('tags', [])
+
+                    # ADD: Validate AI response
+                    if not title:
+                        return handle_error_response('AI failed to generate a title. Please try again.')
+                    if not excerpt:
+                        return handle_error_response('AI failed to generate an excerpt. Please try again.')
+                    if not content:
+                        return handle_error_response('AI failed to generate content. Please try again.')
+
+                    # Get category object
+                    try:
+                        category_obj = Category.objects.get(id=blog_category)
+                    except Category.DoesNotExist:
+                        return handle_error_response('Selected category does not exist.')
+
+                    # Get author
+                    author = request.user.author if hasattr(request.user, 'author') else None
+
+                    if not author:  # ADD: Check if author exists
+                        return handle_error_response('User does not have an author profile.')
                     
-                # Extract fields from response
-                title = data.get('title').strip()
-                excerpt = data.get('excerpt').strip()
-                content = data.get('content').strip()
-                tags = data.get('tags', [])
+                    # Create Blog Object
+                    create_kwargs = {
+                        'title': title,
+                        'excerpt': excerpt,
+                        'content': content,
+                        'status': blog_status,
+                        'category': category_obj,
+                        'author': author,
+                    }
+                    if thumbnail:
+                        create_kwargs['thumbnail'] = thumbnail
+                    
+                    try:
+                        blog = Blog.objects.create(**create_kwargs)
+                        
+                        # Handle tags
+                        tag_objs = []
+                        for tag_name in tags:
+                            tag_slug = slugify(tag_name)
+                            tag_obj, _ = Tag.objects.get_or_create(slug=tag_slug, defaults={'name': tag_name})
+                            tag_objs.append(tag_obj)
+                        blog.tags.set(tag_objs)
+                        
+                        blog.full_clean()
+                        blog.save()
 
-                # ADD: Validate AI response
-                if not title:
-                    messages.error(request, 'AI failed to generate a title. Please try again.')
-                    return redirect('create_using_ai')
-                if not excerpt:
-                    messages.error(request, 'AI failed to generate an excerpt. Please try again.')
-                    return redirect('create_using_ai')
-                if not content:
-                    messages.error(request, 'AI failed to generate content. Please try again.')
-                    return redirect('create_using_ai')
-
-                # Get category object
-                try:
-                    category_obj = Category.objects.get(id=blog_category)
-                except Category.DoesNotExist:
-                    messages.error(request, 'Selected category does not exist.')
-                    return redirect('create_using_ai')
-
-                # Get author
-                author = request.user.author if hasattr(request.user, 'author') else None
-
-                if not author:  # ADD: Check if author exists
-                    messages.error(request, 'User does not have an author profile.')
-                    return redirect('create_using_ai')
+                        messages.success(request, 'Blog created successfully using AI.')
+                        return redirect('all_posts')
+                        
+                    except Exception as e:
+                        return handle_error_response(f'Validation error: {str(e)}')
                 
-                # Create Blog Object
-                create_kwargs = {
-                    'title': title,
-                    'excerpt': excerpt,
-                    'content': content,
-                    'status': blog_status,
-                    'category': category_obj,
-                    'author': author,
-                }
-                if thumbnail:
-                    create_kwargs['thumbnail'] = thumbnail
-                
-                blog = Blog.objects.create(**create_kwargs)
+                else:
+                    return handle_error_response(f'Error generating blog: {response.text}')
                     
-                    
-
-                # Handle tags
-                tag_objs = []
-                for tag_name in tags:
-                    tag_slug = slugify(tag_name)
-                    tag_obj, _ = Tag.objects.get_or_create(slug=tag_slug, defaults={'name': tag_name})
-                    tag_objs.append(tag_obj)
-                blog.tags.set(tag_objs)
-                try:
-                    blog.full_clean()
-                except Exception as e:
-                    messages.error(request, f'Validation error: {str(e)}')
-                    return redirect('create_using_ai')
-                blog.save()
-
-                messages.success(request, 'Blog created successfully using AI.')
-                return redirect('all_posts')
-            
-            else:
-                messages.error(request, f'Error generating blog: {response.text}')
-                return redirect('create_using_ai')
+            except requests.exceptions.RequestException as e:
+                return handle_error_response(f'Network error: Unable to connect to AI service.')
             
         elif research_type == 'deep':  # ADD: Handle deep research
-            messages.error(request, 'Deep research is not yet implemented.')
-            return redirect('create_using_ai')
+            return handle_error_response('Deep research is not yet implemented.')
         
         else:  # ADD: Handle unknown research types
-            messages.error(request, f'Unknown research type: {research_type}')
-            return redirect('create_using_ai')
+            return handle_error_response(f'Unknown research type: {research_type}')
     
