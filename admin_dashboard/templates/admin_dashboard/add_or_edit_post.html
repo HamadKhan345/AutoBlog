@@ -61,9 +61,9 @@
         <div class="form-group">
           <label for="postExcerpt" class="form-label">Post Excerpt *</label>
           <textarea id="postExcerpt" name="excerpt" class="form-textarea excerpt-input"
-            placeholder="Write a brief summary of your post ..." rows="3" maxlength="150" required>{{ blog.excerpt|default:'' }}</textarea>
+            placeholder="Write a brief summary of your post ..." rows="3" maxlength="200" required>{{ blog.excerpt|default:'' }}</textarea>
           <div class="input-feedback">
-            <span class="char-count">0/150 characters</span>
+            <span class="char-count">0/200 characters</span>
             <small class="form-help">A short description that will be shown in post previews and search results</small>
           </div>
         </div>
