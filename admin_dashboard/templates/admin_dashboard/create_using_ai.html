@@ -27,7 +27,8 @@ Create Using AI
 
 <!-- AI Creation Form -->
 <div class="ai-creation-section">
-  <form id="aiCreationForm" class="ai-form">
+  <form id="aiCreationForm" class="ai-form" action="{% url 'quick_research' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
     <!-- Research Type Selection -->
     <div class="research-type-section">
       <h3 class="section-title">

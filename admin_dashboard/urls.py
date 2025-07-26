@@ -20,7 +20,9 @@ urlpatterns = [
     path('posts/add/', views.save_post, name='save_post'),
 
     # Create using AI
-    path('dashboard/craete_using_ai/', views.create_using_ai, name='create_using_ai'),
+    path('dashboard/create_using_ai/', views.create_using_ai, name='create_using_ai'),
+    # Quick Research
+    path('dashboard/quick_research/', views.quick_research, name='quick_research'),
 
     
 

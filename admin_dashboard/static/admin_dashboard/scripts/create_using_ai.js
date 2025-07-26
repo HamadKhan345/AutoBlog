@@ -122,25 +122,29 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Get form data
         const formData = new FormData(this);
-        const data = Object.fromEntries(formData);
         
         // Validate required fields
-        if (!data.researchType) {
+        const researchType = formData.get('researchType');
+        const blogTopic = formData.get('blogTopic');
+        const blogCategory = formData.get('blogCategory');
+        const blogStatus = formData.get('blogStatus');
+        
+        if (!researchType) {
             alert('Please select a research type');
             return;
         }
         
-        if (!data.blogTopic.trim()) {
+        if (!blogTopic || !blogTopic.trim()) {
             alert('Please enter a blog topic');
             return;
         }
         
-        if (!data.blogCategory) {
+        if (!blogCategory) {
             alert('Please select a category');
             return;
         }
         
-        if (!data.blogStatus) {
+        if (!blogStatus) {
             alert('Please select a status');
             return;
         }
@@ -148,8 +152,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Show loading state
         showLoadingState();
         
-        // Simulate AI generation process
-        simulateAIGeneration(data);
+        // Submit form to Django backend
+        submitFormToBackend(formData);
     });
 
     function showLoadingState() {
@@ -161,8 +165,18 @@ document.addEventListener('DOMContentLoaded', function() {
         // Show modal
         loadingModal.style.display = 'flex';
         
-        // Simulate loading stages
+        // Start loading stages animation
         updateLoadingStage();
+    }
+
+    function hideLoadingState() {
+        // Hide modal
+        loadingModal.style.display = 'none';
+        
+        // Reset button
+        submitBtn.disabled = false;
+        submitBtn.querySelector('.btn-text').style.display = 'inline';
+        submitBtn.querySelector('.btn-loading').style.display = 'none';
     }
 
     function updateLoadingStage() {
@@ -185,29 +199,55 @@ document.addEventListener('DOMContentLoaded', function() {
                 clearInterval(stageInterval);
             }
         }, 2000);
+        
+        // Store interval ID so we can clear it if needed
+        window.loadingStageInterval = stageInterval;
     }
 
-    function simulateAIGeneration(data) {
-        // This is where you'll later integrate with your FastAPI backend
-        console.log('Form data:', data);
-        
-        // Simulate processing time
-        setTimeout(() => {
-            // Hide loading
-            loadingModal.style.display = 'none';
-            
-            // Reset button
-            submitBtn.disabled = false;
-            submitBtn.querySelector('.btn-text').style.display = 'inline';
-            submitBtn.querySelector('.btn-loading').style.display = 'none';
-            
-            // Show success message (temporary)
-            alert('AI blog generation completed! (This is a simulation - integrate with your FastAPI backend)');
-            
-            // You can redirect to a success page or blog editor here
-            // window.location.href = '/admin/blogs/edit/' + blogId;
-            
-        }, 10000); // 10 seconds simulation
+    function submitFormToBackend(formData) {
+        // Submit the form using fetch API
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+            }
+        })
+        .then(response => {
+            if (response.redirected) {
+                // Django redirected us (likely to all_posts on success)
+                window.location.href = response.url;
+            } else {
+                return response.text();
+            }
+        })
+        .then(html => {
+            if (html) {
+                // If we got HTML back, it's likely the form with errors
+                // Parse the response and extract any error messages
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const errorElements = doc.querySelectorAll('.alert-danger, .messages .error');
+                
+                hideLoadingState();
+                
+                if (errorElements.length > 0) {
+                    let errorMessage = '';
+                    errorElements.forEach(element => {
+                        errorMessage += element.textContent.trim() + '\n';
+                    });
+                    alert('Error: ' + errorMessage);
+                } else {
+                    // No specific error found, show generic message
+                    alert('An error occurred while generating the blog post. Please try again.');
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            hideLoadingState();
+            alert('Network error occurred. Please check your connection and try again.');
+        });
     }
 
     // Auto-resize textarea if you add one later
@@ -232,5 +272,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.classList.remove('error');
             }
         });
+    });
+
+    // Clear loading interval when page unloads
+    window.addEventListener('beforeunload', function() {
+        if (window.loadingStageInterval) {
+            clearInterval(window.loadingStageInterval);
+        }
     });
 });
