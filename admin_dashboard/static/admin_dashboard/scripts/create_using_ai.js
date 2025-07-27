@@ -262,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 form.parentNode.insertBefore(clonedContainer, form);
             }
             
-            // Auto-hide alerts after 5 seconds (matching admin_base.js behavior)
+            // Auto-hide alerts after 5 minutes (matching admin_base.js behavior)
             const alerts = clonedContainer.querySelectorAll('.alert');
             alerts.forEach(alert => {
                 setTimeout(() => {
@@ -270,7 +270,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (closeBtn) {
                         closeBtn.click();
                     }
-                }, 5000);
+                }, 300000);
             });
             
             // Scroll to top to show the message
@@ -339,7 +339,7 @@ document.addEventListener('DOMContentLoaded', function() {
             form.parentNode.insertBefore(messagesContainer, form);
         }
         
-        // Auto-hide alert after 5 seconds (matching admin_base.js behavior)
+        // Auto-hide alert after 5 minutes (matching admin_base.js behavior)
         setTimeout(() => {
             const alert = messagesContainer.querySelector('.alert');
             if (alert) {
@@ -348,7 +348,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     closeBtnAuto.click();
                 }
             }
-        }, 5000);
+        }, 300000);
         
         // Scroll to top to show the message
         window.scrollTo({ top: 0, behavior: 'smooth' });

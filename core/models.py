@@ -133,10 +133,26 @@ class Blog(models.Model):
         if old.thumbnail and self.thumbnail != old.thumbnail:
           if old.thumbnail.name != 'blogs/default.jpg' and os.path.isfile(old.thumbnail.path):
             os.remove(old.thumbnail.path)
+        
+        # If title changed, regenerate slug
+        if old.title != self.title:
+          self.slug = None  # Force regeneration
       except Blog.DoesNotExist:
         pass
+    
+    # Generate unique slug if not set or if title changed
     if not self.slug:
-      self.slug = slugify(self.title)
+      base_slug = slugify(self.title)
+      unique_slug = base_slug
+      counter = 1
+      
+      # Check for existing slugs, excluding current instance if updating
+      while Blog.objects.filter(slug=unique_slug).exclude(pk=self.pk).exists():
+        unique_slug = f"{base_slug}-{counter}"
+        counter += 1
+      
+      self.slug = unique_slug
+    
     super().save(*args, **kwargs)
     self._original_thumbnail = self.thumbnail
 

@@ -21,6 +21,8 @@ from django.urls import reverse
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
 from django.contrib.contenttypes.models import ContentType
 import requests
+from django.core.files.base import ContentFile
+import uuid
 # Create your views here.
 
 # Login
@@ -290,17 +292,7 @@ def save_post(request):
             messages.error(request, 'Thumbnail size exceeds 5MB.')
             return redirect('add_or_edit_post')
         
-         # Duplicate title check (case-insensitive, prevents slug conflict)
-        if blog:
-            # Editing: allow same title if it's the same post
-            if Blog.objects.filter(title__iexact=title).exclude(id=blog.id).exists():
-                messages.error(request, 'A post with this title already exists.')
-                return redirect(reverse('edit_post', args=[post_id]))
-        else:
-            # Creating: any match is a duplicate
-            if Blog.objects.filter(title__iexact=title).exists():
-                messages.error(request, 'A post with this title already exists.')
-                return redirect('add_or_edit_post')
+        # No duplicate title check - we allow duplicate titles with unique slugs
         
 
 
@@ -312,8 +304,8 @@ def save_post(request):
             blog.status = status
             blog.category = category
 
-            # Update Slug
-            blog.slug = slugify(title)
+            # Slug will be generated automatically by the model if title changed
+            # No need to manually set it here
 
             if thumbnail:
                 blog.thumbnail = thumbnail
@@ -1112,6 +1104,23 @@ def quick_research(request):
             else:
                 # For regular requests, redirect as before
                 return redirect('create_using_ai')
+            
+        # Function to download and create Django file from URL (in memory only)
+        def create_file_from_url(image_url):
+            try:
+                response = requests.get(image_url, timeout=30)
+                if response.status_code == 200:
+                    
+                    # Generate unique filename
+                    file_extension = '.jpg'  # Default to jpg
+                    filename = f"ai_generated_{uuid.uuid4().hex[:8]}{file_extension}"
+                    
+                    # Create Django file object IN MEMORY (not saved to disk yet)
+                    return ContentFile(response.content, name=filename)
+                return None
+            except Exception as e:
+                print(f"Error downloading image: {str(e)}")
+                return None
 
         # Validate inputs
         if not research_type:
@@ -1146,12 +1155,16 @@ def quick_research(request):
                         data = response.json()
                     except json.JSONDecodeError:
                         return handle_error_response('Invalid response from AI service. Please try again.')
+                    
+
+                    blog_data = data.get('blog_data', {})
+                    featured_image_data = data.get('featured_image', {})
                         
                     # Extract fields from response
-                    title = data.get('title', '').strip()
-                    excerpt = data.get('excerpt', '').strip()
-                    content = data.get('content', '').strip()
-                    tags = data.get('tags', [])
+                    title = blog_data.get('title', '').strip()
+                    excerpt = blog_data.get('excerpt', '').strip()
+                    content = blog_data.get('content', '').strip()
+                    tags = blog_data.get('tags', [])
 
                     # ADD: Validate AI response
                     if not title:
@@ -1173,6 +1186,13 @@ def quick_research(request):
                     if not author:  # ADD: Check if author exists
                         return handle_error_response('User does not have an author profile.')
                     
+                    # Handle featured image
+                    final_thumbnail = thumbnail
+
+                    if not final_thumbnail and featured_image_data.get('success') and featured_image_data.get('image_url'):
+                        image_url = featured_image_data.get('image_url')
+                        final_thumbnail = create_file_from_url(image_url)
+
                     # Create Blog Object
                     create_kwargs = {
                         'title': title,
@@ -1182,8 +1202,8 @@ def quick_research(request):
                         'category': category_obj,
                         'author': author,
                     }
-                    if thumbnail:
-                        create_kwargs['thumbnail'] = thumbnail
+                    if final_thumbnail:
+                        create_kwargs['thumbnail'] = final_thumbnail
                     
                     try:
                         blog = Blog.objects.create(**create_kwargs)
@@ -1199,11 +1219,21 @@ def quick_research(request):
                         blog.full_clean()
                         blog.save()
 
+                        # Log the creation
+                        LogEntry.objects.log_action(
+                            user_id=request.user.pk,
+                            content_type_id=ContentType.objects.get_for_model(blog).pk,
+                            object_id=blog.pk,
+                            object_repr=str(blog),
+                            action_flag=ADDITION,
+                            change_message="Created via AI (quick research)"
+                        )
+
                         messages.success(request, 'Blog created successfully using AI.')
                         return redirect('all_posts')
                         
                     except Exception as e:
-                        return handle_error_response(f'Validation error: {str(e)}')
+                        return handle_error_response(f'Error creating blog: {str(e)}')
                 
                 else:
                     return handle_error_response(f'Error generating blog: {response.text}')
