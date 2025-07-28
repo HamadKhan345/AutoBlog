@@ -23,6 +23,7 @@ from django.contrib.contenttypes.models import ContentType
 import requests
 from django.core.files.base import ContentFile
 import uuid
+import urllib.parse
 # Create your views here.
 
 # Login
@@ -1091,7 +1092,7 @@ def quick_research(request):
         blog_topic = request.POST.get('blogTopic', '').strip()
         blog_category = request.POST.get('blogCategory')
         blog_status = request.POST.get('blogStatus')
-        word_count = request.POST.get('wordCount')
+        word_count = request.POST.get('wordCount').strip()
         thumbnail = request.FILES.get('featuredImage')
 
         # Helper function to handle both AJAX and regular requests
@@ -1108,12 +1109,33 @@ def quick_research(request):
         # Function to download and create Django file from URL (in memory only)
         def create_file_from_url(image_url):
             try:
-                response = requests.get(image_url, timeout=30)
+                # Add headers to avoid being blocked by websites
+                headers = {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+                }
+                
+                response = requests.get(image_url, timeout=60, headers=headers)
                 if response.status_code == 200:
                     
-                    # Generate unique filename
-                    file_extension = '.jpg'  # Default to jpg
-                    filename = f"ai_generated_{uuid.uuid4().hex[:8]}{file_extension}"
+                    # Extract file extension from URL
+                    parsed_url = urllib.parse.urlparse(image_url)
+                    url_path = parsed_url.path
+                    file_extension = os.path.splitext(url_path)[1].lower()
+                    
+                    # If no extension found in URL, try to detect from content-type
+                    if not file_extension:
+                        content_type = response.headers.get('content-type', '').lower()
+                        if 'image/jpeg' in content_type or 'image/jpg' in content_type:
+                            file_extension = '.jpg'
+                        elif 'image/png' in content_type:
+                            file_extension = '.png'
+                        elif 'image/webp' in content_type:
+                            file_extension = '.webp'
+                        else:
+                            file_extension = '.jpg'  # Fallback only if nothing else works
+                    
+                    # Generate unique filename with original extension
+                    filename = f"featured_image_{uuid.uuid4().hex[:8]}{file_extension}"
                     
                     # Create Django file object IN MEMORY (not saved to disk yet)
                     return ContentFile(response.content, name=filename)
@@ -1137,6 +1159,9 @@ def quick_research(request):
         
         if not blog_status:
             return handle_error_response('Blog status is required.')
+        
+        if not word_count:
+            word_count = 700
 
         # Validate thumbnail if provided
         if thumbnail:
@@ -1146,7 +1171,8 @@ def quick_research(request):
         if research_type == 'quick':
             payload = {
                 'topic': blog_topic,
-                'max_results': 10
+                'max_results': 10,
+                'word_count': word_count,
             }
             try:
                 response = requests.post("http://localhost:8001/generate_blog", json=payload)

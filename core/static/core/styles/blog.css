@@ -139,7 +139,7 @@
 
 .post-featured-image img {
   width: 100%;
-  height: 400px;
+  max-height: 400px;
   object-fit: cover;
 }
 
@@ -340,7 +340,7 @@
   }
 
   .post-featured-image img {
-    height: 250px;
+    max-height: 250px;
   }
 
   .post-title {
