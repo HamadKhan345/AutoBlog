@@ -1094,6 +1094,7 @@ def quick_research(request):
         blog_status = request.POST.get('blogStatus')
         word_count = request.POST.get('wordCount').strip()
         thumbnail = request.FILES.get('featuredImage')
+        scrape_thumbnail = True  
 
         # Helper function to handle both AJAX and regular requests
         def handle_error_response(message):
@@ -1165,6 +1166,7 @@ def quick_research(request):
 
         # Validate thumbnail if provided
         if thumbnail:
+            scrape_thumbnail = False
             if thumbnail.size > 5 * 1024 * 1024:  # 5MB limit
                 return handle_error_response('Featured image size cannot exceed 5MB.')
 
@@ -1173,9 +1175,10 @@ def quick_research(request):
                 'topic': blog_topic,
                 'max_results': 10,
                 'word_count': word_count,
+                'scrape_thumbnail': scrape_thumbnail
             }
             try:
-                response = requests.post("http://localhost:8001/generate_blog", json=payload)
+                response = requests.post("http://localhost:8001/generate_blog", json=payload, timeout=900)
                 if response.status_code == 200:
                     try:  # ADD: JSON parsing protection
                         data = response.json()

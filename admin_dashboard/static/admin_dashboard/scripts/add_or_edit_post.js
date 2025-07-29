@@ -30,8 +30,145 @@ document.addEventListener('DOMContentLoaded', function () {
   // Set Quill content if editing
   var initialContent = document.getElementById('postContent').value;
   if (initialContent) {
-    quill.root.innerHTML = initialContent;
+    // Use Quill's clipboard module to properly parse HTML content
+    const delta = quill.clipboard.convert(initialContent);
+    quill.setContents(delta, 'silent');
   }
+
+  // Function to insert HTML content into Quill editor
+  window.insertHTMLContent = function(htmlContent) {
+    try {
+      const delta = quill.clipboard.convert(htmlContent);
+      quill.setContents(delta);
+      postContent.value = quill.root.innerHTML;
+      updateWordCount();
+      markFormDirty();
+    } catch (error) {
+      console.error('Error inserting HTML content:', error);
+      // Fallback to plain text insertion
+      quill.setText(htmlContent.replace(/<[^>]*>/g, ''));
+    }
+  };
+
+  // Enhanced paste handling for better HTML formatting
+  quill.clipboard.addMatcher(Node.ELEMENT_NODE, function (node, delta) {
+    // Handle strong/bold tags
+    if (node.tagName === 'STRONG' || node.tagName === 'B') {
+      delta.ops.forEach(function(op) {
+        if (op.insert && typeof op.insert === 'string') {
+          op.attributes = op.attributes || {};
+          op.attributes.bold = true;
+        }
+      });
+    }
+    
+    // Handle emphasis/italic tags
+    if (node.tagName === 'EM' || node.tagName === 'I') {
+      delta.ops.forEach(function(op) {
+        if (op.insert && typeof op.insert === 'string') {
+          op.attributes = op.attributes || {};
+          op.attributes.italic = true;
+        }
+      });
+    }
+    
+    // Handle underline tags
+    if (node.tagName === 'U') {
+      delta.ops.forEach(function(op) {
+        if (op.insert && typeof op.insert === 'string') {
+          op.attributes = op.attributes || {};
+          op.attributes.underline = true;
+        }
+      });
+    }
+    
+    // Handle heading tags
+    if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(node.tagName)) {
+      const headerLevel = parseInt(node.tagName.charAt(1));
+      delta.ops.forEach(function(op) {
+        if (op.insert && typeof op.insert === 'string') {
+          op.attributes = op.attributes || {};
+          op.attributes.header = headerLevel;
+        }
+      });
+    }
+    
+    // Handle unordered lists
+    if (node.tagName === 'UL') {
+      delta.ops.forEach(function(op) {
+        if (op.insert && typeof op.insert === 'string') {
+          op.attributes = op.attributes || {};
+          op.attributes.list = 'bullet';
+        }
+      });
+    }
+    
+    // Handle ordered lists
+    if (node.tagName === 'OL') {
+      delta.ops.forEach(function(op) {
+        if (op.insert && typeof op.insert === 'string') {
+          op.attributes = op.attributes || {};
+          op.attributes.list = 'ordered';
+        }
+      });
+    }
+    
+    // Handle list items
+    if (node.tagName === 'LI') {
+      const listParent = node.closest('ul, ol');
+      if (listParent) {
+        const listType = listParent.tagName === 'UL' ? 'bullet' : 'ordered';
+        delta.ops.forEach(function(op) {
+          if (op.insert && typeof op.insert === 'string') {
+            op.attributes = op.attributes || {};
+            op.attributes.list = listType;
+          }
+        });
+      }
+    }
+    
+    // Handle links
+    if (node.tagName === 'A' && node.href) {
+      delta.ops.forEach(function(op) {
+        if (op.insert && typeof op.insert === 'string') {
+          op.attributes = op.attributes || {};
+          op.attributes.link = node.href;
+        }
+      });
+    }
+    
+    // Handle blockquotes
+    if (node.tagName === 'BLOCKQUOTE') {
+      delta.ops.forEach(function(op) {
+        if (op.insert && typeof op.insert === 'string') {
+          op.attributes = op.attributes || {};
+          op.attributes.blockquote = true;
+        }
+      });
+    }
+    
+    // Handle strikethrough
+    if (node.tagName === 'S' || node.tagName === 'STRIKE' || node.tagName === 'DEL') {
+      delta.ops.forEach(function(op) {
+        if (op.insert && typeof op.insert === 'string') {
+          op.attributes = op.attributes || {};
+          op.attributes.strike = true;
+        }
+      });
+    }
+    
+    // Handle code
+    if (node.tagName === 'CODE') {
+      delta.ops.forEach(function(op) {
+        if (op.insert && typeof op.insert === 'string') {
+          op.attributes = op.attributes || {};
+          op.attributes.code = true;
+        }
+      });
+    }
+    
+    return delta;
+  });
 
   // --- Elements ---
   const postTitle = document.getElementById('postTitle');
