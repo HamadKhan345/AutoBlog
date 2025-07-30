@@ -26,7 +26,23 @@ var/
 *.log
 local_settings.py
 db.sqlite3
-media/
+# Ignore everything in media/
+media/*
+
+# But do not ignore these subfolders
+!media/authors/
+!media/blogs/
+!media/categories/
+
+# Ignore everything inside those folders
+media/authors/*
+media/blogs/*
+media/categories/*
+
+# Except default.jpg in each
+!media/authors/default.jpg
+!media/blogs/default.jpg
+!media/categories/default.jpg
 staticfiles/
 .env
 *.env
