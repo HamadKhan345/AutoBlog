@@ -40,7 +40,7 @@
                     </h3>
                     <p class="post-excerpt">{{ post.excerpt }}</p>
                     <div class="post-meta">
-                        <span class="post-author">{{ post.author.user.get_full_name }}</span>
+                        <span class="post-author">{{ post.author.user.get_full_name|default:post.author }}</span>
                         <span class="post-date">{{ post.created_at|date:"M d, Y" }}</span>
                         <span class="post-read-time">5 min read</span>
                     </div>

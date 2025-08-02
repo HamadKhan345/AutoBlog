@@ -68,8 +68,8 @@ def category_posts_api(request, category_slug):
 
 # Blog Page
 
-def blog(request, blog_slug):
-  blog = get_object_or_404(Blog, slug=blog_slug, status=Blog.PUBLISHED)
+def blog(request,category_slug, blog_slug):
+  blog = get_object_or_404(Blog, slug=blog_slug, category__slug=category_slug, status=Blog.PUBLISHED)
   blog.view_count += 1
   blog.save()
 

@@ -161,7 +161,7 @@ class Blog(models.Model):
 
   def get_absolute_url(self):
     from django.urls import reverse
-    return reverse('blog', args=[self.slug])
+    return reverse('blog', args=[self.category.slug, self.slug])
   
   def delete(self, *args, **kwargs):
     # Delete the thumbnail file when the blog is deleted

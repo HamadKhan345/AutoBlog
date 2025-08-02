@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
             loadingSpinner.style.display = 'block';
             loadMoreBtn.style.display = 'none';
 
-            fetch(`/api/category/${categorySlug}/posts/?page=${page}`)
+            fetch(`/api/categories/${categorySlug}/posts/?page=${page}`)
                 .then(response => response.json())
                 .then(data => {
                     data.posts.forEach(post => {
