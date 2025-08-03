@@ -291,6 +291,11 @@
   text-align: left;
   font-size: 1rem;
 }
+figure.table {
+  margin-left: 0;
+  margin-right: 0;
+  float: none !important;
+}
 
 /* CKEditor 5 Code Block Styling (replaces .ql-syntax) */
 .post-content .ck-code-block,
