@@ -393,7 +393,7 @@
 }
 
 /* ===========================
-   QUILL EDITOR
+   EDITOR CONTAINER (PLACEHOLDER)
    =========================== */
 .editor-container {
     border: 1px solid var(--border-color);
@@ -410,49 +410,6 @@
     border-color: var(--primary-color);
 }
 
-#toolbar {
-    border-bottom: 1px solid var(--border-color);
-    background: var(--light-bg);
-    padding: 0.5rem;
-    padding-right: 3rem;
-}
-
-.quill-editor {
-    height: 600px;
-    background: white;
-    overflow: hidden;
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-}
-
-.ql-editor {
-    font-size: 0.875rem;
-    line-height: 1.6;
-    padding: 2rem;
-    overflow-y: auto;
-    overflow-x: hidden;
-    max-height: 600px;
-    height: 600px;
-    word-wrap: break-word;
-    word-break: break-word;
-    white-space: pre-wrap;
-    max-width: 100%;
-    box-sizing: border-box;
-}
-
-.ql-editor.ql-blank::before {
-    color: #6c757d;
-    font-size: 0.875rem;
-    font-style: normal;
-    font-weight: 400;
-    font-family: inherit;
-    left: 2rem;
-    right: 2rem;
-    padding-left: 0;
-    pointer-events: none;
-}
-
 .editor-stats {
     display: flex;
     justify-content: space-between;
@@ -462,40 +419,6 @@
     color: var(--secondary-color);
     font-size: 0.75rem;
     margin-top: 20px;
-}
-
-/* Additional Quill editor content styling */
-.ql-editor p,
-.ql-editor div,
-.ql-editor span {
-    word-wrap: break-word;
-    word-break: break-word;
-    max-width: 100%;
-    overflow-wrap: break-word;
-}
-
-.ql-editor table {
-    table-layout: fixed;
-    width: 100%;
-    max-width: 100%;
-}
-
-.ql-editor pre {
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    overflow-x: auto;
-    max-width: 100%;
-}
-
-.ql-editor blockquote {
-    word-wrap: break-word;
-    max-width: 100%;
-}
-
-/* Ensure no content can break out of the editor */
-.ql-editor * {
-    max-width: 100%;
-    box-sizing: border-box;
 }
 
 /* ===========================
@@ -511,6 +434,7 @@
     z-index: 9999;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
 }
 
 .fullscreen-header {
@@ -530,51 +454,623 @@
 
 .fullscreen-editor-container {
     flex: 1;
-    overflow: hidden;
+    overflow: visible !important;
     display: flex;
     flex-direction: column;
+    padding: 1rem;
+    min-height: 0;
 }
 
 .fullscreen-editor-container .editor-container {
-    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: visible;
+    min-height: 0;
+}
+
+.fullscreen-editor-container .ck.ck-editor {
     display: flex;
     flex-direction: column;
     flex: 1;
     min-height: 0;
 }
 
-.fullscreen-editor-container .ql-editor.ql-blank::before {
-    left: 2rem;
-    right: 2rem;
-}
-
-.fullscreen-editor-container #toolbar {
-    flex-shrink: 0;
-    padding-right: 0.5rem;
-}
-
-.fullscreen-editor-container .quill-editor {
+.fullscreen-editor-container .ck.ck-editor__main {
     flex: 1;
-    height: auto;
-    min-height: 0;
+    overflow: auto;
 }
 
-.fullscreen-editor-container .ql-editor {
-    overflow-y: auto;
-    overflow-x: hidden;
-    max-height: none;
-    height: 100%;
-    min-height: 100%;
-    padding: 2rem;
-    word-wrap: break-word;
-    word-break: break-word;
-    white-space: pre-wrap;
+.fullscreen-editor-container .ck.ck-editor__editable {
+    height: auto !important;
+    min-height: calc(100vh - 200px) !important;
+    max-height: none !important;
+}
+
+/* ===========================
+   CKEDITOR 5 FIXES & CONTENT STYLING
+   =========================== */
+
+/* General CKEditor fixes for both normal and fullscreen modes */
+.ck.ck-editor {
+    position: relative;
+}
+
+.ck.ck-editor__editable {
+    min-height: 300px;
+}
+
+/* ===========================
+   CKEDITOR CONTENT STYLING
+   =========================== */
+
+/* Base content styling for editor */
+.ck-content {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    color: #333;
+    padding: 20px;
+    max-width: none;
+}
+
+/* Headings */
+.ck-content h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 2rem 0 1rem 0;
+    color: #212529;
+    border-bottom: 3px solid #007bff;
+    padding-bottom: 0.5rem;
+}
+
+.ck-content h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin: 1.8rem 0 0.8rem 0;
+    color: #212529;
+    border-left: 4px solid #007bff;
+    padding-left: 1rem;
+}
+
+.ck-content h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin: 1.5rem 0 0.7rem 0;
+    color: #212529;
+}
+
+/* Paragraphs */
+.ck-content p {
+    margin: 1rem 0;
+    text-align: justify;
+}
+
+.ck-content p:first-child {
+    margin-top: 0;
+}
+
+.ck-content p:last-child {
+    margin-bottom: 0;
+}
+
+/* Lists */
+.ck-content ul,
+.ck-content ol {
+    margin: 1rem 0;
+    padding-left: 2rem;
+}
+
+.ck-content ul {
+    list-style-type: disc;
+}
+
+.ck-content ul ul {
+    list-style-type: circle;
+    margin: 0.5rem 0;
+}
+
+.ck-content ul ul ul {
+    list-style-type: square;
+}
+
+.ck-content ol {
+    list-style-type: decimal;
+}
+
+.ck-content ol ol {
+    list-style-type: lower-alpha;
+    margin: 0.5rem 0;
+}
+
+.ck-content ol ol ol {
+    list-style-type: lower-roman;
+}
+
+.ck-content li {
+    margin: 0.5rem 0;
+    line-height: 1.6;
+    padding-left: 0.5rem;
+}
+
+.ck-content li p {
+    margin: 0.25rem 0;
+}
+
+/* Links */
+.ck-content a {
+    color: #007bff;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+}
+
+.ck-content a:hover {
+    color: #0056b3;
+    text-decoration: none;
+}
+
+/* Text formatting */
+.ck-content strong {
+    font-weight: 700;
+}
+
+.ck-content em {
+    font-style: italic;
+}
+
+.ck-content u {
+    text-decoration: underline;
+}
+
+.ck-content s {
+    text-decoration: line-through;
+}
+
+/* Block quotes */
+.ck-content blockquote {
+    margin: 2rem 0;
+    padding: 1.5rem 2rem;
+    border-left: 5px solid #007bff;
+    background: #f8f9fa;
+    font-style: italic;
+    font-size: 1.1rem;
+    position: relative;
+}
+
+.ck-content blockquote::before {
+    content: '"';
+    font-size: 4rem;
+    color: #007bff;
+    position: absolute;
+    top: -0.5rem;
+    left: 0.5rem;
+    font-family: Georgia, serif;
+    opacity: 0.3;
+}
+
+.ck-content blockquote p {
+    margin: 0;
+    padding-left: 2rem;
+}
+
+/* Code blocks */
+.ck-content pre {
+    background: #2d3748;
+    color: #e2e8f0;
+    padding: 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    font-family: 'Courier New', Consolas, Monaco, monospace;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    border: 1px solid #4a5568;
+}
+
+.ck-content code {
+    background: #f1f3f4;
+    color: #d63384;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-family: 'Courier New', Consolas, Monaco, monospace;
+    font-size: 0.9em;
+}
+
+/* Tables */
+.ck-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.ck-content table th,
+.ck-content table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+    vertical-align: top;
+}
+
+.ck-content table th {
+    background: #007bff;
+
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+.ck-content table tr:hover {
+    background: #f8f9fa;
+}
+
+.ck-content table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Images */
+.ck-content img {
     max-width: 100%;
-    box-sizing: border-box;
+    height: auto;
+    border-radius: 8px;
+    margin: 1rem 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.fullscreen-editor-container .btn-fullscreen {
-    display: none;
+.ck-content figure {
+    margin: 1.5rem 0;
+    text-align: center;
+}
+
+.ck-content figure img {
+    margin: 0;
+}
+
+.ck-content figcaption {
+    margin-top: 0.5rem;
+    font-style: italic;
+    color: #6c757d;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* Media embeds */
+.ck-content .media {
+    margin: 1.5rem 0;
+    text-align: center;
+}
+
+.ck-content .media iframe {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Font sizes */
+.ck-content .text-tiny {
+    font-size: 0.7em;
+}
+
+.ck-content .text-small {
+    font-size: 0.85em;
+}
+
+.ck-content .text-big {
+    font-size: 1.4em;
+}
+
+.ck-content .text-huge {
+    font-size: 1.8em;
+}
+
+/* Text alignment */
+.ck-content .text-left {
+    text-align: left;
+}
+
+.ck-content .text-center {
+    text-align: center;
+}
+
+.ck-content .text-right {
+    text-align: right;
+}
+
+.ck-content .text-justify {
+    text-align: justify;
+}
+
+/* Remove default margins for nested elements */
+.ck-content h1:first-child,
+.ck-content h2:first-child,
+.ck-content h3:first-child,
+.ck-content p:first-child,
+.ck-content ul:first-child,
+.ck-content ol:first-child,
+.ck-content blockquote:first-child {
+    margin-top: 0;
+}
+
+.ck-content h1:last-child,
+.ck-content h2:last-child,
+.ck-content h3:last-child,
+.ck-content p:last-child,
+.ck-content ul:last-child,
+.ck-content ol:last-child,
+.ck-content blockquote:last-child {
+    margin-bottom: 0;
+}
+
+/* Fullscreen specific CKEditor fixes */
+.fullscreen-overlay .ck.ck-editor__editable {
+    min-height: calc(100vh - 200px);
+    height: auto !important;
+    max-height: none !important;
+    overflow-y: visible !important;
+}
+
+/* Ensure all CKEditor UI elements have proper z-index in fullscreen */
+.fullscreen-overlay .ck.ck-balloon-panel,
+.fullscreen-overlay .ck.ck-tooltip,
+.fullscreen-overlay .ck.ck-dropdown__panel,
+.fullscreen-overlay .ck.ck-list-dropdown__panel,
+.fullscreen-overlay .ck.ck-color-ui-dropdown,
+.fullscreen-overlay .ck.ck-color-grid,
+.fullscreen-overlay .ck.ck-color-picker,
+.fullscreen-overlay .ck.ck-autocomplete,
+.fullscreen-overlay .ck.ck-mention,
+.fullscreen-overlay .ck.ck-table-column-resizer,
+.fullscreen-overlay .ck.ck-widget__resizer,
+.fullscreen-overlay .ck.ck-widget__type-around,
+.fullscreen-overlay .ck.ck-fake-panel,
+.fullscreen-overlay .ck.ck-media-form,
+.fullscreen-overlay .ck.ck-link-form,
+.fullscreen-overlay .ck.ck-link-actions {
+    z-index: 10000 !important;
+}
+
+/* Table-specific mini toolbar fixes */
+.fullscreen-overlay .ck.ck-table-properties-form,
+.fullscreen-overlay .ck.ck-table-cell-properties-form,
+.fullscreen-overlay .ck.ck-table-form,
+.fullscreen-overlay .ck.ck-context-toolbar,
+.fullscreen-overlay .ck.ck-toolbar.ck-toolbar_grouping {
+    z-index: 10001 !important;
+    position: relative;
+}
+
+/* Image and widget toolbars */
+.fullscreen-overlay .ck.ck-toolbar.ck-widget__toolbar,
+.fullscreen-overlay .ck.ck-balloon-rotator__content {
+    z-index: 10002 !important;
+}
+
+/* Dropdown panels and menus */
+.fullscreen-overlay .ck.ck-dropdown .ck-dropdown__panel {
+    z-index: 10003 !important;
+}
+
+/* Context menus and floating UI */
+.fullscreen-overlay .ck.ck-balloon-panel_arrow_s,
+.fullscreen-overlay .ck.ck-balloon-panel_arrow_n,
+.fullscreen-overlay .ck.ck-balloon-panel_arrow_e,
+.fullscreen-overlay .ck.ck-balloon-panel_arrow_w,
+.fullscreen-overlay .ck.ck-balloon-panel_arrow_ne,
+.fullscreen-overlay .ck.ck-balloon-panel_arrow_nw,
+.fullscreen-overlay .ck.ck-balloon-panel_arrow_se,
+.fullscreen-overlay .ck.ck-balloon-panel_arrow_sw {
+    z-index: 10004 !important;
+}
+
+/* Ensure editor container doesn't interfere with floating elements */
+.fullscreen-overlay .editor-container {
+    overflow: visible !important;
+    z-index: 1;
+}
+
+/* Fix for CKEditor content area */
+.fullscreen-overlay .ck-content {
+    height: auto !important;
+    min-height: 100%;
+    overflow-y: visible;
+}
+
+/* Table selection and resize handles */
+.fullscreen-overlay .ck.ck-widget.ck-widget_selected,
+.fullscreen-overlay .ck.ck-widget:hover {
+    outline: var(--ck-widget-outline-thickness) solid var(--ck-color-widget-hover-border) !important;
+}
+
+.fullscreen-overlay .ck.ck-widget__selection-handle {
+    z-index: 10005 !important;
+}
+
+/* Image resize handles */
+.fullscreen-overlay .ck.ck-widget__resizer__handle {
+    z-index: 10006 !important;
+}
+
+/* Source editing mode fixes */
+.fullscreen-overlay .ck.ck-source-editing-area {
+    height: calc(100vh - 200px) !important;
+    min-height: calc(100vh - 200px) !important;
+}
+
+.fullscreen-overlay .ck.ck-source-editing-area textarea {
+    height: 100% !important;
+    resize: none !important;
+}
+
+/* Normal mode CKEditor improvements */
+.ck.ck-balloon-panel {
+    z-index: 1000;
+}
+
+.ck.ck-tooltip {
+    z-index: 1001;
+}
+
+.ck.ck-dropdown__panel {
+    z-index: 1002;
+}
+
+/* Ensure proper stacking for all UI elements */
+.ck.ck-toolbar {
+    z-index: 10;
+}
+
+.ck.ck-editor__main {
+    position: relative;
+    z-index: 1;
+}
+
+/* Fix for table column resize cursor */
+.fullscreen-overlay .ck.ck-table-column-resizer {
+    cursor: col-resize !important;
+    z-index: 10007 !important;
+}
+
+/* Autocomplete and mention dropdowns */
+.fullscreen-overlay .ck.ck-autocomplete .ck-autocomplete__results {
+    z-index: 10008 !important;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+/* Color picker fixes */
+.fullscreen-overlay .ck.ck-color-picker {
+    z-index: 10009 !important;
+}
+
+.fullscreen-overlay .ck.ck-color-grid__tile {
+    z-index: inherit;
+}
+
+/* Media embed form fixes */
+.fullscreen-overlay .ck.ck-media-form__url {
+    z-index: inherit;
+}
+
+/* Link form fixes */
+.fullscreen-overlay .ck.ck-link-form__url-input {
+    z-index: inherit;
+}
+
+/* Block toolbar (appears on empty lines) */
+.fullscreen-overlay .ck.ck-block-toolbar-button {
+    z-index: 10010 !important;
+}
+
+/* Widget type around (appears around widgets) */
+.fullscreen-overlay .ck.ck-widget__type-around__button {
+    z-index: 10011 !important;
+}
+
+/* Ensure fullscreen mode doesn't clip any UI elements */
+.fullscreen-overlay {
+    overflow: visible !important;
+}
+
+.fullscreen-editor-container {
+    overflow: visible !important;
+}
+
+/* Additional fixes for mobile/touch devices */
+@media (max-width: 768px) {
+    .fullscreen-overlay .ck.ck-balloon-panel {
+        position: fixed !important;
+        z-index: 10020 !important;
+    }
+    
+    .fullscreen-overlay .ck.ck-toolbar {
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 10021 !important;
+        background: white !important;
+        border-bottom: 1px solid var(--ck-color-toolbar-border) !important;
+    }
+}
+
+/* Body class for fullscreen mode - allow natural scrolling */
+
+body.ckeditor-fullscreen .fullscreen-overlay {
+    z-index: 999999 !important;
+}
+
+/* Ensure CKEditor elements are always visible */
+.ck.ck-reset,
+.ck.ck-reset_all,
+.ck.ck-reset_all *,
+.ck-reset_all *:not(.ck-reset_all-excluded *) {
+    box-sizing: border-box;
+    width: auto;
+    height: auto;
+    position: static;
+}
+
+/* Table widgets and resizers in fullscreen */
+.fullscreen-overlay .ck-widget.table,
+.fullscreen-overlay .ck-widget.image {
+    position: relative !important;
+}
+
+.fullscreen-overlay .ck-widget__resizer {
+    position: absolute !important;
+    z-index: 10012 !important;
+}
+
+/* Context toolbar positioning */
+.fullscreen-overlay .ck.ck-toolbar.ck-context-toolbar {
+    position: absolute !important;
+    z-index: 10013 !important;
+}
+
+/* Table column resizer line */
+.fullscreen-overlay .ck.ck-table-column-resizer__line {
+    z-index: 10014 !important;
+}
+
+/* Mention and autocomplete panels */
+.fullscreen-overlay .ck.ck-mention .ck-mention__results {
+    z-index: 10015 !important;
+}
+
+/* Special character grid */
+.fullscreen-overlay .ck.ck-special-characters-grid {
+    z-index: 10016 !important;
+}
+
+/* Font size and color dropdowns */
+.fullscreen-overlay .ck.ck-font-size-dropdown .ck-dropdown__panel,
+.fullscreen-overlay .ck.ck-font-color-dropdown .ck-dropdown__panel,
+.fullscreen-overlay .ck.ck-font-background-color-dropdown .ck-dropdown__panel {
+    z-index: 10017 !important;
+}
+
+/* Block quote and code block toolbars */
+.fullscreen-overlay .ck.ck-block-quote,
+.fullscreen-overlay .ck.ck-code-block {
+    position: relative !important;
+}
+
+/* Media embed forms and previews */
+.fullscreen-overlay .ck.ck-media-embed-form,
+.fullscreen-overlay .ck-media__wrapper {
+    z-index: 10018 !important;
+}
+
+/* Link balloon forms */
+.fullscreen-overlay .ck.ck-link-form,
+.fullscreen-overlay .ck.ck-link-actions {
+    z-index: 10019 !important;
 }
 
 /* ===========================
@@ -1117,36 +1613,12 @@
         grid-template-columns: 1fr;
     }
 
-    .quill-editor {
-        height: 300px;
-    }
-
-    .ql-editor {
-        height: 300px;
-        max-height: 300px;
-        padding: 1rem;
-    }
-
-    .ql-editor.ql-blank::before {
-        left: 1rem;
-        right: 1rem;
-    }
-
-    #toolbar {
-        padding: 0.25rem;
-        padding-right: 3rem;
-    }
-
     .fullscreen-header {
         padding: 1rem;
     }
 
     .fullscreen-editor-container {
         padding: 0;
-    }
-
-    .fullscreen-editor-container .ql-editor {
-        padding: 1rem;
     }
 
     /* Form elements mobile optimization */
@@ -1206,29 +1678,10 @@
         width: calc(100% - 2rem);
     }
 
-    .ql-formats {
-        margin-right: 0.25rem;
-    }
-
     .btn-fullscreen {
         top: 0.25rem;
         right: 0.25rem;
         padding: 0.375rem;
-    }
-
-    .quill-editor {
-        height: 250px;
-    }
-
-    .ql-editor {
-        height: 250px;
-        max-height: 250px;
-        padding: 0.75rem;
-    }
-
-    .ql-editor.ql-blank::before {
-        left: 0.75rem;
-        right: 0.75rem;
     }
 
     /* Form elements extra small mobile optimization */
@@ -1284,261 +1737,6 @@
 }
 
 /* ===========================
-   QUILL EDITOR CONTENT STYLES
-   =========================== */
-
-/* Lists - Essential for bullet points and numbered lists */
-.ql-editor ul {
-    list-style-type: disc !important;
-    padding-left: 1.5em !important;
-    margin: 1em 0 !important;
-}
-
-.ql-editor ol {
-    list-style-type: decimal !important;
-    padding-left: 1.5em !important;
-    margin: 1em 0 !important;
-}
-
-.ql-editor li {
-    display: list-item !important;
-    margin: 0.25em 0 !important;
-    padding-left: 0.25em !important;
-}
-
-/* Nested lists */
-.ql-editor ul ul {
-    list-style-type: circle !important;
-    margin: 0.5em 0 !important;
-}
-
-.ql-editor ul ul ul {
-    list-style-type: square !important;
-}
-
-.ql-editor ol ol {
-    list-style-type: lower-alpha !important;
-}
-
-.ql-editor ol ol ol {
-    list-style-type: lower-roman !important;
-}
-
-/* Headings */
-.ql-editor h1 {
-    font-size: 2em !important;
-    font-weight: bold !important;
-    margin: 0.67em 0 !important;
-    line-height: 1.2 !important;
-}
-
-.ql-editor h2 {
-    font-size: 1.5em !important;
-    font-weight: bold !important;
-    margin: 0.75em 0 !important;
-    line-height: 1.3 !important;
-}
-
-.ql-editor h3 {
-    font-size: 1.25em !important;
-    font-weight: bold !important;
-    margin: 0.83em 0 !important;
-    line-height: 1.4 !important;
-}
-
-.ql-editor h4 {
-    font-size: 1.1em !important;
-    font-weight: bold !important;
-    margin: 1em 0 !important;
-    line-height: 1.4 !important;
-}
-
-.ql-editor h5 {
-    font-size: 1em !important;
-    font-weight: bold !important;
-    margin: 1.17em 0 !important;
-    line-height: 1.4 !important;
-}
-
-.ql-editor h6 {
-    font-size: 0.875em !important;
-    font-weight: bold !important;
-    margin: 1.33em 0 !important;
-    line-height: 1.4 !important;
-}
-
-/* Text formatting */
-.ql-editor strong {
-    font-weight: bold !important;
-}
-
-.ql-editor em {
-    font-style: italic !important;
-}
-
-.ql-editor u {
-    text-decoration: underline !important;
-}
-
-.ql-editor s {
-    text-decoration: line-through !important;
-}
-
-/* Blockquotes */
-.ql-editor blockquote {
-    border-left: 4px solid var(--primary-color) !important;
-    margin: 1em 0 !important;
-    padding: 0.5em 0 0.5em 1em !important;
-    background: var(--light-bg) !important;
-    font-style: italic !important;
-    color: var(--secondary-color) !important;
-}
-
-/* Links */
-.ql-editor a {
-    color: var(--primary-color) !important;
-    text-decoration: underline !important;
-}
-
-.ql-editor a:hover {
-    color: var(--primary-light) !important;
-}
-
-/* Code */
-.ql-editor code {
-    background: #f1f3f4 !important;
-    padding: 0.125em 0.25em !important;
-    border-radius: 3px !important;
-    font-family: 'Courier New', Courier, monospace !important;
-    font-size: 0.9em !important;
-    color: #d63384 !important;
-}
-
-.ql-editor pre {
-    background: #f8f9fa !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: 6px !important;
-    padding: 1em !important;
-    margin: 1em 0 !important;
-    overflow-x: auto !important;
-    font-family: 'Courier New', Courier, monospace !important;
-    font-size: 0.875em !important;
-    line-height: 1.4 !important;
-    white-space: pre-wrap !important;
-}
-
-/* Images and media */
-.ql-editor img {
-    max-width: 100% !important;
-    height: auto !important;
-    margin: 1em 0 !important;
-    border-radius: 6px !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
-}
-
-.ql-editor video {
-    max-width: 100% !important;
-    height: auto !important;
-    margin: 1em 0 !important;
-    border-radius: 6px !important;
-}
-
-/* Paragraphs */
-.ql-editor p {
-    margin: 1em 0 !important;
-    line-height: 1.6 !important;
-}
-
-/* Spans and divs */
-.ql-editor span {
-    word-wrap: break-word !important;
-    word-break: break-word !important;
-}
-
-.ql-editor div {
-    margin: 0.5em 0 !important;
-}
-
-/* Line breaks */
-.ql-editor br {
-    line-height: 1.6 !important;
-}
-
-/* Indentation for lists */
-.ql-editor .ql-indent-1 {
-    padding-left: 3em !important;
-}
-
-.ql-editor .ql-indent-2 {
-    padding-left: 4.5em !important;
-}
-
-.ql-editor .ql-indent-3 {
-    padding-left: 6em !important;
-}
-
-.ql-editor .ql-indent-4 {
-    padding-left: 7.5em !important;
-}
-
-.ql-editor .ql-indent-5 {
-    padding-left: 9em !important;
-}
-
-.ql-editor .ql-indent-6 {
-    padding-left: 10.5em !important;
-}
-
-.ql-editor .ql-indent-7 {
-    padding-left: 12em !important;
-}
-
-.ql-editor .ql-indent-8 {
-    padding-left: 13.5em !important;
-}
-
-/* Text alignment */
-.ql-editor .ql-align-center {
-    text-align: center !important;
-}
-
-.ql-editor .ql-align-right {
-    text-align: right !important;
-}
-
-.ql-editor .ql-align-justify {
-    text-align: justify !important;
-}
-
-/* Fix for mobile responsiveness */
-@media (max-width: 768px) {
-    .ql-editor ul,
-    .ql-editor ol {
-        padding-left: 1.2em !important;
-    }
-    
-    .ql-editor .ql-indent-1 {
-        padding-left: 2.4em !important;
-    }
-    
-    .ql-editor .ql-indent-2 {
-        padding-left: 3.6em !important;
-    }
-    
-    .ql-editor h1 {
-        font-size: 1.75em !important;
-    }
-    
-    .ql-editor h2 {
-        font-size: 1.375em !important;
-    }
-    
-    .ql-editor h3 {
-        font-size: 1.125em !important;
-    }
-}
-
-/* ===========================
    GLOBAL FOCUS RESET
    =========================== */
 .add-post-form *:focus,
@@ -1552,12 +1750,4 @@
 .form-textarea:focus,
 .form-select:focus {
     box-shadow: 0 0 0 2px rgba(var(--primary-color), 0.1) !important;
-}
-
-.ql-container,
-.ql-toolbar,
-.ql-toolbar .ql-formats button,
-.ql-toolbar .ql-formats select {
-    outline: none !important;
-    box-shadow: none !important;
 }
