@@ -298,7 +298,7 @@ figure.table {
 }
 
 /* CKEditor 5 Code Block Styling (replaces .ql-syntax) */
-.post-content .ck-code-block,
+/* .post-content .ck-code-block,
 #blog-content .ck-code-block,
 .post-content pre[data-language],
 #blog-content pre[data-language] {
@@ -313,11 +313,11 @@ figure.table {
   padding: 1.2rem;
   border-radius: 8px;
   margin: 1.5rem 0;
-  box-sizing: border-box;
+  box-sizing: border-box; */
   /* Prevent horizontal overflow */
-  word-break: break-word;
-  white-space: pre-wrap;
-}
+  /* word-break: break-word;
+  white-space: pre-wrap; */
+/* } */
 
 /* Responsive horizontal scroll for wide content */
 .post-content,
@@ -369,7 +369,7 @@ figure.table {
     gap: 1.5rem;
   }
 
-  .post-content .ck-code-block,
+  /* .post-content .ck-code-block,
   #blog-content .ck-code-block,
   .post-content pre[data-language],
   #blog-content pre[data-language] {
@@ -380,7 +380,7 @@ figure.table {
     margin-right: 0;
     border-radius: 8px;
     overflow-x: auto;
-  }
+  } */
 
   .post-meta {
     flex-direction: column;
@@ -455,7 +455,7 @@ figure.table {
     padding: 0 1rem;
   }
 
-  .post-content .ck-code-block,
+  /* .post-content .ck-code-block,
   #blog-content .ck-code-block,
   .post-content pre[data-language],
   #blog-content pre[data-language] {
@@ -466,7 +466,7 @@ figure.table {
     margin-left: 0;
     margin-right: 0;
     overflow-x: auto;
-  }
+  } */
 
   .breadcrumb {
     font-size: 0.8rem;
