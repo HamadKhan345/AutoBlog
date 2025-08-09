@@ -154,6 +154,7 @@
   font-weight: 700;
   color: #212529;
   margin-bottom: 0.8rem;
+  margin-top: 0;
   line-height: 1.3;
   transition: color 0.3s ease;
 }
@@ -203,7 +204,7 @@
 /* List View Styles */
 .posts-grid.list-view .post-card {
   display: flex;
-  height: 200px;
+  height: 217px;
 }
 
 .posts-grid.list-view .post-image {
@@ -226,6 +227,7 @@
 .posts-grid.list-view .post-title {
   font-size: 1.4rem;
   margin-bottom: 0.5rem;
+  margin-top: 0;
 }
 
 .posts-grid.list-view .post-excerpt {

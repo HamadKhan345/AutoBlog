@@ -21,8 +21,8 @@ urlpatterns = [
 
     # Create using AI
     path('dashboard/create_using_ai/', views.create_using_ai, name='create_using_ai'),
-    # Quick Research
-    path('dashboard/quick_research/', views.quick_research, name='quick_research'),
+    # Create using AI - API
+    path('dashboard/create_using_ai_api/', views.create_using_ai_api, name='create_using_ai_api'),
 
     
 

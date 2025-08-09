@@ -1084,7 +1084,7 @@ def create_using_ai(request):
 # Quick Research
 @login_required
 @require_POST
-def quick_research(request):
+def create_using_ai_api(request):
     
     if request.method == 'POST':
         # Get form data
@@ -1170,109 +1170,103 @@ def quick_research(request):
             if thumbnail.size > 5 * 1024 * 1024:  # 5MB limit
                 return handle_error_response('Featured image size cannot exceed 5MB.')
 
-        if research_type == 'quick':
-            payload = {
-                'topic': blog_topic,
-                'max_results': 10,
-                'word_count': word_count,
-                'scrape_thumbnail': scrape_thumbnail
-            }
-            try:
-                response = requests.post("http://localhost:8001/generate_blog", json=payload, timeout=900)
-                if response.status_code == 200:
-                    try:  # ADD: JSON parsing protection
-                        data = response.json()
-                    except json.JSONDecodeError:
-                        return handle_error_response('Invalid response from AI service. Please try again.')
-                    
-
-                    blog_data = data.get('blog_data', {})
-                    featured_image_data = data.get('featured_image', {})
-                        
-                    # Extract fields from response
-                    title = blog_data.get('title', '').strip()
-                    excerpt = blog_data.get('excerpt', '').strip()
-                    content = blog_data.get('content', '').strip()
-                    tags = blog_data.get('tags', [])
-
-                    # ADD: Validate AI response
-                    if not title:
-                        return handle_error_response('AI failed to generate a title. Please try again.')
-                    if not excerpt:
-                        return handle_error_response('AI failed to generate an excerpt. Please try again.')
-                    if not content:
-                        return handle_error_response('AI failed to generate content. Please try again.')
-
-                    # Get category object
-                    try:
-                        category_obj = Category.objects.get(id=blog_category)
-                    except Category.DoesNotExist:
-                        return handle_error_response('Selected category does not exist.')
-
-                    # Get author
-                    author = request.user.author if hasattr(request.user, 'author') else None
-
-                    if not author:  # ADD: Check if author exists
-                        return handle_error_response('User does not have an author profile.')
-                    
-                    # Handle featured image
-                    final_thumbnail = thumbnail
-
-                    if not final_thumbnail and featured_image_data.get('success') and featured_image_data.get('image_url'):
-                        image_url = featured_image_data.get('image_url')
-                        final_thumbnail = create_file_from_url(image_url)
-
-                    # Create Blog Object
-                    create_kwargs = {
-                        'title': title,
-                        'excerpt': excerpt,
-                        'content': content,
-                        'status': blog_status,
-                        'category': category_obj,
-                        'author': author,
-                    }
-                    if final_thumbnail:
-                        create_kwargs['thumbnail'] = final_thumbnail
-                    
-                    try:
-                        blog = Blog.objects.create(**create_kwargs)
-                        
-                        # Handle tags
-                        tag_objs = []
-                        for tag_name in tags:
-                            tag_slug = slugify(tag_name)
-                            tag_obj, _ = Tag.objects.get_or_create(slug=tag_slug, defaults={'name': tag_name})
-                            tag_objs.append(tag_obj)
-                        blog.tags.set(tag_objs)
-                        
-                        blog.full_clean()
-                        blog.save()
-
-                        # Log the creation
-                        LogEntry.objects.log_action(
-                            user_id=request.user.pk,
-                            content_type_id=ContentType.objects.get_for_model(blog).pk,
-                            object_id=blog.pk,
-                            object_repr=str(blog),
-                            action_flag=ADDITION,
-                            change_message="Created via AI (quick research)"
-                        )
-
-                        messages.success(request, 'Blog created successfully using AI.')
-                        return redirect('all_posts')
-                        
-                    except Exception as e:
-                        return handle_error_response(f'Error creating blog: {str(e)}')
+        payload = {
+            'topic': blog_topic,
+            'max_results': 10,
+            'word_count': word_count,
+            'scrape_thumbnail': scrape_thumbnail,
+            'method': research_type
+        }
+        try:
+            response = requests.post("http://localhost:8001/generate_blog", json=payload, timeout=900)
+            if response.status_code == 200:
+                try:  # ADD: JSON parsing protection
+                    data = response.json()
+                except json.JSONDecodeError:
+                    return handle_error_response('Invalid response from AI service. Please try again.')
                 
-                else:
-                    return handle_error_response(f'Error generating blog: {response.text}')
+
+                blog_data = data.get('blog_data', {})
+                featured_image_data = data.get('featured_image', {})
                     
-            except requests.exceptions.RequestException as e:
-                return handle_error_response(f'Network error: Unable to connect to AI service.')
+                # Extract fields from response
+                title = blog_data.get('title', '').strip()
+                excerpt = blog_data.get('excerpt', '').strip()
+                content = blog_data.get('content', '').strip()
+                tags = blog_data.get('tags', [])
+
+                # ADD: Validate AI response
+                if not title:
+                    return handle_error_response('AI failed to generate a title. Please try again.')
+                if not excerpt:
+                    return handle_error_response('AI failed to generate an excerpt. Please try again.')
+                if not content:
+                    return handle_error_response('AI failed to generate content. Please try again.')
+
+                # Get category object
+                try:
+                    category_obj = Category.objects.get(id=blog_category)
+                except Category.DoesNotExist:
+                    return handle_error_response('Selected category does not exist.')
+
+                # Get author
+                author = request.user.author if hasattr(request.user, 'author') else None
+
+                if not author:  # ADD: Check if author exists
+                    return handle_error_response('User does not have an author profile.')
+                
+                # Handle featured image
+                final_thumbnail = thumbnail
+
+                if not final_thumbnail and featured_image_data.get('success') and featured_image_data.get('image_url'):
+                    image_url = featured_image_data.get('image_url')
+                    final_thumbnail = create_file_from_url(image_url)
+
+                # Create Blog Object
+                create_kwargs = {
+                    'title': title,
+                    'excerpt': excerpt,
+                    'content': content,
+                    'status': blog_status,
+                    'category': category_obj,
+                    'author': author,
+                }
+                if final_thumbnail:
+                    create_kwargs['thumbnail'] = final_thumbnail
+                
+                try:
+                    blog = Blog.objects.create(**create_kwargs)
+                    
+                    # Handle tags
+                    tag_objs = []
+                    for tag_name in tags:
+                        tag_slug = slugify(tag_name)
+                        tag_obj, _ = Tag.objects.get_or_create(slug=tag_slug, defaults={'name': tag_name})
+                        tag_objs.append(tag_obj)
+                    blog.tags.set(tag_objs)
+                    
+                    blog.full_clean()
+                    blog.save()
+
+                    # Log the creation
+                    LogEntry.objects.log_action(
+                        user_id=request.user.pk,
+                        content_type_id=ContentType.objects.get_for_model(blog).pk,
+                        object_id=blog.pk,
+                        object_repr=str(blog),
+                        action_flag=ADDITION,
+                        change_message=f"Created via AI ({research_type} research)"
+                    )
+
+                    messages.success(request, 'Blog created successfully using AI.')
+                    return redirect('all_posts')
+                    
+                except Exception as e:
+                    return handle_error_response(f'Error creating blog: {str(e)}')
             
-        elif research_type == 'deep':  # ADD: Handle deep research
-            return handle_error_response('Deep research is not yet implemented.')
-        
-        else:  # ADD: Handle unknown research types
-            return handle_error_response(f'Unknown research type: {research_type}')
+            else:
+                return handle_error_response(f'Error generating blog: {response.text}')
+                
+        except requests.exceptions.RequestException as e:
+            return handle_error_response(f'Network error: Unable to connect to AI service.')
     
