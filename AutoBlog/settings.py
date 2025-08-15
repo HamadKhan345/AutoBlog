@@ -83,6 +83,7 @@ WSGI_APPLICATION = 'AutoBlog.wsgi.application'
 
 
 DATABASES = {
+<<<<<<< HEAD
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": os.getenv("DATABASE_NAME", "autoblog"),
@@ -90,6 +91,15 @@ DATABASES = {
         "PASSWORD": os.getenv("DATABASE_PASSWORD", ""),
         "HOST": os.getenv("DATABASE_HOST", "db"),
         "PORT": os.getenv("DATABASE_PORT", "5432"),
+=======
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'autoblog_deployment',
+        'USER': 'postgres',           # owner
+        'PASSWORD': 'admin', 
+        'HOST': 'localhost',
+        'PORT': '5432',
+>>>>>>> 36a0faacec6488df2aed7324a13266626cd27434
     }
 }
 
