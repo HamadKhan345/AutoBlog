@@ -1,0 +1,39 @@
+# Create a .env file in the root of your project with the following content.
+
+# ---- Postgres (container) ----
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=admin
+POSTGRES_DB=autoblog
+
+# ---- Django DB settings (read by settings.py) ----
+DATABASE_HOST=localhost # Change it to 'db' if using Docker
+DATABASE_PORT=5432
+DATABASE_NAME=autoblog
+DATABASE_USER=postgres
+DATABASE_PASSWORD=admin
+
+# ---- Django app ----
+# You can create a secret key using 
+# Run the following command in terminal
+
+# python manage.py shell
+# from django.core.management.utils import get_random_secret_key
+# print(get_random_secret_key())
+
+
+SECRET_KEY='generate-a-strong-secret-key'
+DEBUG=1
+# Comma-separated hosts (for production set your domain & EC2 IP and DEBUG=0)
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+# ---- Gunicorn / Uvicorn (manual override) ----
+GUNICORN_WORKERS=1
+GUNICORN_TIMEOUT=120
+GUNICORN_BIND=0.0.0.0:8000
+GUNICORN_WORKER_CLASS=uvicorn_worker.UvicornWorker
+
+# ---- Optional: auto-create superuser at startup if you enabled it in entrypoint.sh ----
+DJANGO_CREATE_SUPERUSER=0
+DJANGO_SUPERUSER_USERNAME=hamad
+DJANGO_SUPERUSER_EMAIL=hamadkhan345@gmail.com
+DJANGO_SUPERUSER_PASSWORD=adminadmin
