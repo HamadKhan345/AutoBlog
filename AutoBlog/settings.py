@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'AutoBlog.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'autoblog',
+        'NAME': 'autoblog_deployment',
         'USER': 'postgres',           # owner
         'PASSWORD': 'admin', 
         'HOST': 'localhost',
