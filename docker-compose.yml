@@ -17,14 +17,17 @@ services:
     build: .
     restart: always
     env_file: .env
-    command: ["gunicorn", "-c", "gunicorn.conf.py", "Autoblog.asgi:application"]
+    command: ["gunicorn", "-c", "gunicorn.conf.py", "AutoBlog.asgi:application"]
     depends_on:
       - db
     ports:
       - "80:8000"
+    volumes:
+      - media_volume:/app/media
     environment:
       - GUNICORN_WORKERS=1
       - GUNICORN_TIMEOUT=300
 
 volumes:
   postgres_data:
+  media_volume:

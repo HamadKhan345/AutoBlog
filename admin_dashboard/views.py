@@ -1,3 +1,7 @@
+import json
+import traceback
+import httpx
+from django.core.files.storage import default_storage
 from django.shortcuts import render, redirect, get_object_or_404
 from core.models import Blog
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -7,15 +11,12 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib import messages
 from django.views.decorators.http import require_POST
 from core.models import Blog, Category, Tag, Author, User
-import json
 from django.db.models import Q, Count, Sum
 from django.http import JsonResponse
-from django.core.files.storage import default_storage
 import os
 from PIL import Image
 from datetime import timedelta
 from django.utils import timezone
-import traceback
 from django.utils.text import slugify
 from django.urls import reverse
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
@@ -24,7 +25,6 @@ import requests
 from django.core.files.base import ContentFile
 import uuid
 import urllib.parse
-import httpx
 from asgiref.sync import sync_to_async
 # Create your views here.
 

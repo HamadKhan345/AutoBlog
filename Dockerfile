@@ -28,4 +28,4 @@ ENTRYPOINT ["./entrypoint.sh"]
 EXPOSE 8000
 
 # Default command uses Gunicorn + Uvicorn worker
-CMD ["gunicorn", "-c", "gunicorn.conf.py", "Autoblog.asgi:application"]
+CMD ["gunicorn", "-c", "gunicorn.conf.py", "AutoBlog.asgi:application"]
