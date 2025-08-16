@@ -1184,7 +1184,7 @@ async def create_using_ai_api(request):
         try:
             # Use httpx for async HTTP request
             async with httpx.AsyncClient() as client:
-                response = await client.post("http://51.20.75.90:8000/generate_blog", 
+                response = await client.post("http://localhost:8001/generate_blog", 
                                            json=payload, 
                                            timeout=900)
                 if response.status_code == 200:
