@@ -17,6 +17,6 @@ if [ -n "$DATABASE_HOST" ]; then
 fi
 
 python manage.py migrate --noinput
-python manage.py collectstatic --noinput
+# python manage.py collectstatic --noinput
 
 exec "$@"

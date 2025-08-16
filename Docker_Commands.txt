@@ -1,0 +1,29 @@
+# Build images
+docker-compose build
+
+# Start containers in background
+docker-compose up -d
+
+# Check status
+docker-compose ps
+
+
+##### RESTART #####
+# Stop containers
+docker-compose down
+
+# Start containers again
+docker-compose up -d
+
+# Check status
+docker-compose ps
+
+#### FULL RESART AND Build ####
+docker-compose down
+docker-compose build
+docker-compose up -d
+
+#### CREATE SUPERUSER ####
+
+docker-compose exec web python manage.py createsuperuser
+
