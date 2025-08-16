@@ -1,0 +1,9 @@
+Makesure to run 
+
+python manage.py collectstatic
+
+in production or docker file when debug = 0
+as we are using whitenoise to serve staticfiles in production
+
+normally the when debug = 1 the static files will be served by django itself
+

@@ -6,7 +6,7 @@ POSTGRES_PASSWORD=admin
 POSTGRES_DB=autoblog
 
 # ---- Django DB settings (read by settings.py) ----
-DATABASE_HOST=localhost # Change it to 'db' if using Docker
+DATABASE_HOST=localhost # Change it to 'db' if using Docker or change to localhost if running locally
 DATABASE_PORT=5432
 DATABASE_NAME=autoblog
 DATABASE_USER=postgres

@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = 'AutoBlog.urls'
@@ -132,13 +133,14 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-# This is where Django will look for static files in your project directories
+# This is where Django will collect static files when you run collectstatic
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# # This is where Django will collect static files when you run collectstatic
-# STATIC_ROOT = BASE_DIR / "staticfiles"
 
 
 # Media files
