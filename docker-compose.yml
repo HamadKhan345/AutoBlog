@@ -26,8 +26,8 @@ services:
     volumes:
       - media_volume:/app/media
     environment:
-      - GUNICORN_WORKERS=1
-      - GUNICORN_TIMEOUT=300
+      - GUNICORN_WORKERS=2
+      - GUNICORN_TIMEOUT=1200
 
 volumes:
   postgres_data:
