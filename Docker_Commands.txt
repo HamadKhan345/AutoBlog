@@ -27,3 +27,26 @@ docker-compose up -d
 
 docker-compose exec web python manage.py createsuperuser
 
+
+
+# SO BUILD PUSH PULL FROM VSCODE TO AWS Install
+docker build --no-cache -t ghcr.io/yourusername/imagename:latest .
+docker push ghcr.io/hamadkhan345/autoblog-web:latest
+
+# you may want to edit env or dockercompose on aws 
+use nano docker-compose.yml or nano .env
+
+# Stop current containers
+docker-compose down
+
+# Pull the new image
+docker-compose pull web
+
+# Start with updated configuration
+docker-compose up -d
+
+# Check status
+docker-compose ps
+
+# Check logs
+docker-compose logs web
