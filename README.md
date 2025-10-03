@@ -1,6 +1,6 @@
 # AutoBlog
 
-AutoBlog is an in-progress Django-based blogging platform designed to make content creation and discovery seamless and modern.
+AutoBlog is an Django-based blogging platform designed to make content creation and discovery seamless and modern.
 
 ## 🚧 Project Status
 
