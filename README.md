@@ -1,14 +1,14 @@
 # AutoBlog
 
-AutoBlog is an in-progress Django-based blogging platform designed to make content creation and discovery seamless and modern.
+AutoBlog is an Django-based blogging platform designed to make content creation and discovery seamless and modern.
 
 ## 🚧 Project Status
 
-This project is currently under active development and is not yet complete. We have made the repository public to share our progress and invite feedback from the community.
+This project is completed.
 
 ## 🌟 Vision
 
-Our goal is to build an intelligent blogging platform that leverages AI to automate content creation. In the future, users will be able to provide a topic, and our integrated AI will:
+We have build an intelligent blogging platform that leverages AI to automate content creation. Users can provide a topic, and our integrated AI will:
 
 - Search the web for relevant information
 - Scrape and verify sources
@@ -18,8 +18,8 @@ Our goal is to build an intelligent blogging platform that leverages AI to autom
 ## 🛠️ Tech Stack
 
 - Python & Django
-- HTML, CSS, JavaScript (Quill.js for rich text editing)
-- Planned: Integration with AI Agents
+- HTML, CSS, JavaScript (CKeditor5 for rich text editing)
+- Integration with AI Agents
 
 ## 📂 Project Structure
 
@@ -33,9 +33,6 @@ Our goal is to build an intelligent blogging platform that leverages AI to autom
 
 We welcome feedback, suggestions, and contributions! Please open an issue or pull request if you’d like to help.
 
-## 📢 Disclaimer
-
-AutoBlog is a work in progress. Features and documentation are subject to change as we continue development.
 
 ---
 
