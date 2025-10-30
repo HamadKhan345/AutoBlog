@@ -62,7 +62,7 @@ AutoBlog - News, Articles, and More
 <!-- Categories except Life&Music -->
 {% for category_name, category_blogs in blogs.items %}
 {% if category_blogs %}
-{% if category_name != "Trending" and category_name != "Life" and category_name != "Music" %}
+{% if category_name != "Trending" and category_name != "Life" and category_name != "Music" and category_name != 'Uncategorized' %}
 
 
 <section class="news-section {{ category_name|slugify}}-section">

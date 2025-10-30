@@ -44,7 +44,6 @@ All Posts
     </select>
     <select class="filter-select" id="categoryFilter" name="category" onchange="this.form.submit()">
       <option value="">All Categories</option>
-      <option value="None" {% if category_filter == 'None' %}selected{% endif %}>No Category</option>
       {% for category in categories %}
       <option value="{{category.name}}" {% if category_filter == category.name %}selected{% endif %}>{{category}}</option>
       {% endfor %}

@@ -305,6 +305,7 @@ position: absolute;
 .category-badge.finance { background: #e8f5e8; color: #28a745; }
 .category-badge.entertainment { background: #f5ece8; color: #ff6b6b; }
 .category-badge.politics { background: #f5e8e8; color: #dc3545; }
+.category-badge.uncategorized { background: #f84242; color: #ffffff; }
 .category-badge.none { background: #f8f9fa; color: #6c757d; }
 
 .status-badge.published { background: #e8f5e8; color: #2e7d32; }

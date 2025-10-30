@@ -86,6 +86,16 @@ class Category(models.Model):
     super().save(*args, **kwargs)
 
   def delete(self, *args, **kwargs):
+    # Prevent deletion of the default "Uncategorized" category
+    if self.slug == 'uncategorized':
+      raise ValidationError("Cannot delete the default 'Uncategorized' category.")
+    
+    # Move all posts from this category to "Uncategorized"
+    from core.models import Blog  # Import here to avoid circular import
+    uncategorized = Blog.get_or_create_uncategorized()
+    self.blogs.update(category=uncategorized)
+    
+    # Delete thumbnail if not default
     if self.thumbnail and self.thumbnail.name != 'categories/default.jpg':
       if os.path.isfile(self.thumbnail.path):
         os.remove(self.thumbnail.path)
@@ -125,6 +135,19 @@ class Blog(models.Model):
     super().__init__(*args, **kwargs)
     self._original_thumbnail = self.thumbnail
 
+  @staticmethod
+  def get_or_create_uncategorized():
+    """Get or create the default Uncategorized category"""
+    uncategorized, created = Category.objects.get_or_create(
+      slug='uncategorized',
+      defaults={
+        'name': 'Uncategorized',
+        'description': 'Posts without a specific category',
+        'thumbnail': 'categories/default.jpg'
+      }
+    )
+    return uncategorized
+
   def save(self, *args, **kwargs):
     # If updating and thumbnail changed, delete old file (unless default)
     if self.pk:
@@ -139,6 +162,10 @@ class Blog(models.Model):
           self.slug = None  # Force regeneration
       except Blog.DoesNotExist:
         pass
+    
+    # If category is None, assign to "Uncategorized"
+    if self.category is None:
+      self.category = self.get_or_create_uncategorized()
     
     # Generate unique slug if not set or if title changed
     if not self.slug:
@@ -161,6 +188,10 @@ class Blog(models.Model):
 
   def get_absolute_url(self):
     from django.urls import reverse
+    # Ensure category exists, if not use uncategorized
+    if not self.category:
+      self.category = self.get_or_create_uncategorized()
+      self.save(update_fields=['category'])
     return reverse('blog', args=[self.category.slug, self.slug])
   
   def delete(self, *args, **kwargs):

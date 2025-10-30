@@ -44,9 +44,11 @@ Categories
       <button class="btn-action btn-edit" title="Edit Category" data-category-id="{{ category.id }}">
         <i class="fas fa-edit"></i>
       </button>
+      {% if category.name != "Uncategorized" %}
       <button class="btn-action btn-delete" title="Delete Category" data-category-id="{{ category.id }}">
         <i class="fas fa-trash"></i>
       </button>
+      {% endif %}
     </div>
     {% endif %}
   </div>
