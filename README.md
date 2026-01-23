@@ -196,7 +196,7 @@ AutoBlog/
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/HamadKhan345/AutoBlog.git
    cd AutoBlog
    ```
 
