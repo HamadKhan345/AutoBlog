@@ -338,11 +338,3 @@ We welcome feedback, suggestions, and contributions! Please open an issue or pul
 
 This project is proprietary software. All rights reserved.
 
----
-
-<div align="center">
-
-
-*Automate your content creation with intelligent AI-powered blog generation*
-
-</div>
